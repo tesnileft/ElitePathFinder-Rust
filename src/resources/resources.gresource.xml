@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/org/gtk_rs/example/">
+  <gresource prefix="/elite_pathfinder/">
     <file compressed="true" preprocess="xml-stripblanks">mainwindow.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">topbar.ui</file>
+    <file>icons/organic-structure.png</file>
+    <file alias="planetary-object">icons/planetary-object.png</file>
+    <file>icons/geology-site.png</file>
   </gresource>
 </gresources>

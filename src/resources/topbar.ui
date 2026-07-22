@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="EliteHeaderBar" parent="GtkBox">
+        <property name="hexpand">true</property>
+        <child>
+            <object class="GtkCenterBox" id="topbar_box">
+                <property name="hexpand">true</property>
+                <child type="center">
+                    <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <child>
+                            <object class="GtkLabel" id="systemname_label">
+                                <property name="label">[System Name]</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel" id="locationname_label">
+                                <property name="label">[Location Name]</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child type="end">
+                    <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <child>
+                            <object class="GtkBox">
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">CMDR:</property>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="commandername_label">
+                                        <property name="label">[Name]</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel" id="arx_label">
+                                <property name="label">Arx: 42069</property>
+                                <property name="halign">end</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel" id="credits_label">
+                                <property name="label">Credits: 2</property>
+                                <property name="halign">end</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

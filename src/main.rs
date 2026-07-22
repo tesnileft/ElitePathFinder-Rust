@@ -7,14 +7,20 @@ use std::io::prelude::*;
 use std::thread;
 use std::time::Duration;
 mod parser;
+mod window;
+mod topbar;
+
+use window::Window;
 
 const APP_ID: &str = "tesnileft.ElitePathfinder-Rust";
 
 fn main() -> glib::ExitCode {
-    gio::resources_register_include!("epf-r.gresource").expect("Failed to register resources.");
+    gio::resources_register_include!("elite_pathfinder.gresource")
+        .expect("Failed to register resources.");
     let application = Application::builder().application_id(APP_ID).build();
+    let _ = topbar::EliteHeaderBar::static_type();
 
-    application.connect_activate(build_ui);
+    application.connect_activate(build_ui_xml);
 
     let current_log = File::open("/mnt/gamestorage/SteamLibrary/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/AppData/Local/Frontier Developments/Elite Dangerous/Journal12543831.cache").unwrap();
     let mut current_log_buf = BufReader::new(current_log);
@@ -45,7 +51,13 @@ fn read_newest_log_file() -> Result<String, std::io::Error> {
     }
 }
 
-fn build_ui(app: &Application) {
+fn build_ui_xml(app: &Application) {
+    let window = Window::new(app);
+    window.present();
+
+}
+
+fn build_ui_manual(app: &Application) {
     let window = ApplicationWindow::builder()
         .application(app)
         .title("Elite Pathfinder")
@@ -78,28 +90,14 @@ fn build_ui(app: &Application) {
 
     // Create channel that can hold at most 1 message at a time
     let (sender, receiver) = async_channel::bounded(1);
-    // Connect to "clicked" signal of `button`
-    button.connect_clicked(move |_| {
-        let sender = sender.clone();
-        // The long running operation runs now in a separate thread
-        gio::spawn_blocking(move || {
-            // Deactivate the button until the operation is done
-            sender
-                .send_blocking(false)
-                .expect("The channel needs to be open.");
 
-            let five_seconds = Duration::from_secs(5);
-            thread::sleep(five_seconds);
-            // Activate the button again
-            sender
-                .send_blocking(true)
-                .expect("The channel needs to be open.");
-        });
-    });
+    // Send updates from parsing the json files (manually or on a loop)
+    let (datasender, datareceiver) = async_channel::bounded::<u32>(1);
 
     let textbox = TextView::builder().editable(false).can_focus(false).build();
     textbox.buffer().set_text("Sample Text");
     vertical_column1.append(&textbox);
+
     let readbutton = Button::builder()
         .label("Read Latest Log")
         .margin_top(12)
@@ -107,10 +105,31 @@ fn build_ui(app: &Application) {
         .margin_start(12)
         .margin_end(12)
         .build();
-    readbutton.connect_clicked(move |_| match read_newest_log_file() {
-        Ok(filecontents) => textbox.buffer().set_text(&filecontents),
-        Err(err) => textbox.buffer().set_text(&err.to_string()),
-    });
+
+    readbutton.connect_clicked(clone!(
+        #[strong]
+        sender,
+        #[strong]
+        datasender,
+        move |_| {
+            let sender = sender.clone();
+            let datasender = datasender.clone();
+            // the long running operation runs now in a separate thread
+            gio::spawn_blocking(move || {
+                // deactivate the button until the operation is done
+                sender
+                    .send_blocking(false)
+                    .expect("the channel needs to be open.");
+
+                read_newest_log_file();
+                thread::sleep(Duration::from_millis(200));
+                // activate the button again
+                sender
+                    .send_blocking(true)
+                    .expect("the channel needs to be open.");
+            });
+        }
+    ));
     vertical_column1.append(&readbutton);
 
     // The main loop executes the asynchronous block
@@ -120,10 +139,16 @@ fn build_ui(app: &Application) {
         async move {
             while let Ok(enable_button) = receiver.recv().await {
                 button.set_sensitive(enable_button);
+                if enable_button {
+                    button.set_label("Read All");
+                } else {
+                    button.set_label("Reading Files...");
+                }
             }
         }
     ));
 
+    glib::spawn_future_local(async move { while let Ok(msg) = datareceiver.recv().await {} });
     vertical_column1.append(&button);
 
     window.set_child(Some(&vertical_column1));

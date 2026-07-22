@@ -73,7 +73,7 @@ struct Materials {
 #[derive(Deserialize)]
 #[allow(non_snake_case)]
 struct LoadGame {
-    FID: String,
+    FID: String, //Frontier ID
     Commander: String,
     Horizons: bool,
     Odyssey: bool,
@@ -83,7 +83,7 @@ struct LoadGame {
     ShipName: String,
     ShipIdent: String,
     FuelLevel: f32,
-    FielCapacity: f32,
+    FuelCapacity: f32,
     GameMode: GameMode,
     Group: String,
     Credits: u32,
