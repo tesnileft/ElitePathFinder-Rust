@@ -3,8 +3,10 @@
   <gresource prefix="/elite_pathfinder/">
     <file compressed="true" preprocess="xml-stripblanks">mainwindow.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">topbar.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">settingsarea.ui</file>
     <file>icons/organic-structure.png</file>
     <file alias="planetary-object">icons/planetary-object.png</file>
     <file>icons/geology-site.png</file>
+    <file>icons/arx_logo.png</file>
   </gresource>
 </gresources>

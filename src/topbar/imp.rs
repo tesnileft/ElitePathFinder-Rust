@@ -6,7 +6,17 @@ use gtk::subclass::prelude::*;
 // Object holding the state
 #[derive(CompositeTemplate, Default)]
 #[template(resource = "/elite_pathfinder/topbar.ui")]
-pub struct EliteHeaderBar;
+pub struct EliteHeaderBar
+{
+    #[template_child]
+    pub arx_label: TemplateChild<gtk::Label>,
+    #[template_child]
+    pub credits_label: TemplateChild<gtk::Label>,
+    #[template_child]
+    pub commandername_label: TemplateChild<gtk::Label>,
+    #[template_child]
+    pub systemname_label: TemplateChild<gtk::Label>,
+}
 
 // The central trait for subclassing a GObject
 #[glib::object_subclass]
@@ -21,6 +31,7 @@ impl ObjectSubclass for EliteHeaderBar {
     fn instance_init(obj: &InitializingObject<Self>) {
         obj.init_template();
     }
+
 }
 
 // Trait shared by all GObjects
@@ -30,6 +41,7 @@ impl ObjectImpl for EliteHeaderBar {
         self.parent_constructed();
         
     }
+
 
 }
 

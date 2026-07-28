@@ -1,37 +1,68 @@
-use glib::clone;
-use gtk::{Application, ApplicationWindow, Button, ListBox, TextView, gio, glib};
+use gtk::{Application, Label, gio, glib};
 use gtk::{Entry, prelude::*};
+use rusqlite::Connection;
+use serde::Deserialize;
+use std::collections::HashMap;
+use std::env::home_dir;
 use std::fs::File;
-use std::io::BufReader;
 use std::io::prelude::*;
+use std::io::{BufReader, Error, ErrorKind};
+use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
-mod parser;
-mod window;
-mod topbar;
 
+mod parser;
+
+mod elite_events;
+mod settingsarea;
+mod topbar;
+mod window;
+
+use crate::UiEvent::SetCurrentSystem;
+use crate::elite_events::enums::*;
+use crate::parser::EliteEvent;
 use window::Window;
 
-const APP_ID: &str = "tesnileft.ElitePathfinder-Rust";
+const APP_ID: &str = "tesnileft.ElitePathfinder_rs";
 
+pub enum UiEvent {
+    SetCurrentSystem { system_name: String },
+    UpdateCurrency { arx: u64, credits: u64 },
+}
+#[derive(Default)]
+pub struct Cache {
+    pub current_system: String,
+    pub current_body: Option<String>,
+    pub current_body_type: Option<BodyType>,
+    pub credits: u64,
+    pub arx: u64,
+    pub in_hyperspace: bool,
+    pub game_location: String,
+    pub log_location: String,
+}
+pub type SharedCache = Arc<Mutex<Cache>>;
 fn main() -> glib::ExitCode {
+    #[cfg(debug_assertions)]
+    unsafe {
+        std::env::set_var("GSETTINGS_SCHEMA_DIR", "data");
+    }
+
     gio::resources_register_include!("elite_pathfinder.gresource")
         .expect("Failed to register resources.");
+    let settings = gio::Settings::new("tesnileft.ElitePathFinder_rs");
+
+    let cache = Arc::new(Mutex::new(Cache::default()));
     let application = Application::builder().application_id(APP_ID).build();
     let _ = topbar::EliteHeaderBar::static_type();
-
-    application.connect_activate(build_ui_xml);
-
-    let current_log = File::open("/mnt/gamestorage/SteamLibrary/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/AppData/Local/Frontier Developments/Elite Dangerous/Journal12543831.cache").unwrap();
-    let mut current_log_buf = BufReader::new(current_log);
-
-    thread::spawn(move || {
-        loop {
-            let mut new_contents = String::new();
-            current_log_buf.read_to_string(&mut new_contents).unwrap();
-        }
+    let _ = settingsarea::SettingsArea::static_type();
+    let (ui_event_sender, ui_event_receiver) = async_channel::unbounded::<UiEvent>();
+    application.connect_activate(move |app| {
+        build_ui_xml(app, ui_event_receiver.clone(), cache.clone());
     });
+    let database_connection = Connection::open_in_memory().unwrap();
 
+    start_background_reader(ui_event_sender);
     application.run()
 }
 
@@ -51,106 +82,150 @@ fn read_newest_log_file() -> Result<String, std::io::Error> {
     }
 }
 
-fn build_ui_xml(app: &Application) {
-    let window = Window::new(app);
-    window.present();
-
-}
-
-fn build_ui_manual(app: &Application) {
-    let window = ApplicationWindow::builder()
-        .application(app)
-        .title("Elite Pathfinder")
-        .default_width(350)
-        .default_height(70)
-        .build();
-
-    let vertical_column1 = ListBox::builder().build();
-
-    let filepathfield = Entry::builder().build();
-
-    vertical_column1.append(&filepathfield);
-    let copybutton = Button::builder()
-        .label("Button (cool)")
-        .margin_top(12)
-        .margin_bottom(12)
-        .margin_start(12)
-        .margin_end(12)
-        .build();
-    copybutton.connect_clicked(move |button| button.set_label(&filepathfield.buffer().text()));
-    vertical_column1.append(&copybutton);
-
-    let button = Button::builder()
-        .label("Press me!")
-        .margin_top(12)
-        .margin_bottom(12)
-        .margin_start(12)
-        .margin_end(12)
-        .build();
-
-    // Create channel that can hold at most 1 message at a time
-    let (sender, receiver) = async_channel::bounded(1);
-
-    // Send updates from parsing the json files (manually or on a loop)
-    let (datasender, datareceiver) = async_channel::bounded::<u32>(1);
-
-    let textbox = TextView::builder().editable(false).can_focus(false).build();
-    textbox.buffer().set_text("Sample Text");
-    vertical_column1.append(&textbox);
-
-    let readbutton = Button::builder()
-        .label("Read Latest Log")
-        .margin_top(12)
-        .margin_bottom(12)
-        .margin_start(12)
-        .margin_end(12)
-        .build();
-
-    readbutton.connect_clicked(clone!(
-        #[strong]
-        sender,
-        #[strong]
-        datasender,
-        move |_| {
-            let sender = sender.clone();
-            let datasender = datasender.clone();
-            // the long running operation runs now in a separate thread
-            gio::spawn_blocking(move || {
-                // deactivate the button until the operation is done
-                sender
-                    .send_blocking(false)
-                    .expect("the channel needs to be open.");
-
-                read_newest_log_file();
-                thread::sleep(Duration::from_millis(200));
-                // activate the button again
-                sender
-                    .send_blocking(true)
-                    .expect("the channel needs to be open.");
-            });
+fn start_background_reader(ui_event_sender: async_channel::Sender<UiEvent>) {
+    //Detect current logfile
+    let current_log_path = "/mnt/gamestorage/SteamLibrary/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/AppData/Local/Frontier Developments/Elite Dangerous/Journal12543831.cache";
+    //Open logfile
+    let current_log_result = File::open(current_log_path);
+    let current_log = match current_log_result {
+        Ok(file) => file,
+        Err(error) => {
+            //TODO add error handling for when the log file isn't found
+            return;
         }
-    ));
-    vertical_column1.append(&readbutton);
+    };
+    let mut current_log_buffer = BufReader::new(current_log);
 
-    // The main loop executes the asynchronous block
-    glib::spawn_future_local(clone!(
-        #[weak]
-        button,
-        async move {
-            while let Ok(enable_button) = receiver.recv().await {
-                button.set_sensitive(enable_button);
-                if enable_button {
-                    button.set_label("Read All");
-                } else {
-                    button.set_label("Reading Files...");
+    // Blocking thread that loops reading
+    std::thread::spawn(move || {
+        println!("Starting background reader...");
+        loop {
+            thread::sleep(Duration::from_millis(100)); // Poll every so often TODO update to notify or something
+            let mut stringcontents: String = String::new();
+            match current_log_buffer.read_to_string(&mut stringcontents) {
+                Ok(num) => {
+                    if num == 0 {
+                        continue;
+                    }
+                }
+                Err(error) => {
+                    println!("Oopsie woopsie didn't read from log buffer properly")
                 }
             }
+            let result = parser::parse_logstring(stringcontents);
+            let ui_event_sender = ui_event_sender.clone();
+            message_bus(result.unwrap(), ui_event_sender)
         }
-    ));
+    });
+}
 
-    glib::spawn_future_local(async move { while let Ok(msg) = datareceiver.recv().await {} });
-    vertical_column1.append(&button);
+fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sender<UiEvent>) {
+    gio::spawn_blocking(move || {
+        for event in event_vec {
+            match event {
+                EliteEvent::Music(music) => {
+                    println!("Playing music: {}", music.music_track)
+                }
+                EliteEvent::FSDJump(fsdjump) => {
+                    let event = SetCurrentSystem {
+                        system_name: fsdjump.star_system,
+                    };
 
-    window.set_child(Some(&vertical_column1));
+                    ui_event_sender
+                        .send_blocking(event)
+                        .expect("UI Event Channel unavailable");
+                }
+                EliteEvent::StartJump(startjump) => {}
+                other => {}
+            }
+        }
+    });
+}
+fn build_ui_xml(
+    app: &Application,
+    ui_event_receiver: async_channel::Receiver<UiEvent>,
+    cache: SharedCache,
+) {
+    let window = Window::new(app, ui_event_receiver, cache);
     window.present();
+}
+#[derive(Deserialize, Debug)]
+struct LibraryFolders(HashMap<String, Library>);
+#[derive(Deserialize, Debug)]
+#[serde(rename = "libraryfolders")]
+struct Library {
+    pub path: String,
+    pub label: String,
+    pub contentid: String,
+    pub totalsize: u64,
+    pub update_clean_bytes_tally: u64,
+    pub time_last_update_verified: u64, //Assuming this is a unix timestamp
+    #[serde(default)]
+    pub apps: HashMap<String, String>,
+}
+///Tries to detect location of log files.
+fn get_logfilelocation() -> Result<PathBuf, std::io::Error> {
+    let settings = gio::Settings::new("tesnileft.ElitePathFinder_rs");
+    let stored_location: String = settings.get::<String>("elite-journal-logs-path");
+
+    if Path::exists(stored_location.as_ref()) {
+        println!("Default path exists");
+        return Ok(stored_location.into());
+    }
+    //TODO check this ig, I don't have windows installed
+    let default_windows_path = PathBuf::from(r"\Saved Games\Frontier Developments\Elite Dangerous");
+    if (std::env::consts::OS == "windows") {
+        let full_windows_path = home_dir()
+            .expect("Failed to get home directory")
+            .join(default_windows_path);
+        if Path::exists(full_windows_path.as_path()) {
+            return Ok(full_windows_path);
+        }
+        return Err(Error::new(
+            ErrorKind::NotFound,
+            "EliteDangerous path not default path",
+        ));
+    } else if std::env::consts::OS == "linux" {
+        // Look at steam library folder
+        let libraryfolders_path =
+            home_dir()
+                .expect("Failed to get home directory")
+                .join(PathBuf::from(
+                    r".local/share/Steam/steamapps/libraryfolders.vdf",
+                )); //Stores where what is installed with steam
+        let mut file = File::open(libraryfolders_path)?;
+        let mut contents = String::new();
+        let _ = file.read_to_string(&mut contents);
+        let vfd_content: LibraryFolders =
+            keyvalues_serde::from_str(&contents).expect("VDF Decoding Failed");
+
+        let mut librarybuf: PathBuf = PathBuf::new();
+        for (e, l) in vfd_content.0 { // Iterate over all steam locations to look for the library elite is in
+            match l.apps.get("359320"){
+                Some(v) => {
+                    if *v != *"0"
+                    {
+                        println!("Found a library with Elite installed!!");
+                        librarybuf.push(l.path);
+                    }
+                }
+                None => {continue;}
+            };
+        }
+        let path: PathBuf = librarybuf.join(PathBuf::from(
+            "steamapps/compatdata/359320/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous",
+        ));
+        println!("elite dangerous linux path: {:?}", path);
+        return Ok(path);
+    }
+    Err(Error::new(ErrorKind::NotFound, "No saved games"))
+}
+
+fn read_all_journals() {
+    match get_logfilelocation() {
+        Ok(location) => {}
+        Err(err) => {
+            println!("{:?}", err);
+        }
+    }
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schemalist>
+  <schema id="tesnileft.ElitePathFinder_rs" path="/tesnileft/ElitePathFinder_rs/">
+    <key name="is-switch-enabled" type="b">
+      <default>false</default>
+      <summary>Default switch state</summary>
+    </key>
+    <key name="elite-appdata-path" type="s">
+      <default>""</default>
+      <summary>Path to the users appdata where elite stores its newest log</summary>
+    </key>
+    <key name="elite-journal-logs-path" type="s">
+      <default>"Sickass default value"</default>
+      <summary>Path to the where elite stores logs</summary>
+    </key>
+  </schema>
+</schemalist>

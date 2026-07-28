@@ -5,27 +5,19 @@ use gtk::subclass::prelude::ObjectSubclassIsExt;
 mod imp;
 
 glib::wrapper! {
-    pub struct EliteHeaderBar(ObjectSubclass<imp::EliteHeaderBar>)
+    pub struct SettingsArea(ObjectSubclass<imp::SettingsArea>)
         @extends gtk::Box, gtk::Widget,
         @implements gtk::Accessible, gtk::Actionable,
                     gtk::Buildable, gtk::ConstraintTarget;
 }
 
-impl EliteHeaderBar {
+impl SettingsArea {
     pub fn new() -> Self {
         Object::builder().build()
     }
-    pub fn set_commandername(&self, name: &str){
-        let imp = self.imp();
-        imp.commandername_label.set_text(name);
-    }
-    pub fn set_systemname(&self, name: &str){
-        let imp = self.imp();
-        imp.systemname_label.set_text(&name);
-    }
 }
 
-impl Default for EliteHeaderBar {
+impl Default for SettingsArea {
     fn default() -> Self {
         Self::new()
     }

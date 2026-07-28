@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="SettingsArea" parent="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+            <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="vexpand">false</property>
+                <child>
+                    <object class="GtkEntry" id="journal_path_entry">
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkButton" id="set_path_button">
+                        <property name="label">Set Path</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <child>
+            <object class="GtkBox">
+                <property name="vexpand">true</property>
+            </object>
+        </child>
+        <child>
+            <object class="GtkButton" id="readall_journals_button">
+                <property name="label">Read all Journal files</property>
+            </object>
+        </child>
+    </template>
+</interface>

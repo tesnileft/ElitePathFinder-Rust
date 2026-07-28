@@ -33,7 +33,6 @@ impl ObjectImpl for Window {
     fn constructed(&self) {
         // Call "constructed" on parent
         self.parent_constructed();
-
     }
 }
 

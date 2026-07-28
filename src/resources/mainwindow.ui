@@ -21,8 +21,7 @@
                         <child>
                             <object class="GtkStack" id="stack">
                                 <property name="hexpand">True</property>
-                                <property name="vexpand">True</property>
-
+                                <property name="vexpand">True</property>M
                                 <child>
                                     <object class="GtkStackPage">
                                         <property name="name">page1</property>
@@ -82,7 +81,7 @@
                                                     </child>
                                                     <child>
                                                         <object class="GtkLabel" id="notebook-tab-exploration">
-                                                            <property name="label"> Exploration</property>
+                                                            <property name="label"> Evaluator</property>
                                                         </object>
                                                     </child>
                                                 </object>
@@ -104,8 +103,19 @@
                                 </child>
                                 <child>
                                     <object class="GtkStackPage">
-                                        <property name="name">neutronplotterpage</property>
-                                        <property name="title">Neutron Plotter</property>
+                                        <property name="name">navigationpage</property>
+                                        <property name="title">Navigation</property>
+                                        <property name="child">
+                                            <object class="GtkLabel">
+                                                <property name="label">Plot a route</property>
+                                            </object>
+                                        </property>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkStackPage">
+                                        <property name="name">inventorypage</property>
+                                        <property name="title">Inventory</property>
                                         <property name="child">
                                             <object class="GtkLabel">
                                                 <property name="label">Plot a route</property>
@@ -118,8 +128,8 @@
                                         <property name="name">settingspage</property>
                                         <property name="title">Settings</property>
                                         <property name="child">
-                                            <object class="GtkLabel">
-                                                <property name="label">Here be settings!</property>
+                                            <object class="SettingsArea">
+
                                             </object>
                                         </property>
                                     </object>
