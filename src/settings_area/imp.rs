@@ -5,11 +5,12 @@ use gtk::glib::subclass::InitializingObject;
 use gtk::prelude::{ButtonExt, EditableExt, ObjectExt, SettingsExt, SettingsExtManual};
 use gtk::subclass::prelude::*;
 use gtk::prelude::*;
-use crate::{get_logfilelocation, read_all_journals};
+use crate::{helpers::get_logfileslocation};
+use crate::helpers::read_all_journals;
 
 // Object holding the state
 #[derive(CompositeTemplate, Default)]
-#[template(resource = "/elite_pathfinder/settingsarea.ui")]
+#[template(resource = "/elite_pathfinder/settings_area.ui")]
 pub struct SettingsArea
 {
     #[template_child]
@@ -54,7 +55,7 @@ impl ObjectImpl for SettingsArea {
         let readallbutton = self.readall_journals_button.get();
         readallbutton.connect_clicked(move |_| {
             spawn_blocking(move || {    // Blocking because it will be doing IO
-                read_all_journals();
+                read_all_journals()
             });
         });
 

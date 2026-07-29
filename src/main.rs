@@ -15,9 +15,10 @@ use std::time::Duration;
 mod parser;
 
 mod elite_events;
-mod settingsarea;
+mod settings_area;
 mod topbar;
 mod window;
+mod helpers;
 
 use crate::UiEvent::SetCurrentSystem;
 use crate::elite_events::enums::*;
@@ -55,7 +56,7 @@ fn main() -> glib::ExitCode {
     let cache = Arc::new(Mutex::new(Cache::default()));
     let application = Application::builder().application_id(APP_ID).build();
     let _ = topbar::EliteHeaderBar::static_type();
-    let _ = settingsarea::SettingsArea::static_type();
+    let _ = settings_area::SettingsArea::static_type();
     let (ui_event_sender, ui_event_receiver) = async_channel::unbounded::<UiEvent>();
     application.connect_activate(move |app| {
         build_ui_xml(app, ui_event_receiver.clone(), cache.clone());
@@ -149,83 +150,5 @@ fn build_ui_xml(
     let window = Window::new(app, ui_event_receiver, cache);
     window.present();
 }
-#[derive(Deserialize, Debug)]
-struct LibraryFolders(HashMap<String, Library>);
-#[derive(Deserialize, Debug)]
-#[serde(rename = "libraryfolders")]
-struct Library {
-    pub path: String,
-    pub label: String,
-    pub contentid: String,
-    pub totalsize: u64,
-    pub update_clean_bytes_tally: u64,
-    pub time_last_update_verified: u64, //Assuming this is a unix timestamp
-    #[serde(default)]
-    pub apps: HashMap<String, String>,
-}
-///Tries to detect location of log files.
-fn get_logfilelocation() -> Result<PathBuf, std::io::Error> {
-    let settings = gio::Settings::new("tesnileft.ElitePathFinder_rs");
-    let stored_location: String = settings.get::<String>("elite-journal-logs-path");
 
-    if Path::exists(stored_location.as_ref()) {
-        println!("Default path exists");
-        return Ok(stored_location.into());
-    }
-    //TODO check this ig, I don't have windows installed
-    let default_windows_path = PathBuf::from(r"\Saved Games\Frontier Developments\Elite Dangerous");
-    if (std::env::consts::OS == "windows") {
-        let full_windows_path = home_dir()
-            .expect("Failed to get home directory")
-            .join(default_windows_path);
-        if Path::exists(full_windows_path.as_path()) {
-            return Ok(full_windows_path);
-        }
-        return Err(Error::new(
-            ErrorKind::NotFound,
-            "EliteDangerous path not default path",
-        ));
-    } else if std::env::consts::OS == "linux" {
-        // Look at steam library folder
-        let libraryfolders_path =
-            home_dir()
-                .expect("Failed to get home directory")
-                .join(PathBuf::from(
-                    r".local/share/Steam/steamapps/libraryfolders.vdf",
-                )); //Stores where what is installed with steam
-        let mut file = File::open(libraryfolders_path)?;
-        let mut contents = String::new();
-        let _ = file.read_to_string(&mut contents);
-        let vfd_content: LibraryFolders =
-            keyvalues_serde::from_str(&contents).expect("VDF Decoding Failed");
 
-        let mut librarybuf: PathBuf = PathBuf::new();
-        for (e, l) in vfd_content.0 { // Iterate over all steam locations to look for the library elite is in
-            match l.apps.get("359320"){
-                Some(v) => {
-                    if *v != *"0"
-                    {
-                        println!("Found a library with Elite installed!!");
-                        librarybuf.push(l.path);
-                    }
-                }
-                None => {continue;}
-            };
-        }
-        let path: PathBuf = librarybuf.join(PathBuf::from(
-            "steamapps/compatdata/359320/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous",
-        ));
-        println!("elite dangerous linux path: {:?}", path);
-        return Ok(path);
-    }
-    Err(Error::new(ErrorKind::NotFound, "No saved games"))
-}
-
-fn read_all_journals() {
-    match get_logfilelocation() {
-        Ok(location) => {}
-        Err(err) => {
-            println!("{:?}", err);
-        }
-    }
-}
