@@ -4,17 +4,20 @@ use std::io::prelude::*;
 use crate::elite_events::events::*;
 
 //endregion
-
-
 #[derive(Deserialize)]
 #[serde(tag = "event")]
 pub enum EliteEvent{
+    Fileheader(FileHeader),
     LoadGame(LoadGame),
+    Location(Location),
+    Commander(Commander),
+    Statistics(Statistics),
     Shutdown(Shutdown),
     Music(Music),
     Loadout(Loadout),
     SuitLoadout(SuitLoadout),
     ShipLocker(ShipLocker),
+    Materials(Materials),
     Backpack(Backpack),
     FSSSignalDiscovered(FSSSignalDiscovered),
     FSSDiscoveryScan(FSSDiscoveryScan),
@@ -26,6 +29,7 @@ pub enum EliteEvent{
     Shipyard(Shipyard),
     StoredShips(StoredShips),
     ShipyardTransfer(ShipyardTransfer),
+    ShipyardSwap(ShipyardSwap),
     Embark(Embark),
     Disembark(Disembark),
     FSDTarget(FSDTarget),
@@ -37,7 +41,15 @@ pub enum EliteEvent{
     ReceiveText(ReceiveText),
     Friends(Friends),
     WingLeave(WingLeave),
+    SquadronStartup(SquadronStartup),
     CommunityGoal(CommunityGoal),
+    Rank(Rank),
+    Progress(Progress),
+    Reputation(Reputation),
+    Powerplay(Powerplay),
+    Missions(Missions),
+    EngineerProgress(EngineerProgress),
+    Cargo(Cargo)
 }
 pub fn parse_logstring(log: String) -> Result<Vec<EliteEvent>> {
     let mut events: Vec<EliteEvent> = Vec::new();
@@ -50,8 +62,8 @@ pub fn parse_logstring(log: String) -> Result<Vec<EliteEvent>> {
                 events.push(event);
             }
             Err(e) => {
-                let v: Value = serde_json::from_str(line).unwrap();
-                println!("Failed to parse event (Type {})! : {}", v["event"], e);
+                let v: Value = serde_json::from_str(line)?;
+                println!("Failed to parse event (Type {})! - {}", v["event"], e.to_string());
             }
         }
     }

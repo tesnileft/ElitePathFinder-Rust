@@ -11,6 +11,8 @@ chrono = { version = "0.4", features = ["serde"] }
 rusqlite = { version = "0.37", features = ["bundled"] }
 gdk = "0.18.2"
 keyvalues-serde = "=0.2.4"
+log = "0.4.33"
+regex = "1.13.1"
 
 
 

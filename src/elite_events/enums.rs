@@ -3,10 +3,19 @@ use serde::{Deserialize, };
 #[derive(Deserialize)]
 pub enum SignalType {
     FleetCarrier,
+    NavBeacon,
+    Megaship,
+    ResourceExtraction,
+    Installation,
+    StationCoriolis,
+    SquadronCarrier,
+    Outpost,
+    StationMegaShip
 }
 #[derive(Deserialize)]
 pub enum StationType{
     FleetCarrier,
+    Coriolis,
 }
 #[derive(Deserialize)]
 pub enum BodyType{
@@ -20,10 +29,11 @@ pub enum ShipType{
     Type8,
     Python_NX,
     SmallCombat01_NX,
+    #[serde(rename = "explorer_nx")]
     Explorer_NX,
     Mandalay,
 }
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq, Eq)]
 pub enum JumpType{
     Supercruise,
     Hyperspace
@@ -52,8 +62,6 @@ pub enum StationService{
     Commodities,
     #[serde(rename = "voucherredemption")]
     VoucherRedemption,
-    #[serde(rename = "socialspace")]
-    SocialSpace,
     #[serde(rename = "vistagenomics")]
     VistaGenomics,
     #[serde(rename = "contacts")]
@@ -72,25 +80,58 @@ pub enum StationService{
     Repair,
     #[serde(rename = "shipyard")]
     ShipYard,
+    #[serde(rename = "tuning")]
+    Tuning,
+    #[serde(rename = "missions")]
+    Missions,
+    #[serde(rename = "missionsgenerated")]
+    MissionsGenerated,
     #[serde(rename = "engineer")]
     Engineer,
     #[serde(rename = "flightcontroller")]
     FlightController,
     #[serde(rename = "stationoperations")]
     StationOperations,
+    #[serde(rename = "powerplay")]
+    Powerplay,
+    #[serde(rename = "searchrescue")]
+    SearchResque,
+    #[serde(rename = "materialtrader")]
+    MaterialTrader,
     #[serde(rename = "stationMenu")]
     StationMenu,
     #[serde(rename = "carriermanagement")]
     CarrierManagement,
     #[serde(rename = "carrierfuel")]
     CarrierFuel,
+    #[serde(rename = "shop")]
+    Shop,
     #[serde(rename = "livery")]
     Livery,
+    #[serde(rename = "socialspace")]
+    SocialSpace,
+    #[serde(rename = "bartender")]
+    Bartender,
+    #[serde(rename = "pioneersupplies")]
+    PioneerSupplies,
+    #[serde(rename = "apexinterstellar")]
+    ApexInterstellar,
+    #[serde(rename = "frontlinesolutions")]
+    FrontlineSolutions,
+    #[serde(rename = "registeringcolonisation")]
+    RegisteringColonisation,
 }
 #[derive(Deserialize)]
 pub enum Economy{
     #[serde(rename = "$economy_Carrier;")]
     Carrier,
+    #[serde(rename = "$economy_Industrial;")]
+    Industrial,
+    #[serde(rename = "$economy_Military;")]
+    Military,
+    #[serde(rename = "$economy_Extraction;")]
+    Extraction,
+
 }
 #[derive(Deserialize)]
 pub enum FriendStatus {
@@ -120,6 +161,7 @@ pub enum Allegiance{
 ///All states a faction (and thus system at large) can be in, will be represented with an `Option<FactionState>` field, since there can be no active state.
 #[derive(Deserialize)]
 pub enum FactionState {
+    None,
     Boom,
     Bust,
     CivilUnrest,
@@ -149,6 +191,7 @@ pub enum Government{
     Democracy,
     Dictatorship,
     Feudal,
+    #[serde(alias="$government_Patronage;")]
     Patronage,
     PrisonColony,
     Theocracy
@@ -183,4 +226,10 @@ impl fmt::Display for PowerplayPower {
             PowerplayPower::ZeminaTorval => write!(f, "Zemina Torval"),
         }
     }
+}
+#[derive(Deserialize)]
+pub enum EngineerUnlockedStatus{
+    Known,
+    Invited,
+    Unlocked
 }

@@ -5,7 +5,7 @@ use gtk::glib::subclass::InitializingObject;
 use gtk::prelude::{ButtonExt, EditableExt, ObjectExt, SettingsExt, SettingsExtManual};
 use gtk::subclass::prelude::*;
 use gtk::prelude::*;
-use crate::{helpers::get_logfileslocation};
+use crate::{helpers::get_journals_location};
 use crate::helpers::read_all_journals;
 
 // Object holding the state
