@@ -74,16 +74,21 @@ pub struct FSDJump{
     #[serde(rename = "BodyID")]
     pub body_id: u64,
     #[serde(rename = "ControllingPower")]
+    #[serde(default)]
     pub controlling_power: PowerplayPower,
     #[serde(rename = "Powers")]
-    pub powers: Vec<PowerplayPower>,
+    pub powers: Option<Vec<PowerplayPower>>,
     #[serde(rename = "PowerplayState")]
+    #[serde(default)]
     pub powerplay_state: PowerplayState,
     #[serde(rename = "PowerplayStateControlProgress")]
+    #[serde(default)]
     pub powerplay_state_control_progress: f64,
     #[serde(rename = "PowerplayStateReinforcement")]
+    #[serde(default)]
     pub powerplay_state_reinforcement: u64,
     #[serde(rename = "PowerplayStateUndermining")]
+    #[serde(default)]
     pub powerplay_state_undermining: u64,
     #[serde(rename = "JumpDist")]
     pub jump_dist: f64,
@@ -92,12 +97,13 @@ pub struct FSDJump{
     #[serde(rename = "FuelLevel")]
     pub fuel_level: f64,
     #[serde(rename = "Factions")]
+    #[serde(default)]
     pub factions: Vec<Faction>,
     #[serde(rename = "SystemFaction")]
-    pub system_faction: SystemFaction,
+    pub system_faction: Option<SystemFaction>,
 }
 #[derive(Deserialize)]
-pub struct SuperCruiseEntry{
+pub struct SupercruiseEntry {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Taxi")]
@@ -154,15 +160,15 @@ pub struct FSSSignal {
 #[derive(Deserialize)]
 pub struct FSSSignalDiscovered {
     #[serde(rename = "timestamp")]
-    timestamp: DateTime<Utc>,
+    pub timestamp: DateTime<Utc>,
     #[serde(rename = "SystemAddress")]
-    system_address: u64,
+    pub system_address: u64,
     #[serde(rename = "SignalName")]
-    signal_name: String,
+    pub signal_name: String,
     #[serde(rename = "SignalType")]
-    signal_type: SignalType,
+    pub signal_type: SignalType,
     #[serde(rename = "IsStation")]
-    is_station: Option<bool>,
+    pub is_station: Option<bool>,
 }
 #[derive(Deserialize)]
 pub struct FSSDiscoveryScan{
@@ -177,6 +183,177 @@ pub struct FSSDiscoveryScan{
     #[serde(rename = "SystemAddress")]
     system_address: u64,
 }
+#[derive(Deserialize)]
+pub struct FSSBodySignals{
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "BodyName")]
+    body_name: String,
+    #[serde(rename = "BodyID")]
+    body_id: u64,
+    #[serde(rename = "SystemAddress")]
+    system_address: u64,
+    #[serde(rename = "Signals")]
+    signals: Vec<BodySurfaceSignal>,
+}
+#[derive(Deserialize)]
+pub struct Scan {
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "ScanType")]
+    pub scan_type: String,
+    #[serde(rename = "BodyName")]
+    pub body_name: String,
+    #[serde(rename = "BodyID")]
+    pub body_id: u64,
+    #[serde(rename = "Parents")]
+    pub parents: Vec<BodyParent>,
+    #[serde(rename = "StarSystem")]
+    pub star_system: String,
+    #[serde(rename = "SystemAddress")]
+    pub system_address: u64,
+    #[serde(rename = "DistanceFromArrivalLS")]
+    pub distance_from_arrival_ls: f64,
+    #[serde(rename = "TidalLock")]
+    pub tidal_lock: bool,
+    #[serde(rename = "TerraformState")]
+    pub terraform_state: String,
+    #[serde(rename = "PlanetClass")]
+    pub planet_class: Option<PlanetClass>,
+    #[serde(rename = "Atmosphere")]
+    pub atmosphere: String,
+    #[serde(rename = "AtmosphereType")]
+    #[serde(default)]
+    pub atmosphere_type: AtmosphereType,
+    #[serde(rename = "AtmosphereComposition")]
+    pub atmosphere_composition: Vec<AtmosphericGas> ,
+    #[serde(rename = "Volcanism")]
+    pub volcanism: Volcanism,
+    #[serde(rename = "MassEM")]
+    pub mass_em: f64,
+    #[serde(rename = "Radius")]
+    pub radius: f64,
+    #[serde(rename = "SurfaceGravity")]
+    pub surface_gravity: f64,
+    #[serde(rename = "SurfaceTemperature")]
+    pub surface_temperature: f64,
+    #[serde(rename = "SurfacePressure")]
+    pub surface_pressure: f64,
+    #[serde(rename = "Landable")]
+    pub landable: bool,
+    #[serde(rename = "Materials")]
+    pub materials: Vec<RawMaterialInfo>,
+    #[serde(rename = "Composition")]
+    pub composition: BodyComposition,
+    #[serde(rename = "SemiMajorAxis")]
+    pub semimajor_axis: f64,
+    #[serde(rename = "Eccentricity")]
+    pub eccentricity: f64,
+    #[serde(rename = "OrbitalInclination")]
+    pub orbital_inclination: f64,
+    #[serde(rename = "Periapsis")]
+    pub periapsis: f64,
+    #[serde(rename = "OrbitalPeriod")]
+    pub orbital_period: f64,
+    #[serde(rename = "AscendingNode")]
+    pub ascending_node: f64,
+    #[serde(rename = "MeanAnomaly")]
+    pub mean_anomaly: f64,
+    #[serde(rename = "RotationPeriod")]
+    pub rotation_period: f64,
+    #[serde(rename = "AxialTilt")]
+    pub axial_tilt: f64,
+    #[serde(rename = "WasDiscovered")]
+    pub was_discovered: bool,
+    #[serde(rename = "WasMapped")]
+    pub was_mapped: bool,
+    #[serde(rename = "WasFootfalled")]
+    pub was_footfalled: bool,
+    //TODO
+}
+#[derive(Deserialize)]
+pub struct RawMaterialInfo{
+    #[serde(rename = "Name")]
+    pub name: RawMaterial,
+    #[serde(rename = "Name_Localised")]
+    pub name_localized: String,
+    #[serde(rename = "Percent")]
+    pub percent: f64,
+}
+#[derive(Deserialize, Eq, PartialEq, Clone)]
+pub enum RawMaterial{
+    //Grade 1
+    #[serde(rename = "carbon")]
+    Carbon,
+    #[serde(rename = "iron")]
+    Iron,
+    #[serde(rename = "lead")]
+    Lead,
+    #[serde(rename = "nickel")]
+    Nickel,
+    #[serde(rename = "phosphorus")]
+    Phosphorus,
+    #[serde(rename = "rhenium")]
+    Rhenium,
+    #[serde(rename = "sulphur")]
+    Sulphur,
+    //Grade 2
+    #[serde(rename = "arsenic")]
+    Arsenic,
+    #[serde(rename = "chromium")]
+    Chromium,
+    #[serde(rename = "germanium")]
+    Germanium,
+    #[serde(rename = "manganese")]
+    Manganese,
+    #[serde(rename = "vanadium")]
+    Vanadium,
+    #[serde(rename = "zinc")]
+    Zinc,
+    #[serde(rename = "zirconium")]
+    Zirconium,
+    //Grade 3
+    #[serde(rename = "cadmium")]
+    Cadmium,
+    #[serde(rename = "mercury")]
+    Mercury,
+    #[serde(rename = "molybdenum")]
+    Molybdenum,
+    #[serde(rename = "niobium")]
+    Niobium,
+    #[serde(rename = "tin")]
+    Tin,
+    #[serde(rename = "tungsten")]
+    Tungsten,
+    #[serde(rename = "boron")]
+    Boron,
+    //Grade 4
+    #[serde(rename = "antimony")]
+    Antimony,
+    #[serde(rename = "polonium")]
+    Polonium,
+    #[serde(rename = "ruthenium")]
+    Ruthenium,
+    #[serde(rename = "selenium")]
+    Selenium,
+    #[serde(rename = "technetium")]
+    Technetium,
+    #[serde(rename = "tellurium")]
+    Tellurium,
+    #[serde(rename = "yttrium")]
+    Yttrium,
+}
+#[derive(Deserialize)]
+pub struct FSSAllBodiesFound{
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "SystemName")]
+    pub system_name: String,
+    #[serde(rename = "SystemAddress")]
+    pub system_address: u64,
+    #[serde(rename = "Count")]
+    pub count: u64
+}
 //endregion
 //region - Inventory -
 #[derive(Deserialize)]
@@ -184,7 +361,7 @@ pub struct ShipLocker {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Items")]
-    items: Vec<Item>,
+    items: Option<Vec<Item>>,
 }
 #[derive(Deserialize)]
 pub struct Cargo{
@@ -215,11 +392,11 @@ pub struct Materials{
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Raw")]
-    raw: Vec<RawMaterial>,
+    raw: Vec<RawMaterialInventory>,
     #[serde(rename = "Manufactured")]
-    manufactured: Vec<LocalisedMaterial>,
+    manufactured: Vec<LocalisedMaterialInventory>,
     #[serde(rename = "Encoded")]
-    encoded: Vec<LocalisedMaterial>
+    encoded: Vec<LocalisedMaterialInventory>
 }
 #[derive(Deserialize)]
 pub struct Loadout{
@@ -268,6 +445,30 @@ pub struct SuitLoadout{
     #[serde(rename = "Modules")]
     modules: Vec<SuitModule> // Actually weapons
 }
+#[derive(Deserialize)]
+pub struct ReservoirReplenished{
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "FuelMain")]
+    fuel_main: f64,
+    #[serde(rename = "FuelReservoir")]
+    fuel_reservoir: f64
+}
+#[derive(Deserialize)]
+pub struct FuelScoop{
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "Scooped")]
+    scooped: f64,
+    #[serde(rename = "Total")]
+    total: f64,
+}
+#[derive(Deserialize)]
+pub struct JetConeBoost{
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "BoostValue")]
+    boost_value: f64,
+}
 //endregion
 //region - Misc -
 #[derive(Deserialize)]
@@ -303,15 +504,56 @@ pub struct Statistics{
     #[serde(rename = "Exobiology")]
     exobiology: ExobiologyStats
 }
-
-
-
 #[derive(Deserialize)]
 pub struct Music{
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "MusicTrack")]
     pub(crate) music_track: String,
+}
+#[derive(Deserialize)]
+pub struct ShipTargeted{
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "TargetLocked")]
+    target_locked: bool,
+    #[serde(rename = "Ship")]
+    ship: ShipType,
+    #[serde(rename = "Ship_Localised")]
+    ship_localised: String,
+    #[serde(rename = "ScanStage")]
+    scan_stage: u64,
+    #[serde(rename = "PilotName")]
+    pilot_name: String,
+    #[serde(rename = "PilotName_Localised")]
+    pilot_localised: String,
+    #[serde(rename = "PilotRank")]
+    pilot_rank: PilotRank,
+    #[serde(rename = "SquadronID")]
+    squadron_id: String,
+    #[serde(rename = "ShieldHealth")]
+    shield_health: f64,
+    #[serde(rename = "HullHealth")]
+    hull_health: f64,
+    #[serde(rename = "LegalStatus")]
+    legal_status: LegalStatus,
+    #[serde(rename = "Power")]
+    power: PowerplayPower,
+}
+#[derive(Deserialize)]
+pub struct NavRoute{
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>
+}
+#[derive(Deserialize)]
+pub enum LegalStatus{
+    Lawless,
+    Wanted
+}
+#[derive(Deserialize)]
+pub enum PilotRank
+{
+    Novice,
+    Elite
 }
 //endregion
 //region - Docking -
@@ -441,6 +683,97 @@ pub struct Undocked{
     #[serde(rename = "Multicrew")]
     multicrew: bool,
 }
+#[derive(Deserialize)]
+pub struct Touchdown {
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "PlayerControlled")]
+    player_controlled: bool,
+    #[serde(rename = "Taxi")]
+    taxi: bool,
+    #[serde(rename = "Multicrew")]
+    multicrew: bool,
+    #[serde(rename = "StarSystem")]
+    star_system: String,
+    #[serde(rename = "SystemAddress")]
+    system_address: u64,
+    #[serde(rename = "Body")]
+    body: String,
+    #[serde(rename = "BodyID")]
+    body_id: u64,
+    #[serde(rename = "OnStation")]
+    on_station: bool,
+    #[serde(rename = "OnPlanet")]
+    on_planet: bool,
+    #[serde(rename = "Latitude")]
+    latitude: f32,
+    #[serde(rename = "Longitude")]
+    longitude: f32,
+}
+#[derive(Deserialize)]
+pub struct Liftoff {
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "PlayerControlled")]
+    player_controlled: bool,
+    #[serde(rename = "Taxi")]
+    taxi: bool,
+    #[serde(rename = "Multicrew")]
+    multicrew: bool,
+    #[serde(rename = "StarSystem")]
+    star_system: String,
+    #[serde(rename = "SystemAddress")]
+    system_address: u64,
+    #[serde(rename = "Body")]
+    body: String,
+    #[serde(rename = "BodyID")]
+    body_id: u64,
+    #[serde(rename = "OnStation")]
+    on_station: bool,
+    #[serde(rename = "OnPlanet")]
+    on_planet: bool,
+    #[serde(rename = "Latitude")]
+    latitude: f32,
+    #[serde(rename = "Longitude")]
+    longitude: f32,
+}
+#[derive(Deserialize)]
+pub struct DockSRV {
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "SRVType")]
+    srv_type: SRVType,
+    #[serde(rename = "SRVType_Localised")]
+    srv_type_localised: String,
+    #[serde(rename = "ID")]
+    id: u64,
+}
+#[derive(Deserialize)]
+pub struct ApproachBody {
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "StarSystem")]
+    star_system: String,
+    #[serde(rename = "SystemAddress")]
+    system_address: u64,
+    #[serde(rename = "Body")]
+    body: String,
+    #[serde(rename = "BodyID")]
+    body_id: u64,
+}
+#[derive(Deserialize)]
+pub struct LeaveBody {
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "StarSystem")]
+    star_system: String,
+    #[serde(rename = "SystemAddress")]
+    system_address: u64,
+    #[serde(rename = "Body")]
+    body: String,
+    #[serde(rename = "BodyID")]
+    body_id: u64,
+}
 //endregion
 //region - Station Features -
 #[derive(Deserialize)]
@@ -562,6 +895,18 @@ pub struct SquadronStartup{
     current_rank_name: String
 }
 #[derive(Deserialize)]
+pub struct WingInvite{
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "Name")]
+    name: String,
+}
+#[derive(Deserialize)]
+pub struct WingAdd{
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "Name")]
+    name: String,
+}
+#[derive(Deserialize)]
 pub struct WingLeave{
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
@@ -645,6 +990,162 @@ pub struct Missions{
     failed: Vec<Mission>,
     #[serde(rename = "Complete")]
     complete: Vec<Mission>,
+}
+
+//endregion
+//region - Scans -
+#[derive(Deserialize)]
+pub struct ScanOrganic {
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "ScanType")]
+    pub scan_type: String,
+    #[serde(rename = "Genus")]
+    pub genus: String,
+    #[serde(rename = "Genus_Localised")]
+    pub genus_localised: String,
+    #[serde(rename = "Species")]
+    pub species: Species,
+    #[serde(rename = "Species_Localised")]
+    pub species_localised: String,
+    #[serde(rename = "Variant")]
+    pub variant: String,
+    #[serde(rename = "Variant_Localised")]
+    pub variant_localised: String,
+    #[serde(rename = "WasLogged")]
+    pub was_logged: bool,
+    #[serde(rename = "SystemAddress")]
+    pub system_address: u64,
+    #[serde(rename = "Body")]
+    pub body_id: u64,
+}
+
+#[derive(Deserialize)]
+pub struct CodexEntry {
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "EntryID")]
+    pub entry_id: u64,
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "Name_Localised")]
+    pub name_localised: String,
+    #[serde(rename = "SubCategory")]
+    pub sub_category: String,
+    #[serde(rename = "SubCategory_Localised")]
+    pub sub_category_localised: String,
+    #[serde(rename = "Category")]
+    pub category: String,
+    #[serde(rename = "Category_Localised")]
+    pub category_localised: String,
+    #[serde(rename = "Region")]
+    pub region: String,
+    #[serde(rename = "Region_Localised")]
+    pub region_localised: String,
+    #[serde(rename = "System")]
+    pub star_system: String,
+    #[serde(rename = "SystemAddress")]
+    pub system_address: u64,
+    #[serde(rename = "BodyID")]
+    pub body_id: u64,
+    #[serde(rename = "NearestDestination")]
+    pub nearest_destination: String,
+    #[serde(rename = "Latitude")]
+    pub latitude: f64,
+    #[serde(rename = "Longitude")]
+    pub longitude: f64,
+    #[serde(rename = "IsNewEntry")]
+    pub is_new_entry: bool,
+}
+
+#[derive(Deserialize)]
+pub struct SAAScanComplete{ //Surface Scan
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "BodyName")]
+    pub body_name: String,
+    #[serde(rename = "SystemAddress")]
+    pub system_address: u64,
+    #[serde(rename = "BodyID")]
+    pub body_id: u64,
+    #[serde(rename = "ProbesUsed")]
+    pub probes_used: u64,
+    #[serde(rename = "EfficiencyTarget")]
+    pub efficiency_target: f64,
+}
+#[derive(Deserialize)]
+///Surface scan signal results (Bio, geo)
+pub struct SAASignalsFound{
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    pub body_name: String,
+    #[serde(rename = "SystemAddress")]
+    pub system_address: u64,
+    #[serde(rename = "BodyID")]
+    pub body_id: u64,
+    #[serde(rename = "Signals")]
+    pub signals: Vec<BodySurfaceSignal>,
+    ///Potentially empty
+    #[serde(rename = "Genuses")]
+    pub genuses: Vec<ExobioGenus>,
+
+}
+#[derive(Deserialize)]
+pub struct ScanBaryCentre{
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "StarSystem")]
+    pub star_system: String,
+    #[serde(rename = "SystemAddress")]
+    pub system_address: u64,
+    #[serde(rename = "BodyID")]
+    pub body_id: u64,
+    #[serde(rename = "SemiMajorAxis")]
+    pub semimajor_axis: f64,
+    #[serde(rename = "Eccentricity")]
+    pub eccentricity: f64,
+    #[serde(rename = "OrbitalInclination")]
+    pub orbital_inclination: f64,
+    #[serde(rename = "Periapsis")]
+    pub periapsis: f64,
+    #[serde(rename = "OrbitalPeriod")]
+    pub orbital_period: f64,
+    #[serde(rename = "AscendingNode")]
+    pub ascending_node: f64,
+    #[serde(rename = "MeanAnomaly")]
+    pub mean_anomaly: f64,
+}
+
+#[derive(Deserialize)]
+pub struct ExobioGenus{
+    ///Enum of the genus type
+    #[serde(rename = "Genus")]
+    pub genus: Genus,
+    #[serde(rename = "Genus_Localised")]
+    pub genus_localised: String,
+}
+#[derive(Deserialize)]
+pub struct BodySurfaceSignal {
+    #[serde(rename = "Type")]
+    pub type_: SAASignalType,
+    #[serde(rename = "Type_Localised")]
+    pub type_localised: String,
+    #[serde(rename = "Count")]
+    pub count: u64,
+}
+#[derive(Deserialize)]
+pub enum Genus {
+    #[serde(rename = "$Codex_Ent_Bacterial_Genus_Name;")]
+    Bacterium,
+
+    
+}
+#[derive(Deserialize)]
+pub enum SAASignalType {
+    #[serde(alias = "$SAA_SignalType_Biological;")]
+    Biological,
+    #[serde(rename = "$SAA_SignalType_Geological;")]
+    Geological
 }
 
 //endregion
@@ -798,4 +1299,15 @@ pub struct Powerplay {
     pub merits: u64,
     #[serde(rename = "TimePledged")]
     pub time_pledged: u64
+}
+
+#[derive(Deserialize)]
+pub struct LaunchFighter {
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "Loadout")]
+    loadout: String,
+    #[serde(rename = "ID")]
+    id: u64,
+    #[serde(rename = "PlayerControlled")]
+    player_controlled: bool,
 }

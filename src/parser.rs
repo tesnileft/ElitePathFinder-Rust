@@ -14,6 +14,7 @@ pub enum EliteEvent{
     Statistics(Statistics),
     Shutdown(Shutdown),
     Music(Music),
+    NavRoute(NavRoute),
     Loadout(Loadout),
     SuitLoadout(SuitLoadout),
     ShipLocker(ShipLocker),
@@ -21,25 +22,43 @@ pub enum EliteEvent{
     Backpack(Backpack),
     FSSSignalDiscovered(FSSSignalDiscovered),
     FSSDiscoveryScan(FSSDiscoveryScan),
+    Scan(Scan),
+    FSSBodySignals(FSSBodySignals),
+    FSSAllBodiesFound(FSSAllBodiesFound),
+    SAASignalsFound(SAASignalsFound),
+    SAAScanComplete(SAAScanComplete),
+    ScanBaryCentre(ScanBaryCentre),
     DockingRequested(DockingRequested),
     DockingGranted(DockingGranted),
     Docked(Docked),
     Undocked(Undocked),
+    Liftoff(Liftoff),
+    Touchdown(Touchdown),
+    ApproachBody(ApproachBody),
+    LeaveBody(LeaveBody),
     RefuelAll(RefuelAll),
+    FuelScoop(FuelScoop),
+    JetConeBoost(JetConeBoost),
+    ReservoirReplenished(ReservoirReplenished),
+    ShipTargeted(ShipTargeted),
     Shipyard(Shipyard),
     StoredShips(StoredShips),
     ShipyardTransfer(ShipyardTransfer),
     ShipyardSwap(ShipyardSwap),
     Embark(Embark),
     Disembark(Disembark),
+    LaunchFighter(LaunchFighter),
+    DockSRV(DockSRV),
     FSDTarget(FSDTarget),
     StartJump(StartJump),
     FSDJump(FSDJump),
-    SuperCruiseEntry(SuperCruiseEntry),
+    SupercruiseEntry(SupercruiseEntry),
     SupercruiseExit(SupercruiseExit),
     SupercruiseDestinationDrop(SupercruiseDestinationDrop),
     ReceiveText(ReceiveText),
     Friends(Friends),
+    WingInvite(WingInvite),
+    WingAdd(WingAdd),
     WingLeave(WingLeave),
     SquadronStartup(SquadronStartup),
     CommunityGoal(CommunityGoal),
@@ -49,7 +68,10 @@ pub enum EliteEvent{
     Powerplay(Powerplay),
     Missions(Missions),
     EngineerProgress(EngineerProgress),
-    Cargo(Cargo)
+    Cargo(Cargo),
+    CodexEntry(CodexEntry),
+    ScanOrganic(ScanOrganic),
+
 }
 pub fn parse_logstring(log: String) -> Result<Vec<EliteEvent>> {
     let mut events: Vec<EliteEvent> = Vec::new();
@@ -67,6 +89,6 @@ pub fn parse_logstring(log: String) -> Result<Vec<EliteEvent>> {
             }
         }
     }
-    println!("Parsed {} lines", events.len());
+    //println!("Parsed {} lines", events.len());
     Ok(events)
 }

@@ -16,9 +16,11 @@ pub enum SignalType {
 pub enum StationType{
     FleetCarrier,
     Coriolis,
+    Orbis,
 }
 #[derive(Deserialize)]
 pub enum BodyType{
+    Star,
     Planet,
     Station,
 }
@@ -121,7 +123,7 @@ pub enum StationService{
     #[serde(rename = "registeringcolonisation")]
     RegisteringColonisation,
 }
-#[derive(Deserialize)]
+#[derive(Deserialize, Default)]
 pub enum Economy{
     #[serde(rename = "$economy_Carrier;")]
     Carrier,
@@ -131,6 +133,9 @@ pub enum Economy{
     Military,
     #[serde(rename = "$economy_Extraction;")]
     Extraction,
+    #[default]
+    #[serde(rename = "$economy_None;")]
+    None,
 
 }
 #[derive(Deserialize)]
@@ -140,8 +145,9 @@ pub enum FriendStatus {
 }
 //region - System Factions -
 ///System Security states, Anarchy is lowest
-#[derive(Deserialize)]
+#[derive(Deserialize, Default)]
 pub enum SystemSecurity{
+    #[default]
     #[serde(rename = "$GAlAXY_MAP_INFO_state_anarchy;")]
     Anarchy,
     #[serde(rename = "$SYSTEM_SECURITY_low;")]
@@ -152,15 +158,19 @@ pub enum SystemSecurity{
     High,
 }
 ///Faction Allegiances
-#[derive(Deserialize)]
+#[derive(Deserialize, Default)]
 pub enum Allegiance{
     Empire,
     Federation,
-    Independent
+    Independent,
+    #[default]
+    #[serde(rename="")]
+    None,
 }
 ///All states a faction (and thus system at large) can be in, will be represented with an `Option<FactionState>` field, since there can be no active state.
-#[derive(Deserialize)]
+#[derive(Deserialize, Default)]
 pub enum FactionState {
+    #[default]
     None,
     Boom,
     Bust,
@@ -181,7 +191,7 @@ pub enum FactionState {
     PublicHoliday
 }
 ///Possible system governments
-#[derive(Deserialize)]
+#[derive(Deserialize, Default)]
 pub enum Government{
     Anarchy,
     Communist,
@@ -194,18 +204,22 @@ pub enum Government{
     #[serde(alias="$government_Patronage;")]
     Patronage,
     PrisonColony,
-    Theocracy
+    Theocracy,
+    #[default]
+    #[serde(alias="$government_None;")]
+    None
 }
 ///Current Powerplay State a system can be in, only covers the state the ruling faction is part of, so will never be "Exploiting" or "Undermining"
-#[derive(Deserialize)]
+#[derive(Deserialize, Default)]
 pub enum PowerplayState{
+    #[default]
     Unoccupied,
     Stronghold,
     Exploited,
     Fortified,
 }
 /// Enum of all Powerplay factions, Spaces and dashes removed. Use <enum value>.ToString() for the full name.
-#[derive(Deserialize)]
+#[derive(Deserialize, Default)]
 pub enum PowerplayPower{
     #[serde(rename = "A. Lavigny-Duval")]
     ALavignyDuval,
@@ -215,6 +229,8 @@ pub enum PowerplayPower{
     DentonPatreus,
     #[serde(rename = "Zemina Torval")]
     ZeminaTorval,
+    #[default]
+    None
     //TODO Fill out
 }
 impl fmt::Display for PowerplayPower {
@@ -224,6 +240,7 @@ impl fmt::Display for PowerplayPower {
             PowerplayPower::AislingDuval => write!(f, "Aisling Duval"),
             PowerplayPower::DentonPatreus => write!(f, "Denton Patreus"),
             PowerplayPower::ZeminaTorval => write!(f, "Zemina Torval"),
+            _ => write!(f, "Undefined")
         }
     }
 }
@@ -232,4 +249,115 @@ pub enum EngineerUnlockedStatus{
     Known,
     Invited,
     Unlocked
+}
+
+#[derive(Deserialize)]
+pub enum SRVType{
+    #[serde(rename = "lander01")]
+    Nomad,
+}
+
+#[derive(Deserialize)]
+#[derive(Default)]
+pub enum AtmosphereType {
+    Argon,
+    ArgonRich,
+    Methane,
+    MethaneRich,
+    SilicateVapour,
+    CarbonDioxide,
+    CarbonDioxideRich,
+    Nitrogen,
+    SulphurDioxide,
+    Helium,
+    Neon,
+    NeonRich,
+    Oxygen,
+    Ammonia,
+    Water,
+    WaterRich,
+    #[default]
+    None
+}
+#[derive(Deserialize)]
+pub enum Species{
+    //Bacterium
+    Acies,
+    Alcyoneum,
+    Aurasus,
+    Bullaris,
+    Cerbrus,
+    Informem,
+    Nebulus,
+    Omentum,
+    Scopulum,
+    Tela,
+    Verrata,
+    Vesicula,
+    Volu,
+    //Fungoida
+
+}
+#[derive(Deserialize)]
+pub enum ExoBiologyVariant {
+    Emerald,
+    Gold,
+    Maroon,
+    Cobalt,
+    Green,
+    Yellow,
+    Orange,
+    Red,
+    Magenta,
+    Unknown
+}
+#[derive(Deserialize, Eq, PartialEq)]
+pub enum PlanetClass{
+    #[serde(rename="High metal content body")]
+    HMC,
+    #[serde(rename="Rocky body")]
+    Rocky,
+    #[serde(rename="Icy body")]
+    Icy,
+    #[serde(rename="Rocky ice body")]
+    RockyIce,
+    #[serde(rename="Sudarsky class I gas giant")]
+    GasGiantClass1,
+    #[serde(rename="Sudarsky class II gas giant")]
+    GasGiantClass2,
+    #[serde(rename="Sudarsky class III gas giant")]
+    GasGiantClass3,
+    #[serde(rename="Sudarsky class IV gas giant")]
+    GasGiantClass4,
+    #[serde(rename="Gas giant with water based life")]
+    GasGiantWBL,
+    #[serde(rename="Gas giant with ammonia based life")]
+    GasGiantABL,
+    #[serde(rename="Helium rich gas giant")]
+    GasGiantHeliumRich
+}
+
+#[derive(Deserialize, Eq, PartialEq, Clone)]
+pub enum Volcanism{
+    #[serde(rename="minor silicate vapour geysers volcanism")]
+    MinorSilicateVapour,
+    #[serde(rename="major silicate vapour geysers volcanism")]
+    MajorSilicateVapour,
+    #[serde(rename="major water geysers volcanism")]
+    MajorWater,
+    #[serde(rename="minor water geysers volcanism")]
+    MinorWater,
+    Helium,
+    Iron,
+    #[serde(rename="")]
+    None,
+}
+
+
+#[derive(Debug, Deserialize)]
+pub enum BodyParent {
+    Ring(u64),
+    Star(u64),
+    Null(u64),
+    Planet(u64)
 }

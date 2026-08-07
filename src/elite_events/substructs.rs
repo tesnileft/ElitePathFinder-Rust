@@ -1,6 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use crate::elite_events::enums::{Allegiance, Economy, EngineerUnlockedStatus, FactionState, Government, ShipType};
+use crate::elite_events::events::RawMaterial;
 
 //region - Inventory Items -
 #[derive(Deserialize)]
@@ -15,14 +16,14 @@ pub struct Item {
     count: u32,
 }
 #[derive(Deserialize)]
-pub struct RawMaterial {
+pub struct RawMaterialInventory {
     #[serde(rename = "Name")]
-    name: String,
+    name: RawMaterial,
     #[serde(rename = "Count")]
     count: u32,
 }
 #[derive(Deserialize)]
-pub struct LocalisedMaterial {
+pub struct LocalisedMaterialInventory {
     #[serde(rename = "Name")]
     name: String,
     #[serde(rename = "Name_Localised")]
@@ -60,9 +61,9 @@ pub struct Materials {
     #[serde(rename = "Raw")]
     raw: Vec<RawMaterial>,
     #[serde(rename = "Manufactured")]
-    manufactured: Vec<LocalisedMaterial>,
+    manufactured: Vec<LocalisedMaterialInventory>,
     #[serde(rename = "Encoded")]
-    encoded: Vec<LocalisedMaterial>,
+    encoded: Vec<LocalisedMaterialInventory>,
 }
 #[derive(Deserialize)]
 pub struct SuitModule{
@@ -279,6 +280,24 @@ pub struct Engineer{
     rank_progress: Option<u64>,
     #[serde(rename = "Rank")]
     rank: Option<u16>
+}
+//endregion
+//region - Planet Data -
+#[derive(Deserialize)]
+pub struct  AtmosphericGas {
+    #[serde(rename = "Name")]
+    name: String,
+    #[serde(rename = "Percent")]
+    percent: f64,
+}
+#[derive(Deserialize)]
+pub struct  BodyComposition {
+    #[serde(rename = "Ice")]
+    pub ice: f64,
+    #[serde(rename = "Rock")]
+    pub rock: f64,
+    #[serde(rename = "Metal")]
+    pub metal: f64,
 }
 //endregion
 
