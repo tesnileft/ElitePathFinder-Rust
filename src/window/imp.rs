@@ -1,7 +1,8 @@
+use std::cell::RefCell;
 use glib::subclass::InitializingObject;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
-use gtk::{Button, CompositeTemplate, glib, Label};
+use gtk::{Button, CompositeTemplate, glib, Label, gio, ListView};
 use crate::topbar::EliteHeaderBar;
 
 // Object holding the state
@@ -9,7 +10,10 @@ use crate::topbar::EliteHeaderBar;
 #[template(resource = "/elite_pathfinder/mainwindow.ui")]
 pub struct Window {
     #[template_child]
-    pub topbar: TemplateChild<EliteHeaderBar>
+    pub topbar: TemplateChild<EliteHeaderBar>,
+    #[template_child]
+    pub exobiology_list_view: TemplateChild<ListView>,
+    pub exobio_cards: RefCell<Option<gio::ListStore>>
 }
 // The central trait for subclassing a GObject
 #[glib::object_subclass]
@@ -33,7 +37,12 @@ impl ObjectImpl for Window {
     fn constructed(&self) {
         // Call "constructed" on parent
         self.parent_constructed();
+
+        //Setup
+        let obj = self.obj();
+        obj.setup_exobio();
     }
+
 }
 
 // Trait shared by all widgets

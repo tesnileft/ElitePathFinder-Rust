@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="PlanetCard" parent="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">4</property>
+        <property name="margin-start">8</property>
+        <property name="margin-end">8</property>
+        <property name="margin-top">8</property>
+        <property name="margin-bottom">8</property>
+
+        <child>
+            <object class="GtkLabel" id="planet_name">
+                <property name="halign">start</property>
+                <property name="xalign">0</property>
+                <style>
+                    <class name="heading"/>
+                </style>
+            </object>
+        </child>
+
+        <child>
+            <object class="GtkLabel" id="planet_info">
+                <property name="halign">start</property>
+                <property name="xalign">0</property>
+            </object>
+        </child>
+
+        <child>
+            <object class="GtkBox" id="species_box">
+                <property name="orientation">vertical</property>
+                <property name="spacing">2</property>
+            </object>
+        </child>
+
+        <child>
+            <object class="GtkSeparator"/>
+        </child>
+
+        <child>
+            <object class="GtkLabel" id="total_value">
+                <property name="halign">end</property>
+            </object>
+        </child>
+    </template>
+</interface>
