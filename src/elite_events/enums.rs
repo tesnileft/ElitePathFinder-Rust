@@ -335,7 +335,19 @@ pub enum Species{
     Bullarum,
     Gelata,
     Setisis,
-    Stabitis
+    Stabitis,
+    //Concha
+    Aureolas,
+    Biconcavis,
+    Labiata,
+    Renibus,
+    //Fonticulua
+    Campestris,
+    Digitos,
+    Fluctus,
+    Lapida,
+    Segmentatus,
+    Upupam
 }
 
 
@@ -371,6 +383,7 @@ pub enum ExoBiologyVariant {
     Amber,
     Ochre,
     Indigo,
+    Amethyst,
     #[default]
     Unknown,
 }

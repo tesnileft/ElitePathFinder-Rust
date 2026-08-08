@@ -1178,6 +1178,10 @@ pub enum Genus {
     Bacterium,
     #[serde(rename = "$Codex_Ent_Fungoids_Genus_Name;")]
     Fungoida,
+    #[serde(rename = "$Codex_Ent_Conchas_Genus_Name;")]
+    Concha,
+    #[serde(rename = "$Codex_Ent_Fonticulua_Genus_Name;")]
+    Fonticulua,
 
 
 }
