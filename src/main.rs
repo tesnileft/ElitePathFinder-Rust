@@ -14,6 +14,7 @@ use std::{fs, thread};
 use std::collections::hash_map::Entry::{Occupied, Vacant};
 use std::collections::hash_map::OccupiedEntry;
 use std::ffi::OsStr;
+use std::fmt::{Display, Formatter};
 use std::ops::Deref;
 use std::time::Duration;
 use gdk::Event;
@@ -42,7 +43,7 @@ use crate::custom_structs::materials::PlanetRawMaterial;
 use crate::custom_structs::system_info::Body;
 use crate::custom_structs::system_info::*;
 use crate::custom_structs::system_info::Body::{Planet, Star};
-use crate::elite_events::events::{FSSBodySignals, FSSSignalDiscovered, Genus, Materials, RawMaterial, Scan};
+use crate::elite_events::events::{FSSBodySignals, FSSSignalDiscovered, Genus, Materials, RawMaterial, SAASignalType, Scan};
 use crate::elite_events::events::Genus::Bacterium;
 use crate::elite_events::events::RawMaterial::{Cadmium, Mercury, Molybdenum, Niobium, Tin, Tungsten};
 use crate::elite_events::substructs::{AtmosphericGas, BodyComposition};
@@ -161,7 +162,6 @@ fn start_background_reader(ui_event_sender: async_channel::Sender<UiEvent>, shar
 fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sender<UiEvent>, shared_cache: SharedCache) {
     gio::spawn_blocking(move || {
         for event in event_vec {
-            
             match event {
                 EliteEvent::LoadGame(load) => {
                     println!("Game Loaded:");
@@ -189,11 +189,43 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                         government: fsdjump.system_government,
                         ..Default::default()
                     };
-                    println!("Parsed Jump to: {}", jumpingto.name);
+                    println!("Jumped to {}", jumpingto.name);
                     unlocked_cache.current_system = jumpingto;
                 }
                 EliteEvent::FSSBodySignals(signals) => {
-
+                    let mut cache = shared_cache.lock().unwrap();
+                    let entry = cache.current_system.bodies.entry(signals.body_id.clone());
+                    let biological_count = signals
+                        .signals
+                        .iter()
+                        .find(|s| matches!(s.type_, SAASignalType::Biological))
+                        .map(|s| s.count)
+                        .unwrap_or(0);
+                    let geological_count = signals
+                        .signals
+                        .iter()
+                        .find(|s| matches!(s.type_, SAASignalType::Geological))
+                        .map(|s| s.count)
+                        .unwrap_or(0);
+                    match entry {
+                        Occupied(mut entry) => {
+                            if let Planet(planet) = entry.get_mut() {
+                                planet.biological_signals = Some(biological_count);
+                                planet.geological_signals = Some(geological_count);
+                            }
+                        }
+                        Vacant(entry) => {
+                            let newplanet = custom_structs::system_info::Planet{
+                                body_name: signals.body_name.clone(),
+                                body_id: signals.body_id,
+                                system_address: signals.system_address,
+                                biological_signals: Some(biological_count),
+                                geological_signals: Some(geological_count),
+                                ..Default::default()
+                            };
+                            entry.insert(Planet(newplanet));
+                        }
+                    }
                 }
                 EliteEvent::Scan(scan) => {
                     let mut cache = shared_cache.lock().unwrap();
@@ -206,34 +238,62 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                             match entry.get_mut() {
                                 Star(star) => {}
                                 Planet(planet) => {
+                                    planet.parents = Some(scan.parents.unwrap_or_default());
                                     planet.planet_class = scan.planet_class;
-                                    planet.gravity = Some(scan.surface_gravity);
-                                    planet.mean_temperature = Some(scan.surface_temperature);
+                                    planet.gravity = scan.surface_gravity;
+                                    planet.mean_temperature = scan.surface_temperature;
                                     planet.volcanism = Some(scan.volcanism);
                                     planet.atmosphere_type= Some(scan.atmosphere_type);
-                                    planet.atmosphere_composition = Some(scan.atmosphere_composition);
-                                    planet.body_composition = Some(scan.composition);
+                                    planet.atmosphere_composition = Some(scan.atmosphere_composition.unwrap_or_default());
+                                    planet.body_composition = scan.composition;
                                     planet.materials = Some(mats);
                                 }
                             }
                         }
                         Vacant(entry) => {
+                            if let Some(startype) = scan.star_class{
+                                let newstar = custom_structs::system_info::Star{
+                                    body_name: scan.body_name.clone(),
+                                    body_id: scan.body_id,
+                                    class: startype,
+                                    subclass: scan.star_subclass.unwrap(),
+                                    stellar_mass: scan.stellar_mass.unwrap(),
+                                };
+                                println!("Wowie a star!!!");
+                                entry.insert(Star(newstar));
+                            }
+                            else if let Some(plan_clas) = scan.planet_class.as_ref() {
+                                let newplanet = custom_structs::system_info::Planet{
+                                    body_name: scan.body_name.clone(),
+                                    body_id: scan.body_id,
+                                    system_address: scan.system_address,
+                                    parents: Some(scan.parents.unwrap_or_default()),
+                                    planet_class: scan.planet_class,
+                                    gravity: scan.surface_gravity,
+                                    mean_temperature: scan.surface_temperature,
+                                    volcanism: Some(scan.volcanism),
+                                    atmosphere_type: Some(scan.atmosphere_type),
+                                    atmosphere_composition: Some(scan.atmosphere_composition.unwrap_or_default()),
+                                    body_composition: scan.composition,
+                                    materials: Some(mats),
+                                    ..Default::default()
+                                };
+                                entry.insert(Planet(newplanet));
+                            }
 
-                            let newplanet = custom_structs::system_info::Planet{
-                                body_name: scan.body_name.clone(),
-                                body_id: scan.body_id,
-                                system_address: scan.system_address,
-                                planet_class: scan.planet_class,
-                                gravity: Some(scan.surface_gravity),
-                                mean_temperature: Some(scan.surface_temperature),
-                                volcanism: Some(scan.volcanism),
-                                atmosphere_type: Some(scan.atmosphere_type),
-                                atmosphere_composition: Some(scan.atmosphere_composition),
-                                body_composition: Some(scan.composition),
-                                materials: Some(mats),
-                                ..Default::default()
-                            };
-                            entry.insert(Planet(newplanet));
+                        }
+                    }
+
+                    if let Some(Planet(planet)) = cache.current_system.bodies.get(&scan.body_id) {
+                        if let Some(signals) = planet.biological_signals {
+                            if signals > 0 {
+                                let potential_exobio = cache.current_system.get_potential_exobio(scan.body_id);
+
+                                if let Some(Planet(planet)) = cache.current_system.bodies.get_mut(&scan.body_id) {
+                                    planet.potential_species = potential_exobio;
+                                    println!("{}", planet.to_string());
+                                }
+                            }
                         }
                     }
                 }
@@ -278,22 +338,12 @@ struct ExoBiologySpecies{
     species: Species,
     variants: Vec<ExoBiologyVariant>,
 }
-pub fn get_species_value(species: Species) -> u64
-{
-    match species {
-        Species::Acies | Species::Aurasus | Species::Vesicula => 1_000_000,
-        Species::Alcyoneum => 1_658_500,
-        Species::Bullaris => 1_152_500,
-        Species::Cerbrus => 1_689_800,
-        Species::Informem => 8_418_000,
-        Species::Nebulus => 5_289_900,
-        Species::Omentum => 4_638_900,
-        Species::Scopulum => 4_934_500,
-        Species::Tela => 1_949_000,
-        Species::Verrata => 3_897_000,
-        Species::Volu => 7_774_700,
+impl Display for ExoBiologySpecies {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} {}", self.genus.to_string(), self.species.to_string())
     }
 }
+
 
 fn build_ui_xml(
     app: &Application,

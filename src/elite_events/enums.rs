@@ -1,4 +1,5 @@
 use std::fmt;
+use std::fmt::Display;
 use serde::{Deserialize, };
 #[derive(Deserialize)]
 pub enum SignalType {
@@ -12,11 +13,13 @@ pub enum SignalType {
     Outpost,
     StationMegaShip
 }
-#[derive(Deserialize)]
+#[derive(Deserialize, Default)]
 pub enum StationType{
     FleetCarrier,
     Coriolis,
     Orbis,
+    #[default]
+    None
 }
 #[derive(Deserialize)]
 pub enum BodyType{
@@ -42,11 +45,39 @@ pub enum JumpType{
 }
 #[derive(Deserialize)]
 pub enum StarClass{
+    O,
+    A,
+    B,
+    D,
     DA,
     G,
+    F,
     K,
+    L,
+    T,
+    TTS,
+    Ae,
+    Y,
+    W,
     N,
-    M
+    M,
+    DB,
+    DC,
+    DO,
+    DQ,
+    DX,
+    DAV,
+    DBV,
+    DCV,
+    WO,
+    WC,
+    WNC,
+    WN,
+    AeBe,
+    H,
+    SupermassiveBlackHole,
+    X,
+    RoguePlanet,
 }
 #[derive(Deserialize)]
 pub enum GameMode {
@@ -218,7 +249,7 @@ pub enum PowerplayState{
     Exploited,
     Fortified,
 }
-/// Enum of all Powerplay factions, Spaces and dashes removed. Use <enum value>.ToString() for the full name.
+/// Enum of all Powerplay factions, Spaces and dashes removed. Use <enum value>.to_string() for the full name.
 #[derive(Deserialize, Default)]
 pub enum PowerplayPower{
     #[serde(rename = "A. Lavigny-Duval")]
@@ -257,8 +288,7 @@ pub enum SRVType{
     Nomad,
 }
 
-#[derive(Deserialize)]
-#[derive(Default)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub enum AtmosphereType {
     Argon,
     ArgonRich,
@@ -279,7 +309,12 @@ pub enum AtmosphereType {
     #[default]
     None
 }
-#[derive(Deserialize)]
+impl fmt::Display for AtmosphereType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+#[derive(Deserialize, Debug, Clone)]
 pub enum Species{
     //Bacterium
     Acies,
@@ -293,12 +328,23 @@ pub enum Species{
     Scopulum,
     Tela,
     Verrata,
+    #[serde(rename="$Codex_Ent_Bacterial_05_Name;")]
     Vesicula,
     Volu,
     //Fungoida
-
+    Bullarum,
+    Gelata,
+    Setisis,
+    Stabitis
 }
-#[derive(Deserialize)]
+
+
+impl Display for Species{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+#[derive(Deserialize, Default, Debug)]
 pub enum ExoBiologyVariant {
     Emerald,
     Gold,
@@ -309,12 +355,36 @@ pub enum ExoBiologyVariant {
     Orange,
     Red,
     Magenta,
-    Unknown
+    Lime,
+    Peach,
+    Mulberry,
+    Cyan,
+    White,
+    Blue,
+    Aquamarine,
+    Turquoise,
+    Grey,
+    Teal,
+    Sage,
+    Russet,
+    Mauve,
+    Amber,
+    Ochre,
+    Indigo,
+    #[default]
+    Unknown,
+}
+impl Display for ExoBiologyVariant{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 #[derive(Deserialize, Eq, PartialEq)]
 pub enum PlanetClass{
     #[serde(rename="High metal content body")]
     HMC,
+    #[serde(rename="Metal rich body")]
+    MetalRich,
     #[serde(rename="Rocky body")]
     Rocky,
     #[serde(rename="Icy body")]
@@ -337,19 +407,70 @@ pub enum PlanetClass{
     GasGiantHeliumRich
 }
 
-#[derive(Deserialize, Eq, PartialEq, Clone)]
+#[derive(Deserialize, Default, Eq, PartialEq, Clone)]
 pub enum Volcanism{
     #[serde(rename="minor silicate vapour geysers volcanism")]
     MinorSilicateVapour,
     #[serde(rename="major silicate vapour geysers volcanism")]
     MajorSilicateVapour,
+    #[serde(rename="water geysers volcanism")]
+    WaterGeysers,
     #[serde(rename="major water geysers volcanism")]
-    MajorWater,
+    MajorWaterGeysers,
     #[serde(rename="minor water geysers volcanism")]
-    MinorWater,
+    MinorWaterGeysers,
+    #[serde(rename="water magma volcanism")]
+    WaterMagma,
+    #[serde(rename="major water magma volcanism")]
+    MajorWaterMagma,
+    #[serde(rename="minor water magma volcanism")]
+    MinorWaterMagma,
+    #[serde(rename="rocky magma volcanism")]
+    RockyMagma,
+    #[serde(rename="major rocky magma volcanism")]
+    MajorRockyMagma,
+    #[serde(rename="minor rocky magma geysers volcanism")]
+    MinorRockyMagma,
+    #[serde(rename="carbon dioxide geysers volcanism")]
+    CarbonDioxide,
+    #[serde(rename="carbon dioxide geysers volcanism")]
+    MajorCarbonDioxide,
+    #[serde(rename="minor carbon dioxide geysers volcanism")]
+    MinorCarbonDioxide,
+    #[serde(rename="methane geysers volcanism")]
+    Methane,
+    #[serde(rename="minor methane geysers volcanism")]
+    MinorMethane,
+    #[serde(rename="Major methane geysers volcanism")]
+    MajorMethane,
+    #[serde(rename="nitrogen geysers volcanism")]
+    Nitrogen,
+    #[serde(rename="minor nitrogen geysers volcanism")]
+    MinorNitrogen,
+    #[serde(rename="Major nitrogen geysers volcanism")]
+    MajorNitrogen,
+    #[serde(rename="ammonia geysers volcanism")]
+    Ammonia,
+    #[serde(rename="minor ammonia geysers volcanism")]
+    MinorAmmonia,
+    #[serde(rename="Major ammonia geysers volcanism")]
+    MajorAmmonia,
+    #[serde(rename="ammonia magma volcanism")]
+    AmmoniaMagma,
+    #[serde(rename="minor ammonia magma volcanism")]
+    MinorAmmoniaMagma,
+    #[serde(rename="major ammonia magma volcanism")]
+    MajorAmmoniaMagma,
+    #[serde(rename="metallic magma volcanism")]
+    MetallicMagma,
+    #[serde(rename="major metallic magma volcanism")]
+    MajorMetallicMagma,
+    #[serde(rename="minor metallic magma volcanism")]
+    MinorMetallicMagma,
     Helium,
     Iron,
     #[serde(rename="")]
+    #[default]
     None,
 }
 

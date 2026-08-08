@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use chrono::{DateTime, Utc};
 use gdk::pango::Language;
 use serde::Deserialize;
@@ -188,14 +189,15 @@ pub struct FSSBodySignals{
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "BodyName")]
-    body_name: String,
+    pub(crate) body_name: String,
     #[serde(rename = "BodyID")]
-    body_id: u64,
+    pub(crate) body_id: u64,
     #[serde(rename = "SystemAddress")]
-    system_address: u64,
+    pub(crate) system_address: u64,
     #[serde(rename = "Signals")]
-    signals: Vec<BodySurfaceSignal>,
+    pub signals: Vec<BodySurfaceSignal>,
 }
+///This struct is so omega dumb because the devs thought putting planets, stars, and EVERY OTHER ASTRAL BODY scans in one event was a GREAT idea!!! hence we have 1389040 optional fields that you need to check sdlknfasJDBLKJRGB;PIQWUBGPOIBDW
 #[derive(Deserialize)]
 pub struct Scan {
     #[serde(rename = "timestamp")]
@@ -207,7 +209,7 @@ pub struct Scan {
     #[serde(rename = "BodyID")]
     pub body_id: u64,
     #[serde(rename = "Parents")]
-    pub parents: Vec<BodyParent>,
+    pub parents: Option<Vec<BodyParent>>,
     #[serde(rename = "StarSystem")]
     pub star_system: String,
     #[serde(rename = "SystemAddress")]
@@ -215,50 +217,68 @@ pub struct Scan {
     #[serde(rename = "DistanceFromArrivalLS")]
     pub distance_from_arrival_ls: f64,
     #[serde(rename = "TidalLock")]
+    #[serde(default)]
     pub tidal_lock: bool,
     #[serde(rename = "TerraformState")]
+    #[serde(default)]
     pub terraform_state: String,
     #[serde(rename = "PlanetClass")]
     pub planet_class: Option<PlanetClass>,
+    #[serde(rename = "StarType")]
+    pub star_class: Option<StarClass>,
+    #[serde(rename = "Subclass")]
+    pub star_subclass: Option<u64>,
+    #[serde(rename = "Age_MY")]
+    pub age_million_years: Option<u64>,
+    #[serde(rename = "Luminosity")]
+    pub luminosity: Option<String>,
+    #[serde(rename = "Rings")]
+    pub rings: Option<Vec<CelestialRings>>,
     #[serde(rename = "Atmosphere")]
+    #[serde(default)]
     pub atmosphere: String,
     #[serde(rename = "AtmosphereType")]
     #[serde(default)]
     pub atmosphere_type: AtmosphereType,
     #[serde(rename = "AtmosphereComposition")]
-    pub atmosphere_composition: Vec<AtmosphericGas> ,
+    pub atmosphere_composition: Option<Vec<AtmosphericGas>> ,
     #[serde(rename = "Volcanism")]
+    #[serde(default)]
     pub volcanism: Volcanism,
+    #[serde(rename = "StellarMass")]
+    pub stellar_mass: Option<f64>,
     #[serde(rename = "MassEM")]
-    pub mass_em: f64,
+    pub mass_em: Option<f64>,
     #[serde(rename = "Radius")]
-    pub radius: f64,
+    pub radius: Option<f64>,
     #[serde(rename = "SurfaceGravity")]
-    pub surface_gravity: f64,
+    pub surface_gravity: Option<f64>, //Only for bodies that arent stars
     #[serde(rename = "SurfaceTemperature")]
-    pub surface_temperature: f64,
+    pub surface_temperature: Option<f64>, //Exists for all major bodies
     #[serde(rename = "SurfacePressure")]
-    pub surface_pressure: f64,
+    pub surface_pressure: Option<f64>, //Only exists for planets with an atmosphere
     #[serde(rename = "Landable")]
+    #[serde(default)]
     pub landable: bool,
     #[serde(rename = "Materials")]
-    pub materials: Vec<RawMaterialInfo>,
+    #[serde(default)]
+    pub materials: Vec<RawMaterialInfo>, //Only exists for planets that have materials on them
     #[serde(rename = "Composition")]
-    pub composition: BodyComposition,
+    pub composition: Option<BodyComposition>, //Only exists for some planets
     #[serde(rename = "SemiMajorAxis")]
-    pub semimajor_axis: f64,
+    pub semimajor_axis: Option<f64>, // Does not exist for single major celestial bodies
     #[serde(rename = "Eccentricity")]
-    pub eccentricity: f64,
+    pub eccentricity: Option<f64>, //How much the orbit deviates from a perfect circle, doesn't exist for non-orbiting bodies
     #[serde(rename = "OrbitalInclination")]
-    pub orbital_inclination: f64,
+    pub orbital_inclination: Option<f64>, //How much a body swings above/below the plane of reference of its parent body
     #[serde(rename = "Periapsis")]
-    pub periapsis: f64,
+    pub periapsis: Option<f64>,
     #[serde(rename = "OrbitalPeriod")]
-    pub orbital_period: f64,
+    pub orbital_period: Option<f64>, //How long one orbit takes
     #[serde(rename = "AscendingNode")]
-    pub ascending_node: f64,
+    pub ascending_node: Option<f64>, //Where the celestial body moves north through the plane of reference
     #[serde(rename = "MeanAnomaly")]
-    pub mean_anomaly: f64,
+    pub mean_anomaly: Option<f64>, //Fraction how far the elliptical orbit has gone since passing through it's periapsis (time wise, not distance)
     #[serde(rename = "RotationPeriod")]
     pub rotation_period: f64,
     #[serde(rename = "AxialTilt")]
@@ -272,10 +292,24 @@ pub struct Scan {
     //TODO
 }
 #[derive(Deserialize)]
+pub struct CelestialRings{
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "RingClass")]
+    pub ring_class: String,
+    #[serde(rename = "MassMT")]
+    pub mass_megatons: f64,
+    #[serde(rename = "InnerRad")]
+    pub inner_radius: f64,
+    #[serde(rename = "OuterRad")]
+    pub outer_radius: f64,
+}
+#[derive(Deserialize)]
 pub struct RawMaterialInfo{
     #[serde(rename = "Name")]
     pub name: RawMaterial,
     #[serde(rename = "Name_Localised")]
+    #[serde(default)]
     pub name_localized: String,
     #[serde(rename = "Percent")]
     pub percent: f64,
@@ -541,6 +575,11 @@ pub struct ShipTargeted{
 }
 #[derive(Deserialize)]
 pub struct NavRoute{
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>
+}
+#[derive(Deserialize)]
+pub struct NavRouteClear{
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>
 }
@@ -1133,12 +1172,17 @@ pub struct BodySurfaceSignal {
     #[serde(rename = "Count")]
     pub count: u64,
 }
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub enum Genus {
     #[serde(rename = "$Codex_Ent_Bacterial_Genus_Name;")]
     Bacterium,
 
     
+}
+impl Display for Genus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 #[derive(Deserialize)]
 pub enum SAASignalType {
@@ -1211,18 +1255,20 @@ pub struct Location{
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "DistFromStarLS")]
-    distance_from_star_ls: f64,
+    distance_from_star_ls: Option<f64>,
     #[serde(rename = "Docked")]
     docked: bool,
     #[serde(rename = "StationName")]
-    station_name: String,
+    station_name: Option<String>,
     #[serde(rename = "StationType")]
+    #[serde(default)]
     station_type: StationType,
     #[serde(rename = "MarketID")]
-    market_id: u64,
+    market_id: Option<u64>,
     #[serde(rename = "StationFaction")]
-    station_faction: SystemFaction,
+    station_faction: Option<SystemFaction>,
     #[serde(rename = "StationGovernment")]
+    #[serde(default)]
     station_government: Government,
     #[serde(rename = "StationGovernment_Localised")]
     station_government_localized: String,

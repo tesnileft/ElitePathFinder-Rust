@@ -15,6 +15,7 @@ pub enum EliteEvent{
     Shutdown(Shutdown),
     Music(Music),
     NavRoute(NavRoute),
+    NavRouteClear(NavRouteClear),
     Loadout(Loadout),
     SuitLoadout(SuitLoadout),
     ShipLocker(ShipLocker),
