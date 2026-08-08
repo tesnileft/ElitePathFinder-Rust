@@ -1,7 +1,8 @@
 use crate::{check_material, ExoBiologyVariant, ExoBiologySpecies, Species, StarSystem};
-use crate::custom_structs::system_info::{Body, Planet, Star};
+use crate::custom_structs::system_info::{AtmosphereQuality, Body, Planet, Star};
 use crate::elite_events::enums::{AtmosphereType, BodyParent, StarClass, Volcanism};
-use crate::elite_events::events::Genus::Bacterium;
+use crate::elite_events::enums::Volcanism::Methane;
+use crate::elite_events::events::Genus::{Bacterium, Fungoida};
 use crate::elite_events::events::RawMaterial::{Antimony, Cadmium, Mercury, Molybdenum, Niobium, Polonium, Ruthenium, Technetium, Tellurium, Tin, Tungsten, Yttrium};
 
 fn stellar_class_variant(class: &StarClass) -> ExoBiologyVariant {
@@ -105,7 +106,7 @@ pub fn determine_exobio_species(system: &StarSystem, body_id: u64) -> Option<Vec
                 variants: vec![variant],
             });
         }
-        match planet.atmosphere_type.as_ref()? {
+        match &planet.atmosphere.as_ref()?.atmosphere_type {
             AtmosphereType::Helium =>{
                 if let Some(materials) = planet.materials.as_ref() {
                     let variant = match () {
@@ -321,12 +322,93 @@ pub fn determine_exobio_species(system: &StarSystem, body_id: u64) -> Option<Vec
                 }
 
             }
-            other => {}
+            _ => {}
         }
         //Fungoida
-        if let Some(planet_gravity) = planet.gravity{
-            if planet_gravity < 0.27{
-                
+        if let (Some(planet_gravity), Some(atmosphere)) = (planet.gravity, planet.atmosphere.as_ref()){
+            if planet_gravity < 0.27 && atmosphere.quality.contains(&AtmosphereQuality::Thin){ // Gravity below 0.27, and thin atmo.
+                match atmosphere.atmosphere_type {
+                    AtmosphereType::Ammonia | AtmosphereType::Methane| AtmosphereType::MethaneRich=> {
+                        //Setisis
+                        if let Some(materials) = planet.materials.as_ref() {
+                            let variant = match () {
+                                _ if check_material(materials, Antimony) => ExoBiologyVariant::Peach,
+                                _ if check_material(materials, Polonium) => ExoBiologyVariant::White,
+                                _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Gold,
+                                _ if check_material(materials, Technetium) => ExoBiologyVariant::Lime,
+                                _ if check_material(materials, Tellurium) => ExoBiologyVariant::Yellow,
+                                _ if check_material(materials, Yttrium) => ExoBiologyVariant::Orange,
+                                _ => ExoBiologyVariant::Unknown,
+                            };
+                            exobios.push(ExoBiologySpecies{
+                                genus: Fungoida,
+                                species: Species::Setisis,
+                                variants: vec![variant],
+                            });
+                        }
+                    }
+                    AtmosphereType::Argon | AtmosphereType::ArgonRich =>{
+                        //Bullarum
+                        if let Some(materials) = planet.materials.as_ref() {
+                            let variant = match () {
+                                _ if check_material(materials, Antimony) => ExoBiologyVariant::Red,
+                                _ if check_material(materials, Polonium) => ExoBiologyVariant::Mulberry,
+                                _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Magenta,
+                                _ if check_material(materials, Technetium) => ExoBiologyVariant::Peach,
+                                _ if check_material(materials, Tellurium) => ExoBiologyVariant::Gold,
+                                _ if check_material(materials, Yttrium) => ExoBiologyVariant::Orange,
+                                _ => ExoBiologyVariant::Unknown,
+                            };
+                            exobios.push(ExoBiologySpecies{
+                                genus: Fungoida,
+                                species: Species::Bullarum,
+                                variants: vec![variant],
+                            });
+                        }
+                    }
+                    AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich | AtmosphereType::Water | AtmosphereType::WaterRich=> {
+                        //Gelata and Stabitis
+                        //Shared conditions
+                        let can_occur = !matches!(atmosphere.atmosphere_type, AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich)
+                            || planet.mean_temperature.is_some_and(|t| (180.0..=195.0).contains(&t));
+                        if can_occur {
+                            if let Some(materials) = planet.materials.as_ref() {
+                                //Gelata
+                                let gelata_variant = match () {
+                                    _ if check_material(materials, Cadmium) => ExoBiologyVariant::Cyan,
+                                    _ if check_material(materials, Mercury) => ExoBiologyVariant::Lime,
+                                    _ if check_material(materials, Molybdenum) => ExoBiologyVariant::Mulberry,
+                                    _ if check_material(materials, Niobium) => ExoBiologyVariant::Green,
+                                    _ if check_material(materials, Tungsten) => ExoBiologyVariant::Orange,
+                                    _ if check_material(materials, Tin) => ExoBiologyVariant::Red,
+                                    _ => ExoBiologyVariant::Unknown,
+                                };
+                                exobios.push(ExoBiologySpecies{
+                                    genus: Fungoida,
+                                    species: Species::Gelata,
+                                    variants: vec![gelata_variant],
+                                });
+
+                                //Stabitis
+                                let stabitis_variant = match () {
+                                    _ if check_material(materials, Cadmium) => ExoBiologyVariant::Blue,
+                                    _ if check_material(materials, Mercury) => ExoBiologyVariant::Green,
+                                    _ if check_material(materials, Molybdenum) => ExoBiologyVariant::Magenta,
+                                    _ if check_material(materials, Niobium) => ExoBiologyVariant::White,
+                                    _ if check_material(materials, Tungsten) => ExoBiologyVariant::Peach,
+                                    _ if check_material(materials, Tin) => ExoBiologyVariant::Orange,
+                                    _ => ExoBiologyVariant::Unknown,
+                                };
+                                exobios.push(ExoBiologySpecies{
+                                    genus: Fungoida,
+                                    species: Species::Stabitis,
+                                    variants: vec![stabitis_variant],
+                                });
+                            }
+                        }
+                    }
+                    _ => {}
+                }
             }
         }
         //

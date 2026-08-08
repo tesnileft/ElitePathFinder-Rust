@@ -243,8 +243,7 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                                     planet.gravity = scan.surface_gravity;
                                     planet.mean_temperature = scan.surface_temperature;
                                     planet.volcanism = Some(scan.volcanism);
-                                    planet.atmosphere_type= Some(scan.atmosphere_type);
-                                    planet.atmosphere_composition = Some(scan.atmosphere_composition.unwrap_or_default());
+                                    planet.atmosphere = Some(custom_structs::system_info::AtmosphereInfo::new(scan.atmosphere_type, scan.atmosphere, scan.atmosphere_composition.unwrap_or_default()));
                                     planet.body_composition = scan.composition;
                                     planet.materials = Some(mats);
                                 }
@@ -272,8 +271,7 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                                     gravity: scan.surface_gravity,
                                     mean_temperature: scan.surface_temperature,
                                     volcanism: Some(scan.volcanism),
-                                    atmosphere_type: Some(scan.atmosphere_type),
-                                    atmosphere_composition: Some(scan.atmosphere_composition.unwrap_or_default()),
+                                    atmosphere: Some(custom_structs::system_info::AtmosphereInfo::new(scan.atmosphere_type, scan.atmosphere, scan.atmosphere_composition.unwrap_or_default())),
                                     body_composition: scan.composition,
                                     materials: Some(mats),
                                     ..Default::default()
@@ -297,7 +295,6 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                         }
                     }
                 }
-                EliteEvent::StartJump(startjump) => {}
                 other => {}
             }
         }

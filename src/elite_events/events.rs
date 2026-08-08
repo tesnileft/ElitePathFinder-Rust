@@ -1176,8 +1176,10 @@ pub struct BodySurfaceSignal {
 pub enum Genus {
     #[serde(rename = "$Codex_Ent_Bacterial_Genus_Name;")]
     Bacterium,
+    #[serde(rename = "$Codex_Ent_Fungoids_Genus_Name;")]
+    Fungoida,
 
-    
+
 }
 impl Display for Genus {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

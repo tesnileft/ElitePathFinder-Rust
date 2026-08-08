@@ -26,8 +26,8 @@ pub struct Planet {
     pub gravity: Option<f64>,
     pub mean_temperature: Option<f64>,
     pub volcanism: Option<Volcanism>,
-    pub atmosphere_type: Option<AtmosphereType>,
-    pub atmosphere_composition: Option<Vec<AtmosphericGas>>,
+
+    pub atmosphere: Option<AtmosphereInfo>,
     pub biological_signals: Option<u64>,
     pub potential_species: Option<Vec<ExoBiologySpecies>>,
     pub confirmed_species: Vec<ExoBiologySpecies>,
@@ -36,18 +36,44 @@ pub struct Planet {
     pub body_composition: Option<BodyComposition>,
     pub materials: Option<Vec<PlanetRawMaterial>>
 }
+#[derive(Default)]
 pub struct AtmosphereInfo{
     pub atmosphere_type: AtmosphereType,
-    pub quality: AtmosphereQuality,
+    pub quality: Vec<AtmosphereQuality>,
     pub composition: Vec<AtmosphericGas>,
 }
 
-#[derive(Default, PartialEq, Eq, Clone)]
-enum AtmosphereQuality{
+impl AtmosphereInfo{
+    pub fn new(atmosphere_type: AtmosphereType, atmosphere_quality: String, composition_vec: Vec<AtmosphericGas>) -> Self{
+
+        let quality = AtmosphereQuality::parse_all(&atmosphere_quality);
+        AtmosphereInfo{
+            atmosphere_type,
+            quality,
+            composition: composition_vec
+        }
+    }
+}
+
+#[derive(PartialEq, Eq, Clone)]
+pub enum AtmosphereQuality{
     Thin,
     Thick,
-    #[default]
-    Standard,
+    Hot,
+}
+impl AtmosphereQuality{
+    fn parse_all(atmosphere_quality: &str) -> Vec<AtmosphereQuality> {
+        let lower = atmosphere_quality.to_lowercase();
+        lower
+            .split_whitespace()
+            .filter_map(|word| match word {
+                "thin" => Some(AtmosphereQuality::Thin),
+                "thick" => Some(AtmosphereQuality::Thick),
+                "hot" => Some(AtmosphereQuality::Hot),
+                _ => None,
+            })
+            .collect()
+    }
 }
 impl Planet {
     pub fn new(body_name: String, body_id: u64, system_address: u64) -> Planet {
@@ -63,7 +89,8 @@ impl Display for Planet {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut string = String::new();
         string.push_str(&format!("{} - {} \n", self.body_name, self.body_id));
-        string.push_str(&format!(" Atmosphere: {} \n", self.atmosphere_type.clone().unwrap_or(AtmosphereType::None).to_string()));
+        let atmosphere_type = self.atmosphere.as_ref().map(|a| a.atmosphere_type.clone()).unwrap_or(AtmosphereType::None);
+        string.push_str(&format!(" Atmosphere: {} \n", atmosphere_type.to_string()));
         if let Some(bio_signals) = &self.biological_signals {
             if *bio_signals > 0{
                 string.push_str(&format!(" Biological signals: {}\n", bio_signals));
