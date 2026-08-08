@@ -316,6 +316,12 @@ impl fmt::Display for AtmosphereType {
 }
 #[derive(Deserialize, Debug, Clone)]
 pub enum Species{
+    //Aleoida
+    Arcus,
+    Coronamus,
+    Gravis,
+    Laminiae,
+    Spica,
     //Bacterium
     Acies,
     Alcyoneum,
@@ -331,6 +337,12 @@ pub enum Species{
     #[serde(rename="$Codex_Ent_Bacterial_05_Name;")]
     Vesicula,
     Volu,
+    //Cactoida
+    Lapis,
+    Peperatus,
+    Cortexum,
+    Pullulanta,
+    Vermis,
     //Fungoida
     Bullarum,
     Gelata,
@@ -347,7 +359,47 @@ pub enum Species{
     Fluctus,
     Lapida,
     Segmentatus,
-    Upupam
+    Upupam,
+    //Tussock
+    Albata,
+    Capillum,
+    Caputus,
+    Catena,
+    Cultro,
+    Divisa,
+    Ignis,
+    Pennata,
+    Pennatis,
+    Propagito,
+    Serrati,
+    Stigmasis,
+    Triticum,
+    Ventusa,
+    Virgam,
+    //Frutexa
+    Acus,
+    Collum,
+    Fera,
+    Flabellum,
+    Flammasis,
+    Metallicum,
+    Sponsae,
+    //Fumerola
+    Aquatis,
+    Carbosis,
+    Extremus,
+    Nitris,
+    //Recepta
+    Conditivus,
+    Deltahedronix,
+    Umbrux,
+    //Tubus
+    Cavas,
+    Compagibus,
+    Conifer,
+    Rosarium,
+    Sororibus,
+
 }
 
 

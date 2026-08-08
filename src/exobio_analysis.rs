@@ -2,7 +2,7 @@ use crate::{check_material, ExoBiologyVariant, ExoBiologySpecies, Species, StarS
 use crate::custom_structs::system_info::{AtmosphereQuality, Body, Planet, Star};
 use crate::elite_events::enums::{AtmosphereType, BodyParent, PlanetClass, StarClass, Volcanism};
 use crate::elite_events::enums::Volcanism::Methane;
-use crate::elite_events::events::Genus::{Bacterium, Concha, Fonticulua, Fungoida};
+use crate::elite_events::events::Genus::{Bacterium, Concha, Fonticulua, Frutexa, Fungoida, Tussock};
 use crate::elite_events::events::RawMaterial::{Antimony, Cadmium, Mercury, Molybdenum, Niobium, Polonium, Ruthenium, Technetium, Tellurium, Tin, Tungsten, Yttrium};
 
 fn stellar_class_variant(class: &StarClass) -> ExoBiologyVariant {
@@ -95,6 +95,61 @@ fn fonticulua_stellar_variant(class: &StarClass) -> ExoBiologyVariant {
         _ => ExoBiologyVariant::Unknown,
     }
 }
+fn tussock_stellar_variant(class: &StarClass) -> ExoBiologyVariant {
+    match class {
+        StarClass::F => ExoBiologyVariant::Yellow,
+        StarClass::G => ExoBiologyVariant::Lime,
+        StarClass::K => ExoBiologyVariant::Green,
+        StarClass::M => ExoBiologyVariant::Emerald,
+        StarClass::L => ExoBiologyVariant::Sage,
+        StarClass::T => ExoBiologyVariant::Teal,
+        StarClass::W
+        | StarClass::WN
+        | StarClass::WNC
+        | StarClass::WC
+        | StarClass::WO => ExoBiologyVariant::Orange,
+        StarClass::D
+        | StarClass::DA
+        | StarClass::DB
+        | StarClass::DC
+        | StarClass::DO
+        | StarClass::DQ
+        | StarClass::DX
+        | StarClass::DAV
+        | StarClass::DBV
+        | StarClass::DCV => ExoBiologyVariant::Maroon,
+        StarClass::H => ExoBiologyVariant::Red,
+        _ => ExoBiologyVariant::Unknown,
+    }
+}
+fn frutexa_stellar_variant(class: &StarClass) -> ExoBiologyVariant {
+    match class {
+        StarClass::O => ExoBiologyVariant::Yellow,
+        StarClass::B => ExoBiologyVariant::Lime,
+        StarClass::F => ExoBiologyVariant::Green,
+        StarClass::G => ExoBiologyVariant::Emerald,
+        StarClass::M => ExoBiologyVariant::Grey,
+        StarClass::L => ExoBiologyVariant::Teal,
+        StarClass::TTS => ExoBiologyVariant::Mauve,
+        StarClass::W
+        | StarClass::WN
+        | StarClass::WNC
+        | StarClass::WC
+        | StarClass::WO => ExoBiologyVariant::Orange,
+        StarClass::D
+        | StarClass::DA
+        | StarClass::DB
+        | StarClass::DC
+        | StarClass::DO
+        | StarClass::DQ
+        | StarClass::DX
+        | StarClass::DAV
+        | StarClass::DBV
+        | StarClass::DCV => ExoBiologyVariant::Indigo,
+        StarClass::N => ExoBiologyVariant::Red,
+        _ => ExoBiologyVariant::Unknown,
+    }
+}
 fn find_parent_star<'a>(system: &'a StarSystem, planet: &Planet) -> Option<&'a Star> {
     let parents = planet.parents.as_ref()?;
     for p in parents {
@@ -110,6 +165,12 @@ fn find_parent_star<'a>(system: &'a StarSystem, planet: &Planet) -> Option<&'a S
 pub fn get_species_value(species: Species) -> u64
 {
     match species {
+        //Aleoida
+        Species::Arcus => 7_252_500,
+        Species::Coronamus => 6_284_600,
+        Species::Gravis => 12_935_900,
+        Species::Laminiae | Species::Spica => 3_385_200,
+        //Bacterium
         Species::Acies | Species::Aurasus | Species::Vesicula => 1_000_000,
         Species::Alcyoneum => 1_658_500,
         Species::Bullaris => 1_152_500,
@@ -121,21 +182,68 @@ pub fn get_species_value(species: Species) -> u64
         Species::Tela => 1_949_000,
         Species::Verrata => 3_897_000,
         Species::Volu => 7_774_700,
-        Species::Bullarum => 3_703_200,
-        Species::Gelata => 3_330_300,
-        Species::Setisis => 1_670_100,
-        Species::Stabitis => 2_680_300,
+        //Cactoida
+        Species::Cortexum | Species::Pullulanta=> 3_667_600,
+        Species::Lapis | Species::Peperatus => 2_483_600,
+        Species::Vermis => 16_202_800,
+        //Concha
         Species::Aureolas => 7_774_700,
         Species::Biconcavis => 19_010_800,
         Species::Labiata => 2_352_400,
         Species::Renibus => 4_572_400,
+        //Electricae
+
+        //Fonticulua
         Species::Campestris => 1_000_000,
         Species::Digitos => 1_804_100,
         Species::Fluctus => 20_000_000,
         Species::Lapida => 3_111_000,
         Species::Segmentatus => 19_010_800,
         Species::Upupam => 5_727_600,
-
+        //Frutexa
+        Species::Acus => 7_774_700,
+        Species::Collum => 1_639_800,
+        Species::Fera => 1_632_500,
+        Species::Flabellum => 1_808_900,
+        Species::Flammasis => 10_326_000,
+        Species::Metallicum => 1_632_500,
+        Species::Sponsae => 5_988_000,
+        //Fumerola
+        Species::Aquatis | Species::Carbosis => 6_284_600,
+        Species::Extremus => 12_202_800,
+        Species::Nitris => 7_500_900,
+        //Fungoida
+        Species::Bullarum => 3_703_200,
+        Species::Gelata => 3_330_300,
+        Species::Setisis => 1_670_100,
+        Species::Stabitis => 2_680_300,
+        //Osseus
+        //Recepta
+        Species::Conditivus => 14_313_700,
+        Species::Deltahedronix => 16_202_800,
+        Species::Umbrux => 12_934_900,
+        //Tubus
+        Species::Cavas => 11_873_200,
+        Species::Compagibus => 7_774_700,
+        Species::Conifer => 2_415_500,
+        Species::Rosarium => 2_637_500,
+        Species::Sororibus => 7_727_600,
+        //Tussock
+        Species::Albata => 3_252_500,
+        Species::Capillum => 7_025_800,
+        Species::Caputus => 3_472_400,
+        Species::Catena => 1_766_600,
+        Species::Cultro => 1_766_600,
+        Species::Divisa => 1_766_600,
+        Species::Ignis => 1_849_000,
+        Species::Pennata => 5_853_800,
+        Species::Pennatis => 1_000_000,
+        Species::Propagito => 1_000_000,
+        Species::Serrati => 4_447_100,
+        Species::Stigmasis => 19_010_800,
+        Species::Triticum => 7_774_700,
+        Species::Ventusa => 3_227_700,
+        Species::Virgam => 14_313_700,
     }
 }
 
@@ -587,6 +695,187 @@ pub fn determine_exobio_species(system: &StarSystem, body_id: u64) -> Option<Vec
                 }
             }
         }
+        //endregion
+        //region Tussock
+        if let (Some(planet_gravity), Some(atmosphere)) = (planet.gravity, planet.atmosphere.as_ref()){
+            if planet_gravity < 0.27
+                && atmosphere.quality.contains(&AtmosphereQuality::Thin)
+                && matches!(planet.planet_class, Some(PlanetClass::Rocky))
+            {
+                match atmosphere.atmosphere_type {
+                    AtmosphereType::Methane | AtmosphereType::MethaneRich | AtmosphereType::Argon | AtmosphereType::ArgonRich => {
+                        //Capillum
+                        if let Some(star) = find_parent_star(system, planet) {
+                            exobios.push(ExoBiologySpecies{
+                                genus: Tussock,
+                                species: Species::Capillum,
+                                variants: vec![tussock_stellar_variant(&star.class)],
+                            });
+                        }
+                    }
+                    AtmosphereType::Ammonia => {
+                        //Catena, Cultro, Divisa - all occur under identical conditions
+                        if let Some(star) = find_parent_star(system, planet) {
+                            for species in [Species::Catena, Species::Cultro, Species::Divisa] {
+                                exobios.push(ExoBiologySpecies{
+                                    genus: Tussock,
+                                    species,
+                                    variants: vec![tussock_stellar_variant(&star.class)],
+                                });
+                            }
+                        }
+                    }
+                    AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich => {
+                        if let Some(temp) = planet.mean_temperature {
+                            if let Some(star) = find_parent_star(system, planet) {
+                                //Propagito and Pennatis - anywhere below 195 K
+                                if temp < 195.0 {
+                                    exobios.push(ExoBiologySpecies{
+                                        genus: Tussock,
+                                        species: Species::Propagito,
+                                        variants: vec![tussock_stellar_variant(&star.class)],
+                                    });
+                                    exobios.push(ExoBiologySpecies{
+                                        genus: Tussock,
+                                        species: Species::Pennatis,
+                                        variants: vec![tussock_stellar_variant(&star.class)],
+                                    });
+                                }
+                                //Temperature-banded species
+                                let banded = match () {
+                                    _ if (145.0..155.0).contains(&temp) => Some(Species::Pennata),
+                                    _ if (155.0..160.0).contains(&temp) => Some(Species::Ventusa),
+                                    _ if (160.0..170.0).contains(&temp) => Some(Species::Ignis),
+                                    _ if (170.0..175.0).contains(&temp) => Some(Species::Serrati),
+                                    _ if (175.0..180.0).contains(&temp) => Some(Species::Albata),
+                                    _ if (180.0..190.0).contains(&temp) => Some(Species::Caputus),
+                                    _ if (190.0..=195.0).contains(&temp) => Some(Species::Triticum),
+                                    _ => None,
+                                };
+                                if let Some(species) = banded {
+                                    exobios.push(ExoBiologySpecies{
+                                        genus: Tussock,
+                                        species,
+                                        variants: vec![tussock_stellar_variant(&star.class)],
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    AtmosphereType::Water | AtmosphereType::WaterRich => {
+                        //Virgam
+                        if let Some(star) = find_parent_star(system, planet) {
+                            exobios.push(ExoBiologySpecies{
+                                genus: Tussock,
+                                species: Species::Virgam,
+                                variants: vec![tussock_stellar_variant(&star.class)],
+                            });
+                        }
+                    }
+                    AtmosphereType::SulphurDioxide => {
+                        //Stigmasis
+                        if let Some(star) = find_parent_star(system, planet) {
+                            exobios.push(ExoBiologySpecies{
+                                genus: Tussock,
+                                species: Species::Stigmasis,
+                                variants: vec![tussock_stellar_variant(&star.class)],
+                            });
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+        //endregion
+        //region Frutexa
+        if let (Some(planet_gravity), Some(atmosphere)) = (planet.gravity, planet.atmosphere.as_ref()){
+            if planet_gravity < 0.27 && atmosphere.quality.contains(&AtmosphereQuality::Thin) {
+                let is_rocky = matches!(planet.planet_class, Some(PlanetClass::Rocky));
+                let is_hmc = matches!(planet.planet_class, Some(PlanetClass::HMC));
+                match atmosphere.atmosphere_type {
+                    AtmosphereType::Ammonia => {
+                        if let Some(star) = find_parent_star(system, planet) {
+                            if is_rocky {
+                                //Flabellum, Flammasis
+                                exobios.push(ExoBiologySpecies{
+                                    genus: Frutexa,
+                                    species: Species::Flabellum,
+                                    variants: vec![frutexa_stellar_variant(&star.class)],
+                                });
+                                exobios.push(ExoBiologySpecies{
+                                    genus: Frutexa,
+                                    species: Species::Flammasis,
+                                    variants: vec![frutexa_stellar_variant(&star.class)],
+                                });
+                            }
+                            if is_hmc {
+                                //Metallicum
+                                exobios.push(ExoBiologySpecies{
+                                    genus: Frutexa,
+                                    species: Species::Metallicum,
+                                    variants: vec![frutexa_stellar_variant(&star.class)],
+                                });
+                            }
+                        }
+                    }
+                    AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich => {
+                        if planet.mean_temperature.is_some_and(|t| t < 195.0) {
+                            if let Some(star) = find_parent_star(system, planet) {
+                                if is_rocky {
+                                    //Acus, Fera
+                                    exobios.push(ExoBiologySpecies{
+                                        genus: Frutexa,
+                                        species: Species::Acus,
+                                        variants: vec![frutexa_stellar_variant(&star.class)],
+                                    });
+                                    exobios.push(ExoBiologySpecies{
+                                        genus: Frutexa,
+                                        species: Species::Fera,
+                                        variants: vec![frutexa_stellar_variant(&star.class)],
+                                    });
+                                }
+                                if is_hmc {
+                                    //Metallicum
+                                    exobios.push(ExoBiologySpecies{
+                                        genus: Frutexa,
+                                        species: Species::Metallicum,
+                                        variants: vec![frutexa_stellar_variant(&star.class)],
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    AtmosphereType::Water | AtmosphereType::WaterRich => {
+                        if is_rocky {
+                            //Sponsae
+                            if let Some(star) = find_parent_star(system, planet) {
+                                exobios.push(ExoBiologySpecies{
+                                    genus: Frutexa,
+                                    species: Species::Sponsae,
+                                    variants: vec![frutexa_stellar_variant(&star.class)],
+                                });
+                            }
+                        }
+                    }
+                    AtmosphereType::SulphurDioxide => {
+                        if is_rocky {
+                            //Collum
+                            if let Some(star) = find_parent_star(system, planet) {
+                                exobios.push(ExoBiologySpecies{
+                                    genus: Frutexa,
+                                    species: Species::Collum,
+                                    variants: vec![frutexa_stellar_variant(&star.class)],
+                                });
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+        //endregion
+        //region Tubus
+
         //endregion
     }
     Some(exobios)

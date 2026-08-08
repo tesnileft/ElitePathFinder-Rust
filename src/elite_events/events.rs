@@ -1182,6 +1182,10 @@ pub enum Genus {
     Concha,
     #[serde(rename = "$Codex_Ent_Fonticulua_Genus_Name;")]
     Fonticulua,
+    #[serde(rename = "$Codex_Ent_Tussocks_Genus_Name;")]
+    Tussock,
+    #[serde(rename = "$Codex_Ent_Shrubs_Genus_Name;")]
+    Frutexa,
 
 
 }

@@ -55,7 +55,7 @@ impl AtmosphereInfo{
     }
 }
 
-#[derive(PartialEq, Eq, Clone)]
+#[derive(PartialEq, Eq, Clone, Debug)]
 pub enum AtmosphereQuality{
     Thin,
     Thick,
@@ -75,6 +75,11 @@ impl AtmosphereQuality{
             .collect()
     }
 }
+impl Display for AtmosphereQuality{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
 impl Planet {
     pub fn new(body_name: String, body_id: u64, system_address: u64) -> Planet {
         Planet {
@@ -90,7 +95,12 @@ impl Display for Planet {
         let mut string = String::new();
         string.push_str(&format!("{} - {} \n", self.body_name, self.body_id));
         let atmosphere_type = self.atmosphere.as_ref().map(|a| a.atmosphere_type.clone()).unwrap_or(AtmosphereType::None);
-        string.push_str(&format!(" Atmosphere: {} \n", atmosphere_type.to_string()));
+        let atmosphere_traits = self.atmosphere.as_ref()
+            .map(|a| a.quality.iter().fold(String::new(), |acc, q| {
+                if acc.is_empty() { q.to_string() } else { acc + " " + &q.to_string() }
+            }))
+            .unwrap_or_default();
+        string.push_str(&format!(" Atmosphere: {} {} \n", atmosphere_traits, atmosphere_type.to_string()));
         if let Some(bio_signals) = &self.biological_signals {
             if *bio_signals > 0{
                 string.push_str(&format!(" Biological signals: {}\n", bio_signals));
