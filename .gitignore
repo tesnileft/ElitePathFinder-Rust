@@ -1,2 +1,7 @@
 /target
 /build/
+/.idea/.gitignore
+/.idea/ElitePathFinder-Rust.iml
+/data/gschemas.compiled
+/.idea/modules.xml
+/.idea/vcs.xml
