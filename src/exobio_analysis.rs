@@ -192,7 +192,7 @@ pub fn get_species_value(species: Species) -> u64
         Species::Labiata => 2_352_400,
         Species::Renibus => 4_572_400,
         //Electricae
-
+        Species::Pluma | Species::Radialem => 6_284_600,
         //Fonticulua
         Species::Campestris => 1_000_000,
         Species::Digitos => 1_804_100,
@@ -218,10 +218,23 @@ pub fn get_species_value(species: Species) -> u64
         Species::Setisis => 1_670_100,
         Species::Stabitis => 2_680_300,
         //Osseus
+        Species::Cornibus => 1_483_000,
+        Species::Discus => 12_934_900,
+        Species::Fractus => 4_027_800,
+        Species::Pellebantus => 9_739_000,
+        Species::Pumice => 3_156_300,
+        Species::Spiralis => 2_404_700,
         //Recepta
         Species::Conditivus => 14_313_700,
         Species::Deltahedronix => 16_202_800,
         Species::Umbrux => 12_934_900,
+        //Stratum
+        Species::Araneamus | Species::Excutitus => 2_448_900,
+        Species::Cucumisis => 16_202_800,
+        Species::Frigus => 2_637_500,
+        Species::Laminamus => 2_788_300,
+        Species::Limaxus | Species::Paleas => 1_362_000,
+        Species::Tectonicas => 19_010_800,
         //Tubus
         Species::Cavas => 11_873_200,
         Species::Compagibus => 7_774_700,

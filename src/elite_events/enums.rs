@@ -343,16 +343,14 @@ pub enum Species{
     Cortexum,
     Pullulanta,
     Vermis,
-    //Fungoida
-    Bullarum,
-    Gelata,
-    Setisis,
-    Stabitis,
     //Concha
     Aureolas,
     Biconcavis,
     Labiata,
     Renibus,
+    //Electricae
+    Pluma,
+    Radialem,
     //Fonticulua
     Campestris,
     Digitos,
@@ -360,6 +358,40 @@ pub enum Species{
     Lapida,
     Segmentatus,
     Upupam,
+    //Fumerola
+    Aquatis,
+    Carbosis,
+    Extremus,
+    Nitris,
+    //Fungoida
+    Bullarum,
+    Gelata,
+    Setisis,
+    Stabitis,
+    //Frutexa
+    Acus,
+    Collum,
+    Fera,
+    Flabellum,
+    Flammasis,
+    Metallicum,
+    Sponsae,
+    //Osseus
+    Cornibus,
+    Discus,
+    Fractus,
+    Pellebantus,
+    Pumice,
+    Spiralis,
+    //Stratum
+    Araneamus,
+    Cucumisis,
+    Excutitus,
+    Frigus,
+    Laminamus,
+    Limaxus,
+    Paleas,
+    Tectonicas,
     //Tussock
     Albata,
     Capillum,
@@ -376,19 +408,7 @@ pub enum Species{
     Triticum,
     Ventusa,
     Virgam,
-    //Frutexa
-    Acus,
-    Collum,
-    Fera,
-    Flabellum,
-    Flammasis,
-    Metallicum,
-    Sponsae,
-    //Fumerola
-    Aquatis,
-    Carbosis,
-    Extremus,
-    Nitris,
+
     //Recepta
     Conditivus,
     Deltahedronix,
