@@ -21,6 +21,7 @@ pub enum EliteEvent{
     ShipLocker(ShipLocker),
     Materials(Materials),
     Backpack(Backpack),
+    ModuleInfo(ModuleInfo),
     FSSSignalDiscovered(FSSSignalDiscovered),
     FSSDiscoveryScan(FSSDiscoveryScan),
     Scan(Scan),

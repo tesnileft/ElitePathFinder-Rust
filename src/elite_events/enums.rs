@@ -320,6 +320,7 @@ pub enum Species{
     Arcus,
     Coronamus,
     Gravis,
+    #[serde(rename="$Codex_Ent_Aleoids_04_Name;")]
     Laminiae,
     Spica,
     //Bacterium
@@ -366,6 +367,7 @@ pub enum Species{
     Extremus,
     Nitris,
     //Fungoida
+    #[serde(rename="$Codex_Ent_Fungoids_03_Name;")]
     Bullarum,
     Gelata,
     Setisis,
@@ -398,9 +400,11 @@ pub enum Species{
     Tectonicas,
     //Tussock
     Albata,
+    #[serde(rename="$Codex_Ent_Tussocks_15_Name;")]
     Capillum,
     Caputus,
     Catena,
+    #[serde(rename="$Codex_Ent_Tussocks_04_Name;")]
     Cultro,
     Divisa,
     Ignis,
@@ -495,7 +499,11 @@ pub enum PlanetClass{
     #[serde(rename="Gas giant with ammonia based life")]
     GasGiantABL,
     #[serde(rename="Helium rich gas giant")]
-    GasGiantHeliumRich
+    GasGiantHeliumRich,
+    #[serde(rename= "Water world")]
+    WaterWorld,
+    #[serde(rename = "Ammonia world")]
+    AmmoniaWorld,
 }
 
 #[derive(Deserialize, Default, Eq, PartialEq, Clone)]
@@ -520,7 +528,7 @@ pub enum Volcanism{
     RockyMagma,
     #[serde(rename="major rocky magma volcanism")]
     MajorRockyMagma,
-    #[serde(rename="minor rocky magma geysers volcanism")]
+    #[serde(rename="minor rocky magma volcanism")]
     MinorRockyMagma,
     #[serde(rename="carbon dioxide geysers volcanism")]
     CarbonDioxide,

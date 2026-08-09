@@ -1183,7 +1183,7 @@ pub enum Genus {
     Fungoida,
     #[serde(rename = "$Codex_Ent_Conchas_Genus_Name;")]
     Concha,
-    #[serde(rename = "$Codex_Ent_Fonticulua_Genus_Name;")]
+    #[serde(rename = "$Codex_Ent_Fonticulus_Genus_Name;;")]
     Fonticulua,
     #[serde(rename = "$Codex_Ent_Tussocks_Genus_Name;")]
     Tussock,
@@ -1380,4 +1380,9 @@ pub struct LaunchFighter {
     id: u64,
     #[serde(rename = "PlayerControlled")]
     player_controlled: bool,
+}
+
+#[derive(Deserialize)]
+pub struct ModuleInfo {
+    timestamp: DateTime<Utc>,
 }

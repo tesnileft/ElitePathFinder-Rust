@@ -1023,10 +1023,8 @@ pub fn determine_exobio_species(
                 //endregion
                 //region Fonticulua
                 if atmosphere.quality.contains(&AtmosphereQuality::Thin)
-                    && matches!(
-                    planet_class,
-                    PlanetClass::Icy | PlanetClass::RockyIce
-                ){
+                    && matches!( planet_class, PlanetClass::Icy | PlanetClass::RockyIce)
+                {
                     let species = match atmosphere.atmosphere_type {
                         AtmosphereType::Neon | AtmosphereType::NeonRich => Some(Species::Segmentatus),
                         AtmosphereType::Methane | AtmosphereType::MethaneRich => Some(Species::Digitos),
