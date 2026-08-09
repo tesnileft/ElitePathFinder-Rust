@@ -280,9 +280,9 @@ pub struct Scan {
     #[serde(rename = "MeanAnomaly")]
     pub mean_anomaly: Option<f64>, //Fraction how far the elliptical orbit has gone since passing through it's periapsis (time wise, not distance)
     #[serde(rename = "RotationPeriod")]
-    pub rotation_period: f64,
+    pub rotation_period: Option<f64>,
     #[serde(rename = "AxialTilt")]
-    pub axial_tilt: f64,
+    pub axial_tilt: Option<f64>,
     #[serde(rename = "WasDiscovered")]
     pub was_discovered: bool,
     #[serde(rename = "WasMapped")]
@@ -1117,6 +1117,7 @@ pub struct SAAScanComplete{ //Surface Scan
 pub struct SAASignalsFound{
     #[serde(rename = "timestamp")]
     pub timestamp: DateTime<Utc>,
+    #[serde(rename = "BodyName")]
     pub body_name: String,
     #[serde(rename = "SystemAddress")]
     pub system_address: u64,
@@ -1174,6 +1175,8 @@ pub struct BodySurfaceSignal {
 }
 #[derive(Deserialize, Debug)]
 pub enum Genus {
+    #[serde(rename = "$Codex_Ent_Aleoids_Genus_Name;")]
+    Aleoida,
     #[serde(rename = "$Codex_Ent_Bacterial_Genus_Name;")]
     Bacterium,
     #[serde(rename = "$Codex_Ent_Fungoids_Genus_Name;")]
@@ -1186,6 +1189,17 @@ pub enum Genus {
     Tussock,
     #[serde(rename = "$Codex_Ent_Shrubs_Genus_Name;")]
     Frutexa,
+    #[serde(rename = "$Codex_Ent_Tubus_Genus_Name;")]
+    Tubus,
+    #[serde(rename = "$Codex_Ent_Stratum_Genus_Name;")]
+    Stratum,
+    #[serde(rename = "$Codex_Ent_Osseus_Genus_Name;")]
+    Osseus,
+    #[serde(rename = "$Codex_Ent_Recepta_Genus_Name;")]
+    Recepta,
+    #[serde(rename= "$Codex_Ent_Cactoida_Genus_Name;")]
+    Cactoida,
+    
 
 
 }

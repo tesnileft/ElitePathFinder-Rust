@@ -101,6 +101,9 @@ impl Display for Planet {
             }))
             .unwrap_or_default();
         string.push_str(&format!(" Atmosphere: {} {} \n", atmosphere_traits, atmosphere_type.to_string()));
+        if let Some(gravity) = &self.gravity{
+            string.push_str(&format!(" Surface Gravity: {}\n", gravity));
+        }
         if let Some(bio_signals) = &self.biological_signals {
             if *bio_signals > 0{
                 string.push_str(&format!(" Biological signals: {}\n", bio_signals));
@@ -118,11 +121,13 @@ impl Display for Planet {
 fn exobio_species_to_string(species: &Vec<ExoBiologySpecies>)-> String {
     let mut string = String::new();
     species.into_iter().for_each(|bio| {
-        string.push_str(&format!(" {} ¢{}\n ", bio.to_string().as_str(), get_species_value(bio.species.clone())));
+        string.push_str(&format!(" {} ", bio.to_string().as_str()));
         bio.variants.iter().for_each(|variant| {
             string.push_str(&format!("/ {} ", variant.to_string()));
         });
-        string.push_str("/\n");
+        string.push_str("/ ");
+        string.push_str(&format!("¢{} \n", get_species_value(bio.species.clone())));
+
     });
     string
 }

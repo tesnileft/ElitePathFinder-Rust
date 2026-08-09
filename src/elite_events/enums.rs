@@ -325,6 +325,7 @@ pub enum Species{
     //Bacterium
     Acies,
     Alcyoneum,
+    #[serde(rename="$Codex_Ent_Bacterial_01_Name;")]
     Aurasus,
     Bullaris,
     Cerbrus,
@@ -339,7 +340,8 @@ pub enum Species{
     Volu,
     //Cactoida
     Lapis,
-    Peperatus,
+    Peperatis,
+    #[serde(rename ="$Codex_Ent_Cactoid_01_Name;")]
     Cortexum,
     Pullulanta,
     Vermis,
@@ -379,6 +381,7 @@ pub enum Species{
     //Osseus
     Cornibus,
     Discus,
+    #[serde(rename="$Codex_Ent_Osseus_01_Name;")]
     Fractus,
     Pellebantus,
     Pumice,
@@ -390,6 +393,7 @@ pub enum Species{
     Frigus,
     Laminamus,
     Limaxus,
+    #[serde(rename="$Codex_Ent_Stratum_02_Name;")]
     Paleas,
     Tectonicas,
     //Tussock
@@ -402,6 +406,7 @@ pub enum Species{
     Ignis,
     Pennata,
     Pennatis,
+    #[serde(rename = "$Codex_Ent_Tussocks_09_Name;")]
     Propagito,
     Serrati,
     Stigmasis,
@@ -458,6 +463,7 @@ pub enum ExoBiologyVariant {
     Amethyst,
     #[default]
     Unknown,
+    Ocher,
 }
 impl Display for ExoBiologyVariant{
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
