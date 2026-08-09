@@ -258,7 +258,6 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                                     subclass: scan.star_subclass.unwrap(),
                                     stellar_mass: scan.stellar_mass.unwrap(),
                                 };
-                                println!("Wowie a star!!!");
                                 entry.insert(Star(newstar));
                             }
                             else if let Some(plan_clas) = scan.planet_class.as_ref() {
