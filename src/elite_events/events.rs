@@ -1,9 +1,9 @@
-use std::fmt::Display;
+use crate::elite_events::enums::*;
+use crate::elite_events::substructs::*;
 use chrono::{DateTime, Utc};
 use gdk::pango::Language;
 use serde::Deserialize;
-use crate::elite_events::enums::*;
-use crate::elite_events::substructs::*;
+use std::fmt::Display;
 
 //region - FSD -
 #[derive(Deserialize)]
@@ -20,7 +20,7 @@ pub struct FSDTarget {
     remaining_jumps_in_route: u64,
 }
 #[derive(Deserialize)]
-pub struct StartJump{
+pub struct StartJump {
     pub timestamp: DateTime<Utc>,
     #[serde(rename = "JumpType")]
     pub jump_type: JumpType,
@@ -38,7 +38,7 @@ pub struct StartJump{
 }
 ///Very large struct that covers almost everything about the system that you are currently jumping to
 #[derive(Deserialize)]
-pub struct FSDJump{
+pub struct FSDJump {
     pub timestamp: DateTime<Utc>,
     #[serde(rename = "Taxi")]
     pub taxi: bool,
@@ -117,7 +117,7 @@ pub struct SupercruiseEntry {
     system_address: u64,
 }
 #[derive(Deserialize)]
-pub struct SupercruiseExit{
+pub struct SupercruiseExit {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Taxi")]
@@ -136,7 +136,7 @@ pub struct SupercruiseExit{
     body_type: BodyType,
 }
 #[derive(Deserialize)]
-pub struct SupercruiseDestinationDrop{
+pub struct SupercruiseDestinationDrop {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Type")]
@@ -172,7 +172,7 @@ pub struct FSSSignalDiscovered {
     pub is_station: Option<bool>,
 }
 #[derive(Deserialize)]
-pub struct FSSDiscoveryScan{
+pub struct FSSDiscoveryScan {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Progress")]
@@ -185,7 +185,7 @@ pub struct FSSDiscoveryScan{
     system_address: u64,
 }
 #[derive(Deserialize)]
-pub struct FSSBodySignals{
+pub struct FSSBodySignals {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "BodyName")]
@@ -241,7 +241,7 @@ pub struct Scan {
     #[serde(default)]
     pub atmosphere_type: AtmosphereType,
     #[serde(rename = "AtmosphereComposition")]
-    pub atmosphere_composition: Option<Vec<AtmosphericGas>> ,
+    pub atmosphere_composition: Option<Vec<AtmosphericGas>>,
     #[serde(rename = "Volcanism")]
     #[serde(default)]
     pub volcanism: Volcanism,
@@ -292,7 +292,7 @@ pub struct Scan {
     //TODO
 }
 #[derive(Deserialize)]
-pub struct CelestialRings{
+pub struct CelestialRings {
     #[serde(rename = "Name")]
     pub name: String,
     #[serde(rename = "RingClass")]
@@ -305,7 +305,7 @@ pub struct CelestialRings{
     pub outer_radius: f64,
 }
 #[derive(Deserialize)]
-pub struct RawMaterialInfo{
+pub struct RawMaterialInfo {
     #[serde(rename = "Name")]
     pub name: RawMaterial,
     #[serde(rename = "Name_Localised")]
@@ -315,7 +315,7 @@ pub struct RawMaterialInfo{
     pub percent: f64,
 }
 #[derive(Deserialize, Eq, PartialEq, Clone)]
-pub enum RawMaterial{
+pub enum RawMaterial {
     //Grade 1
     #[serde(rename = "carbon")]
     Carbon,
@@ -378,7 +378,7 @@ pub enum RawMaterial{
     Yttrium,
 }
 #[derive(Deserialize)]
-pub struct FSSAllBodiesFound{
+pub struct FSSAllBodiesFound {
     #[serde(rename = "timestamp")]
     pub timestamp: DateTime<Utc>,
     #[serde(rename = "SystemName")]
@@ -386,7 +386,7 @@ pub struct FSSAllBodiesFound{
     #[serde(rename = "SystemAddress")]
     pub system_address: u64,
     #[serde(rename = "Count")]
-    pub count: u64
+    pub count: u64,
 }
 //endregion
 //region - Inventory -
@@ -398,7 +398,7 @@ pub struct ShipLocker {
     items: Option<Vec<Item>>,
 }
 #[derive(Deserialize)]
-pub struct Cargo{
+pub struct Cargo {
     #[serde(rename = "timestamp")]
     pub timestamp: DateTime<Utc>,
     #[serde(rename = "Vessel")]
@@ -410,7 +410,7 @@ pub struct Cargo{
 }
 
 #[derive(Deserialize)]
-pub struct Backpack{
+pub struct Backpack {
     timestamp: DateTime<Utc>,
     #[serde(rename = "Items")]
     items: Vec<Item>,
@@ -419,10 +419,10 @@ pub struct Backpack{
     #[serde(rename = "Consumables")]
     consumables: Vec<Consumable>,
     #[serde(rename = "Data")]
-    data: Vec<Data>
+    data: Vec<Data>,
 }
 #[derive(Deserialize)]
-pub struct Materials{
+pub struct Materials {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Raw")]
@@ -430,10 +430,10 @@ pub struct Materials{
     #[serde(rename = "Manufactured")]
     manufactured: Vec<LocalisedMaterialInventory>,
     #[serde(rename = "Encoded")]
-    encoded: Vec<LocalisedMaterialInventory>
+    encoded: Vec<LocalisedMaterialInventory>,
 }
 #[derive(Deserialize)]
-pub struct Loadout{
+pub struct Loadout {
     timestamp: DateTime<Utc>,
     #[serde(rename = "Ship")]
     ship: String,
@@ -458,11 +458,10 @@ pub struct Loadout{
     #[serde(rename = "Rebuy")]
     rebuy: u64,
     #[serde(rename = "Modules")]
-    modules: Vec<Module>
-
+    modules: Vec<Module>,
 }
 #[derive(Deserialize)]
-pub struct SuitLoadout{
+pub struct SuitLoadout {
     timestamp: DateTime<Utc>,
     #[serde(rename = "SuitID")]
     suit_id: u64,
@@ -477,18 +476,18 @@ pub struct SuitLoadout{
     #[serde(rename = "LoadoutName")]
     loadout_name: String,
     #[serde(rename = "Modules")]
-    modules: Vec<SuitModule> // Actually weapons
+    modules: Vec<SuitModule>, // Actually weapons
 }
 #[derive(Deserialize)]
-pub struct ReservoirReplenished{
+pub struct ReservoirReplenished {
     timestamp: DateTime<Utc>,
     #[serde(rename = "FuelMain")]
     fuel_main: f64,
     #[serde(rename = "FuelReservoir")]
-    fuel_reservoir: f64
+    fuel_reservoir: f64,
 }
 #[derive(Deserialize)]
-pub struct FuelScoop{
+pub struct FuelScoop {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Scooped")]
@@ -497,7 +496,7 @@ pub struct FuelScoop{
     total: f64,
 }
 #[derive(Deserialize)]
-pub struct JetConeBoost{
+pub struct JetConeBoost {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "BoostValue")]
@@ -506,7 +505,7 @@ pub struct JetConeBoost{
 //endregion
 //region - Misc -
 #[derive(Deserialize)]
-pub struct Statistics{
+pub struct Statistics {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Bank_Account")]
@@ -536,17 +535,17 @@ pub struct Statistics{
     #[serde(rename = "Material_Trader_Stats")]
     material_trader_stats: MaterialTraderStats,
     #[serde(rename = "Exobiology")]
-    exobiology: ExobiologyStats
+    exobiology: ExobiologyStats,
 }
 #[derive(Deserialize)]
-pub struct Music{
+pub struct Music {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "MusicTrack")]
     pub(crate) music_track: String,
 }
 #[derive(Deserialize)]
-pub struct ShipTargeted{
+pub struct ShipTargeted {
     timestamp: DateTime<Utc>,
     #[serde(rename = "TargetLocked")]
     target_locked: bool,
@@ -574,25 +573,31 @@ pub struct ShipTargeted{
     power: PowerplayPower,
 }
 #[derive(Deserialize)]
-pub struct NavRoute{
+pub struct NavRoute {
     #[serde(rename = "timestamp")]
-    timestamp: DateTime<Utc>
+    timestamp: DateTime<Utc>,
 }
 #[derive(Deserialize)]
-pub struct NavRouteClear{
+pub struct NavRouteClear {
     #[serde(rename = "timestamp")]
-    timestamp: DateTime<Utc>
+    timestamp: DateTime<Utc>,
 }
 #[derive(Deserialize)]
-pub enum LegalStatus{
+pub enum LegalStatus {
     Lawless,
-    Wanted
+    Wanted,
 }
 #[derive(Deserialize)]
-pub enum PilotRank
-{
+pub enum PilotRank {
+    Harmless,
+    MostlyHarmless,
     Novice,
-    Elite
+    Competent,
+    Expert,
+    Master,
+    Dangerous,
+    Deadly,
+    Elite,
 }
 //endregion
 //region - Docking -
@@ -610,7 +615,7 @@ pub struct DockingRequested {
     landing_pads: LandingPads,
 }
 #[derive(Deserialize)]
-pub struct DockingGranted{
+pub struct DockingGranted {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "LandingPad")]
@@ -623,7 +628,7 @@ pub struct DockingGranted{
     station_type: StationType,
 }
 #[derive(Deserialize)]
-pub struct Docked{
+pub struct Docked {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "StationName")]
@@ -657,10 +662,10 @@ pub struct Docked{
     #[serde(rename = "DistFromStarLS")]
     dist_star_ls: f32,
     #[serde(rename = "LandingPads")]
-    landing_pads: LandingPads
+    landing_pads: LandingPads,
 }
 #[derive(Deserialize)]
-pub struct Embark{
+pub struct Embark {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "SRV")]
@@ -682,7 +687,7 @@ pub struct Embark{
     #[serde(rename = "OnStation")]
     on_station: bool,
     #[serde(rename = "OnPlanet")]
-    on_planet: bool
+    on_planet: bool,
 }
 #[derive(Deserialize)]
 pub struct Disembark {
@@ -707,10 +712,10 @@ pub struct Disembark {
     #[serde(rename = "OnStation")]
     on_station: bool,
     #[serde(rename = "OnPlanet")]
-    on_planet: bool
+    on_planet: bool,
 }
 #[derive(Deserialize)]
-pub struct Undocked{
+pub struct Undocked {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "StationName")]
@@ -816,7 +821,7 @@ pub struct LeaveBody {
 //endregion
 //region - Station Features -
 #[derive(Deserialize)]
-pub struct RefuelAll{
+pub struct RefuelAll {
     timestamp: DateTime<Utc>,
     #[serde(rename = "Cost")]
     cost: u64,
@@ -824,7 +829,7 @@ pub struct RefuelAll{
     amount: f64,
 }
 #[derive(Deserialize)]
-pub struct Shipyard{
+pub struct Shipyard {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "MarketID")]
@@ -835,7 +840,7 @@ pub struct Shipyard{
     star_system: String, //This is actually the body name
 }
 #[derive(Deserialize)]
-pub struct StoredShips{
+pub struct StoredShips {
     timestamp: DateTime<Utc>,
     #[serde(rename = "StationName")]
     station_name: String,
@@ -847,7 +852,7 @@ pub struct StoredShips{
     ships_here: Vec<StoredShip>,
 }
 #[derive(Deserialize)]
-pub struct ShipyardTransfer{
+pub struct ShipyardTransfer {
     timestamp: DateTime<Utc>,
     #[serde(rename = "ShipType")]
     ship_type: ShipType,
@@ -883,7 +888,7 @@ pub struct ShipyardSwap {
     market_id: u64,
 }
 #[derive(Deserialize)]
-pub struct CommunityGoal{
+pub struct CommunityGoal {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "CurrentGoals")]
@@ -892,7 +897,7 @@ pub struct CommunityGoal{
 //endregion
 //region - Social -
 #[derive(Deserialize)]
-pub struct Commander{
+pub struct Commander {
     #[serde(rename = "timestamp")]
     pub timestamp: DateTime<Utc>,
     #[serde(rename = "FID")]
@@ -914,14 +919,14 @@ pub struct ReceiveText {
     pub channel: String,
 }
 #[derive(Deserialize)]
-pub struct Friends{
+pub struct Friends {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Status")]
-    status: FriendStatus
+    status: FriendStatus,
 }
 #[derive(Deserialize)]
-pub struct SquadronStartup{
+pub struct SquadronStartup {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "SquadronID")]
@@ -931,51 +936,29 @@ pub struct SquadronStartup{
     #[serde(rename = "CurrentRank")]
     current_rank: u64,
     #[serde(rename = "CurrentRankName")]
-    current_rank_name: String
+    current_rank_name: String,
 }
 #[derive(Deserialize)]
-pub struct WingInvite{
+pub struct WingInvite {
     timestamp: DateTime<Utc>,
     #[serde(rename = "Name")]
     name: String,
 }
 #[derive(Deserialize)]
-pub struct WingAdd{
+pub struct WingAdd {
     timestamp: DateTime<Utc>,
     #[serde(rename = "Name")]
     name: String,
 }
 #[derive(Deserialize)]
-pub struct WingLeave{
+pub struct WingLeave {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
 }
 //endregion
 //region - Rank -
 #[derive(Deserialize)]
-pub struct Rank{
-    #[serde(rename = "timestamp")]
-    timestamp: DateTime<Utc>,
-    #[serde(rename = "Combat")]
-    combat: u64,
-    #[serde(rename = "Trade")]
-    trade: u64,
-    #[serde(rename = "Explore")]
-    explorer: u64,
-    #[serde(rename = "Soldier")]
-    mercenary: u64,
-    #[serde(rename = "Exobiologist")]
-    exobiologist: u64,
-    #[serde(rename = "CQC")]
-    cqc: u64,
-    #[serde(rename = "Empire")]
-    empire: u64,
-    #[serde(rename = "Federation")]
-    federation: u64,
-
-}
-#[derive(Deserialize)]
-pub struct Progress{
+pub struct Rank {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Combat")]
@@ -996,7 +979,28 @@ pub struct Progress{
     federation: u64,
 }
 #[derive(Deserialize)]
-pub struct Reputation{
+pub struct Progress {
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "Combat")]
+    combat: u64,
+    #[serde(rename = "Trade")]
+    trade: u64,
+    #[serde(rename = "Explore")]
+    explorer: u64,
+    #[serde(rename = "Soldier")]
+    mercenary: u64,
+    #[serde(rename = "Exobiologist")]
+    exobiologist: u64,
+    #[serde(rename = "CQC")]
+    cqc: u64,
+    #[serde(rename = "Empire")]
+    empire: u64,
+    #[serde(rename = "Federation")]
+    federation: u64,
+}
+#[derive(Deserialize)]
+pub struct Reputation {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Empire")]
@@ -1009,18 +1013,17 @@ pub struct Reputation{
     alliance: f64,
 }
 #[derive(Deserialize)]
-pub struct EngineerProgress{
+pub struct EngineerProgress {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Engineers")]
-    engineers: Vec<Engineer>
+    engineers: Vec<Engineer>,
 }
-
 
 //endregion
 //region - Missions -
 #[derive(Deserialize)]
-pub struct Missions{
+pub struct Missions {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Active")]
@@ -1088,7 +1091,7 @@ pub struct CodexEntry {
     #[serde(rename = "BodyID")]
     pub body_id: u64,
     #[serde(rename = "NearestDestination")]
-    pub nearest_destination: String,
+    pub nearest_destination: Option<String>,
     #[serde(rename = "Latitude")]
     pub latitude: f64,
     #[serde(rename = "Longitude")]
@@ -1098,7 +1101,8 @@ pub struct CodexEntry {
 }
 
 #[derive(Deserialize)]
-pub struct SAAScanComplete{ //Surface Scan
+pub struct SAAScanComplete {
+    //Surface Scan
     #[serde(rename = "timestamp")]
     pub timestamp: DateTime<Utc>,
     #[serde(rename = "BodyName")]
@@ -1114,7 +1118,7 @@ pub struct SAAScanComplete{ //Surface Scan
 }
 #[derive(Deserialize)]
 ///Surface scan signal results (Bio, geo)
-pub struct SAASignalsFound{
+pub struct SAASignalsFound {
     #[serde(rename = "timestamp")]
     pub timestamp: DateTime<Utc>,
     #[serde(rename = "BodyName")]
@@ -1128,10 +1132,9 @@ pub struct SAASignalsFound{
     ///Potentially empty
     #[serde(rename = "Genuses")]
     pub genuses: Vec<ExobioGenus>,
-
 }
 #[derive(Deserialize)]
-pub struct ScanBaryCentre{
+pub struct ScanBaryCentre {
     #[serde(rename = "timestamp")]
     pub timestamp: DateTime<Utc>,
     #[serde(rename = "StarSystem")]
@@ -1157,7 +1160,7 @@ pub struct ScanBaryCentre{
 }
 
 #[derive(Deserialize)]
-pub struct ExobioGenus{
+pub struct ExobioGenus {
     ///Enum of the genus type
     #[serde(rename = "Genus")]
     pub genus: Genus,
@@ -1197,11 +1200,8 @@ pub enum Genus {
     Osseus,
     #[serde(rename = "$Codex_Ent_Recepta_Genus_Name;")]
     Recepta,
-    #[serde(rename= "$Codex_Ent_Cactoida_Genus_Name;")]
+    #[serde(rename = "$Codex_Ent_Cactoida_Genus_Name;")]
     Cactoida,
-    
-
-
 }
 impl Display for Genus {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -1213,7 +1213,7 @@ pub enum SAASignalType {
     #[serde(alias = "$SAA_SignalType_Biological;")]
     Biological,
     #[serde(rename = "$SAA_SignalType_Geological;")]
-    Geological
+    Geological,
 }
 
 //endregion
@@ -1267,14 +1267,14 @@ pub struct LoadGame {
     pub build: String,
 }
 #[derive(Deserialize)]
-pub struct Shutdown{
+pub struct Shutdown {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
 }
 //endregion
 
 #[derive(Deserialize)]
-pub struct Location{
+pub struct Location {
     //
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
@@ -1368,7 +1368,7 @@ pub struct Powerplay {
     #[serde(rename = "Merits")]
     pub merits: u64,
     #[serde(rename = "TimePledged")]
-    pub time_pledged: u64
+    pub time_pledged: u64,
 }
 
 #[derive(Deserialize)]
@@ -1386,3 +1386,10 @@ pub struct LaunchFighter {
 pub struct ModuleInfo {
     timestamp: DateTime<Utc>,
 }
+
+#[derive(Deserialize)]
+pub struct UnderAttack {
+    #[serde(rename = "Target")]
+    target: String,
+}
+

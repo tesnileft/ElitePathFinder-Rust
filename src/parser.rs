@@ -1,12 +1,12 @@
+use crate::elite_events::events::*;
 use serde::Deserialize;
 use serde_json::{Result, Value};
 use std::io::prelude::*;
-use crate::elite_events::events::*;
 
 //endregion
 #[derive(Deserialize)]
 #[serde(tag = "event")]
-pub enum EliteEvent{
+pub enum EliteEvent {
     Fileheader(FileHeader),
     LoadGame(LoadGame),
     Location(Location),
@@ -73,21 +73,24 @@ pub enum EliteEvent{
     Cargo(Cargo),
     CodexEntry(CodexEntry),
     ScanOrganic(ScanOrganic),
-
+    UnderAttack(UnderAttack),
 }
 pub fn parse_logstring(log: String) -> Result<Vec<EliteEvent>> {
     let mut events: Vec<EliteEvent> = Vec::new();
     let loglines = log.lines();
     for line in loglines {
-        let event:Result<EliteEvent>= serde_json::from_str(line);
-        match event
-        {
+        let event: Result<EliteEvent> = serde_json::from_str(line);
+        match event {
             Ok(event) => {
                 events.push(event);
             }
             Err(e) => {
                 let v: Value = serde_json::from_str(line)?;
-                println!("Failed to parse event (Type {})! - {}", v["event"], e.to_string());
+                println!(
+                    "Failed to parse event (Type {})! - {}",
+                    v["event"],
+                    e.to_string()
+                );
             }
         }
     }

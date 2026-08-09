@@ -1,6 +1,6 @@
+use serde::Deserialize;
 use std::fmt;
 use std::fmt::Display;
-use serde::{Deserialize, };
 #[derive(Deserialize)]
 pub enum SignalType {
     FleetCarrier,
@@ -11,40 +11,58 @@ pub enum SignalType {
     StationCoriolis,
     SquadronCarrier,
     Outpost,
-    StationMegaShip
+    StationMegaShip,
+    StationBernalSphere,
+    StationONeilOrbis,
+    StationAsteroid,
+    TouristBeacon,
 }
 #[derive(Deserialize, Default)]
-pub enum StationType{
+pub enum StationType {
     FleetCarrier,
     Coriolis,
     Orbis,
     #[default]
-    None
+    None,
 }
 #[derive(Deserialize)]
-pub enum BodyType{
+pub enum BodyType {
     Star,
     Planet,
     Station,
 }
 #[derive(Deserialize)]
-pub enum ShipType{
+pub enum ShipType {
+    #[serde(rename = "anaconda")]
+    Anaconda,
+    #[serde(rename = "sidewinder")]
     SideWinder,
     CobraMkV,
+    Corsair,
+    #[serde(rename = "type7")]
+    Type7,
     Type8,
+    #[serde(rename = "python")]
+    Python,
     Python_NX,
     SmallCombat01_NX,
     #[serde(rename = "explorer_nx")]
     Explorer_NX,
     Mandalay,
+    #[serde(rename = "viper")]
+    ViperMkIII,
+    #[serde(rename = "viper_mkiv")]
+    ViperMkIV,
+    #[serde(rename = "vulture")]
+    Vulture,
 }
 #[derive(Deserialize, PartialEq, Eq)]
-pub enum JumpType{
+pub enum JumpType {
     Supercruise,
-    Hyperspace
+    Hyperspace,
 }
 #[derive(Deserialize)]
-pub enum StarClass{
+pub enum StarClass {
     O,
     A,
     B,
@@ -86,7 +104,7 @@ pub enum GameMode {
     Open,
 }
 #[derive(Deserialize)]
-pub enum StationService{
+pub enum StationService {
     #[serde(rename = "dock")]
     Dock,
     #[serde(rename = "autodock")]
@@ -155,7 +173,9 @@ pub enum StationService{
     RegisteringColonisation,
 }
 #[derive(Deserialize, Default)]
-pub enum Economy{
+pub enum Economy {
+    #[serde(rename = "$economy_Agri;")]
+    Agricultural,
     #[serde(rename = "$economy_Carrier;")]
     Carrier,
     #[serde(rename = "$economy_Industrial;")]
@@ -164,10 +184,13 @@ pub enum Economy{
     Military,
     #[serde(rename = "$economy_Extraction;")]
     Extraction,
+    #[serde(rename = "$economy_HighTech;")]
+    HighTech,
+    #[serde(rename = "$economy_Terraforming;")]
+    Terraforming,
     #[default]
     #[serde(rename = "$economy_None;")]
     None,
-
 }
 #[derive(Deserialize)]
 pub enum FriendStatus {
@@ -177,7 +200,7 @@ pub enum FriendStatus {
 //region - System Factions -
 ///System Security states, Anarchy is lowest
 #[derive(Deserialize, Default)]
-pub enum SystemSecurity{
+pub enum SystemSecurity {
     #[default]
     #[serde(rename = "$GAlAXY_MAP_INFO_state_anarchy;")]
     Anarchy,
@@ -190,12 +213,12 @@ pub enum SystemSecurity{
 }
 ///Faction Allegiances
 #[derive(Deserialize, Default)]
-pub enum Allegiance{
+pub enum Allegiance {
     Empire,
     Federation,
     Independent,
     #[default]
-    #[serde(rename="")]
+    #[serde(rename = "")]
     None,
 }
 ///All states a faction (and thus system at large) can be in, will be represented with an `Option<FactionState>` field, since there can be no active state.
@@ -219,30 +242,33 @@ pub enum FactionState {
     InfrastructureFailure,
     Terrorism,
     NaturalDisaster,
-    PublicHoliday
+    PublicHoliday,
 }
 ///Possible system governments
 #[derive(Deserialize, Default)]
-pub enum Government{
+pub enum Government {
     Anarchy,
     Communist,
+    #[serde(alias = "$government_Confederacy;")]
     Confederacy,
     Cooperative,
+    #[serde(alias = "$government_Corporate;")]
     Corporate,
     Democracy,
     Dictatorship,
     Feudal,
-    #[serde(alias="$government_Patronage;")]
+    #[serde(alias = "$government_Patronage;")]
     Patronage,
     PrisonColony,
+    #[serde(alias = "$government_Theocracy;")]
     Theocracy,
     #[default]
-    #[serde(alias="$government_None;")]
-    None
+    #[serde(alias = "$government_None;")]
+    None,
 }
 ///Current Powerplay State a system can be in, only covers the state the ruling faction is part of, so will never be "Exploiting" or "Undermining"
 #[derive(Deserialize, Default)]
-pub enum PowerplayState{
+pub enum PowerplayState {
     #[default]
     Unoccupied,
     Stronghold,
@@ -251,18 +277,19 @@ pub enum PowerplayState{
 }
 /// Enum of all Powerplay factions, Spaces and dashes removed. Use <enum value>.to_string() for the full name.
 #[derive(Deserialize, Default)]
-pub enum PowerplayPower{
+pub enum PowerplayPower {
     #[serde(rename = "A. Lavigny-Duval")]
     ALavignyDuval,
     #[serde(rename = "Aisling Duval")]
     AislingDuval,
     #[serde(rename = "Denton Patreus")]
     DentonPatreus,
+    #[serde(rename = "Edmund Mahon")]
+    EdmundMahon,
     #[serde(rename = "Zemina Torval")]
     ZeminaTorval,
     #[default]
-    None
-    //TODO Fill out
+    None, //TODO Fill out
 }
 impl fmt::Display for PowerplayPower {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -271,19 +298,19 @@ impl fmt::Display for PowerplayPower {
             PowerplayPower::AislingDuval => write!(f, "Aisling Duval"),
             PowerplayPower::DentonPatreus => write!(f, "Denton Patreus"),
             PowerplayPower::ZeminaTorval => write!(f, "Zemina Torval"),
-            _ => write!(f, "Undefined")
+            _ => write!(f, "Undefined"),
         }
     }
 }
 #[derive(Deserialize)]
-pub enum EngineerUnlockedStatus{
+pub enum EngineerUnlockedStatus {
     Known,
     Invited,
-    Unlocked
+    Unlocked,
 }
 
 #[derive(Deserialize)]
-pub enum SRVType{
+pub enum SRVType {
     #[serde(rename = "lander01")]
     Nomad,
 }
@@ -307,7 +334,7 @@ pub enum AtmosphereType {
     Water,
     WaterRich,
     #[default]
-    None
+    None,
 }
 impl fmt::Display for AtmosphereType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -315,18 +342,18 @@ impl fmt::Display for AtmosphereType {
     }
 }
 #[derive(Deserialize, Debug, Clone)]
-pub enum Species{
+pub enum Species {
     //Aleoida
     Arcus,
     Coronamus,
     Gravis,
-    #[serde(rename="$Codex_Ent_Aleoids_04_Name;")]
+    #[serde(rename = "$Codex_Ent_Aleoids_04_Name;")]
     Laminiae,
     Spica,
     //Bacterium
     Acies,
     Alcyoneum,
-    #[serde(rename="$Codex_Ent_Bacterial_01_Name;")]
+    #[serde(rename = "$Codex_Ent_Bacterial_01_Name;")]
     Aurasus,
     Bullaris,
     Cerbrus,
@@ -336,13 +363,13 @@ pub enum Species{
     Scopulum,
     Tela,
     Verrata,
-    #[serde(rename="$Codex_Ent_Bacterial_05_Name;")]
+    #[serde(rename = "$Codex_Ent_Bacterial_05_Name;")]
     Vesicula,
     Volu,
     //Cactoida
     Lapis,
     Peperatis,
-    #[serde(rename ="$Codex_Ent_Cactoid_01_Name;")]
+    #[serde(rename = "$Codex_Ent_Cactoid_01_Name;")]
     Cortexum,
     Pullulanta,
     Vermis,
@@ -367,7 +394,7 @@ pub enum Species{
     Extremus,
     Nitris,
     //Fungoida
-    #[serde(rename="$Codex_Ent_Fungoids_03_Name;")]
+    #[serde(rename = "$Codex_Ent_Fungoids_03_Name;")]
     Bullarum,
     Gelata,
     Setisis,
@@ -383,7 +410,7 @@ pub enum Species{
     //Osseus
     Cornibus,
     Discus,
-    #[serde(rename="$Codex_Ent_Osseus_01_Name;")]
+    #[serde(rename = "$Codex_Ent_Osseus_01_Name;")]
     Fractus,
     Pellebantus,
     Pumice,
@@ -395,16 +422,16 @@ pub enum Species{
     Frigus,
     Laminamus,
     Limaxus,
-    #[serde(rename="$Codex_Ent_Stratum_02_Name;")]
+    #[serde(rename = "$Codex_Ent_Stratum_02_Name;")]
     Paleas,
     Tectonicas,
     //Tussock
     Albata,
-    #[serde(rename="$Codex_Ent_Tussocks_15_Name;")]
+    #[serde(rename = "$Codex_Ent_Tussocks_15_Name;")]
     Capillum,
     Caputus,
     Catena,
-    #[serde(rename="$Codex_Ent_Tussocks_04_Name;")]
+    #[serde(rename = "$Codex_Ent_Tussocks_04_Name;")]
     Cultro,
     Divisa,
     Ignis,
@@ -428,11 +455,9 @@ pub enum Species{
     Conifer,
     Rosarium,
     Sororibus,
-
 }
 
-
-impl Display for Species{
+impl Display for Species {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}", self)
     }
@@ -469,115 +494,117 @@ pub enum ExoBiologyVariant {
     Unknown,
     Ocher,
 }
-impl Display for ExoBiologyVariant{
+impl Display for ExoBiologyVariant {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}", self)
     }
 }
 #[derive(Deserialize, Eq, PartialEq)]
-pub enum PlanetClass{
-    #[serde(rename="High metal content body")]
+pub enum PlanetClass {
+    #[serde(rename = "High metal content body")]
     HMC,
-    #[serde(rename="Metal rich body")]
+    #[serde(rename = "Metal rich body")]
     MetalRich,
-    #[serde(rename="Rocky body")]
+    #[serde(rename = "Rocky body")]
     Rocky,
-    #[serde(rename="Icy body")]
+    #[serde(rename = "Icy body")]
     Icy,
-    #[serde(rename="Rocky ice body")]
+    #[serde(rename = "Rocky ice body")]
     RockyIce,
-    #[serde(rename="Sudarsky class I gas giant")]
+    #[serde(rename = "Sudarsky class I gas giant")]
     GasGiantClass1,
-    #[serde(rename="Sudarsky class II gas giant")]
+    #[serde(rename = "Sudarsky class II gas giant")]
     GasGiantClass2,
-    #[serde(rename="Sudarsky class III gas giant")]
+    #[serde(rename = "Sudarsky class III gas giant")]
     GasGiantClass3,
-    #[serde(rename="Sudarsky class IV gas giant")]
+    #[serde(rename = "Sudarsky class IV gas giant")]
     GasGiantClass4,
-    #[serde(rename="Gas giant with water based life")]
+    #[serde(rename = "Gas giant with water based life")]
     GasGiantWBL,
-    #[serde(rename="Gas giant with ammonia based life")]
+    #[serde(rename = "Gas giant with ammonia based life")]
     GasGiantABL,
-    #[serde(rename="Helium rich gas giant")]
+    #[serde(rename = "Helium rich gas giant")]
     GasGiantHeliumRich,
-    #[serde(rename= "Water world")]
+    #[serde(rename = "Water world")]
     WaterWorld,
     #[serde(rename = "Ammonia world")]
     AmmoniaWorld,
+    #[serde(rename = "Helium gas giant")]
+    HeliumGasGiant,
 }
 
 #[derive(Deserialize, Default, Eq, PartialEq, Clone)]
-pub enum Volcanism{
-    #[serde(rename="minor silicate vapour geysers volcanism")]
+pub enum Volcanism {
+    #[serde(rename = "minor silicate vapour geysers volcanism")]
     MinorSilicateVapour,
-    #[serde(rename="major silicate vapour geysers volcanism")]
+    #[serde(rename = "major silicate vapour geysers volcanism")]
     MajorSilicateVapour,
-    #[serde(rename="water geysers volcanism")]
+    #[serde(rename = "water geysers volcanism")]
     WaterGeysers,
-    #[serde(rename="major water geysers volcanism")]
+    #[serde(rename = "major water geysers volcanism")]
     MajorWaterGeysers,
-    #[serde(rename="minor water geysers volcanism")]
+    #[serde(rename = "minor water geysers volcanism")]
     MinorWaterGeysers,
-    #[serde(rename="water magma volcanism")]
+    #[serde(rename = "water magma volcanism")]
     WaterMagma,
-    #[serde(rename="major water magma volcanism")]
+    #[serde(rename = "major water magma volcanism")]
     MajorWaterMagma,
-    #[serde(rename="minor water magma volcanism")]
+    #[serde(rename = "minor water magma volcanism")]
     MinorWaterMagma,
-    #[serde(rename="rocky magma volcanism")]
+    #[serde(rename = "rocky magma volcanism")]
     RockyMagma,
-    #[serde(rename="major rocky magma volcanism")]
+    #[serde(rename = "major rocky magma volcanism")]
     MajorRockyMagma,
-    #[serde(rename="minor rocky magma volcanism")]
+    #[serde(rename = "minor rocky magma volcanism")]
     MinorRockyMagma,
-    #[serde(rename="carbon dioxide geysers volcanism")]
+    #[serde(rename = "carbon dioxide geysers volcanism")]
     CarbonDioxide,
-    #[serde(rename="carbon dioxide geysers volcanism")]
+    #[serde(rename = "carbon dioxide geysers volcanism")]
     MajorCarbonDioxide,
-    #[serde(rename="minor carbon dioxide geysers volcanism")]
+    #[serde(rename = "minor carbon dioxide geysers volcanism")]
     MinorCarbonDioxide,
-    #[serde(rename="methane geysers volcanism")]
+    #[serde(rename = "methane geysers volcanism")]
     Methane,
-    #[serde(rename="minor methane geysers volcanism")]
+    #[serde(rename = "minor methane geysers volcanism")]
     MinorMethane,
-    #[serde(rename="Major methane geysers volcanism")]
+    #[serde(rename = "Major methane geysers volcanism")]
     MajorMethane,
-    #[serde(rename="nitrogen geysers volcanism")]
+    #[serde(rename = "nitrogen geysers volcanism")]
     Nitrogen,
-    #[serde(rename="minor nitrogen geysers volcanism")]
+    #[serde(rename = "minor nitrogen geysers volcanism")]
     MinorNitrogen,
-    #[serde(rename="Major nitrogen geysers volcanism")]
+    #[serde(rename = "Major nitrogen geysers volcanism")]
     MajorNitrogen,
-    #[serde(rename="ammonia geysers volcanism")]
+    #[serde(rename = "ammonia geysers volcanism")]
     Ammonia,
-    #[serde(rename="minor ammonia geysers volcanism")]
+    #[serde(rename = "minor ammonia geysers volcanism")]
     MinorAmmonia,
-    #[serde(rename="Major ammonia geysers volcanism")]
+    #[serde(rename = "Major ammonia geysers volcanism")]
     MajorAmmonia,
-    #[serde(rename="ammonia magma volcanism")]
+    #[serde(rename = "ammonia magma volcanism")]
     AmmoniaMagma,
-    #[serde(rename="minor ammonia magma volcanism")]
+    #[serde(rename = "minor ammonia magma volcanism")]
     MinorAmmoniaMagma,
-    #[serde(rename="major ammonia magma volcanism")]
+    #[serde(rename = "major ammonia magma volcanism")]
     MajorAmmoniaMagma,
-    #[serde(rename="metallic magma volcanism")]
+    #[serde(rename = "metallic magma volcanism")]
     MetallicMagma,
-    #[serde(rename="major metallic magma volcanism")]
+    #[serde(rename = "major metallic magma volcanism")]
     MajorMetallicMagma,
-    #[serde(rename="minor metallic magma volcanism")]
+    #[serde(rename = "minor metallic magma volcanism")]
     MinorMetallicMagma,
     Helium,
     Iron,
-    #[serde(rename="")]
+    #[serde(rename = "")]
     #[default]
     None,
 }
-
 
 #[derive(Debug, Deserialize)]
 pub enum BodyParent {
     Ring(u64),
     Star(u64),
     Null(u64),
-    Planet(u64)
+    Planet(u64),
 }
+
