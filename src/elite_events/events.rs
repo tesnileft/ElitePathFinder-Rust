@@ -1202,6 +1202,8 @@ pub enum Genus {
     Recepta,
     #[serde(rename = "$Codex_Ent_Cactoida_Genus_Name;")]
     Cactoida,
+    #[serde(rename = "$Codex_Ent_Sphere_Name;")]
+    LuteolumAnemone,
 }
 impl Display for Genus {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

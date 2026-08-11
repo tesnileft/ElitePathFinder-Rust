@@ -369,6 +369,8 @@ pub fn get_species_value(species: Species) -> u64 {
         Species::Triticum => 7_774_700,
         Species::Ventusa => 3_227_700,
         Species::Virgam => 14_313_700,
+        //Sphere
+        _ => 696969
     }
 }
 
@@ -445,9 +447,12 @@ pub fn determine_exobio_species(
                 //Omentum - material determinant, requires Nitrogen or Ammonia volcanism
                 if matches!(
                     planet.volcanism.as_ref()?,
-                    Volcanism::Nitrogen
-                        | Volcanism::MajorNitrogen
-                        | Volcanism::MinorNitrogen
+                    Volcanism::NitrogenGeysers
+                        | Volcanism::MajorNitrogenGeysers
+                        | Volcanism::MinorNitrogenGeysers
+                        | Volcanism::NitrogenMagma
+                        | Volcanism::MinorNitrogenMagma
+                        | Volcanism::MajorNitrogenMagma
                         | Volcanism::Ammonia
                         | Volcanism::MajorAmmonia
                         | Volcanism::MinorAmmonia
@@ -1275,13 +1280,6 @@ pub fn determine_exobio_species(
                 //endregion
             }
         }
-        //region Frutexa
-        if let (Some(planet_gravity), Some(atmosphere)) =
-            (planet.gravity, planet.atmosphere.as_ref())
-        {
-
-        }
-        //endregion
         //region Recepta
         if let (Some(planet_gravity), Some(atmosphere), Some(planet_type), Some(materials)) = (
             planet.gravity,
@@ -1426,7 +1424,7 @@ pub fn determine_exobio_species(
             planet.planet_class.as_ref(),
             planet.atmosphere.as_ref(),
         ) {
-            if gravity <= 0.15
+            if gravity/EARTH_GRAVITY <= 0.15
                 && atmosphere.quality.contains(&AtmosphereQuality::Thin)
                 && (160.0..=190.0).contains(&temperature)
             {

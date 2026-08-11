@@ -3,6 +3,8 @@ use std::fmt;
 use std::fmt::Display;
 #[derive(Deserialize)]
 pub enum SignalType {
+    Generic,
+    Codex,
     FleetCarrier,
     NavBeacon,
     Megaship,
@@ -44,10 +46,10 @@ pub enum ShipType {
     Type8,
     #[serde(rename = "python")]
     Python,
-    Python_NX,
-    SmallCombat01_NX,
+    PythonNX,
+    SmallCombat01NX,
     #[serde(rename = "explorer_nx")]
-    Explorer_NX,
+    ExplorerNX,
     Mandalay,
     #[serde(rename = "viper")]
     ViperMkIII,
@@ -251,6 +253,7 @@ pub enum Government {
     Communist,
     #[serde(alias = "$government_Confederacy;")]
     Confederacy,
+    #[serde(alias = "$government_Cooperative;")]
     Cooperative,
     #[serde(alias = "$government_Corporate;")]
     Corporate,
@@ -331,6 +334,8 @@ pub enum AtmosphereType {
     NeonRich,
     Oxygen,
     Ammonia,
+    AmmoniaRich,
+    AmmoniaOxygen,
     Water,
     WaterRich,
     #[default]
@@ -352,19 +357,25 @@ pub enum Species {
     Spica,
     //Bacterium
     Acies,
+    #[serde(rename="$Codex_Ent_Bacterial_06_Name;")]
     Alcyoneum,
     #[serde(rename = "$Codex_Ent_Bacterial_01_Name;")]
     Aurasus,
     Bullaris,
+    #[serde(rename="$Codex_Ent_Bacterial_12_Name;s")]
     Cerbrus,
+    #[serde(rename="$Codex_Ent_Bacterial_08_Name;")]
     Informem,
     Nebulus,
+    #[serde(rename="$Codex_Ent_Bacterial_11_Name;")]
     Omentum,
     Scopulum,
+    #[serde(rename = "$Codex_Ent_Bacterial_07_Name;")]
     Tela,
     Verrata,
     #[serde(rename = "$Codex_Ent_Bacterial_05_Name;")]
     Vesicula,
+    #[serde(rename = "$Codex_Ent_Bacterial_09_Name;")]
     Volu,
     //Cactoida
     Lapis,
@@ -376,6 +387,7 @@ pub enum Species {
     //Concha
     Aureolas,
     Biconcavis,
+    #[serde(rename="$Codex_Ent_Conchas_03_Name;")]
     Labiata,
     Renibus,
     //Electricae
@@ -392,18 +404,22 @@ pub enum Species {
     Aquatis,
     Carbosis,
     Extremus,
+    #[serde(rename="$Codex_Ent_Fumerolas_03_Name;")]
     Nitris,
     //Fungoida
     #[serde(rename = "$Codex_Ent_Fungoids_03_Name;")]
     Bullarum,
     Gelata,
+    #[serde(rename="$Codex_Ent_Fungoids_01_Name;")]
     Setisis,
     Stabitis,
     //Frutexa
+    #[serde(rename = "$Codex_Ent_Shrubs_02_Name;")]
     Acus,
     Collum,
     Fera,
     Flabellum,
+    #[serde(rename="$Codex_Ent_Shrubs_04_Name;")]
     Flammasis,
     Metallicum,
     Sponsae,
@@ -417,7 +433,9 @@ pub enum Species {
     Spiralis,
     //Stratum
     Araneamus,
+    #[serde(rename="$Codex_Ent_Stratum_06_Name;")]
     Cucumisis,
+    #[serde(rename="$Codex_Ent_Stratum_01_Name;")]
     Excutitus,
     Frigus,
     Laminamus,
@@ -450,11 +468,16 @@ pub enum Species {
     Deltahedronix,
     Umbrux,
     //Tubus
+    #[serde(rename="$Codex_Ent_Tubus_03_Name;")]
     Cavas,
+    #[serde(rename="$Codex_Ent_Tubus_05_Name;")]
     Compagibus,
     Conifer,
     Rosarium,
     Sororibus,
+    //Anemone
+    #[serde(rename="$Codex_Ent_SphereEFGH_02_Name;")]
+    Prasinum,
 }
 
 impl Display for Species {
@@ -519,18 +542,25 @@ pub enum PlanetClass {
     GasGiantClass3,
     #[serde(rename = "Sudarsky class IV gas giant")]
     GasGiantClass4,
+    #[serde(rename = "Sudarsky class V gas giant")]
+    GasGiantClass5,
+    #[serde(rename = "Water giant")]
+    WaterGiant,
     #[serde(rename = "Gas giant with water based life")]
     GasGiantWBL,
     #[serde(rename = "Gas giant with ammonia based life")]
     GasGiantABL,
     #[serde(rename = "Helium rich gas giant")]
     GasGiantHeliumRich,
+    #[serde(rename = "Helium gas giant")]
+    HeliumGasGiant,
     #[serde(rename = "Water world")]
     WaterWorld,
     #[serde(rename = "Ammonia world")]
     AmmoniaWorld,
-    #[serde(rename = "Helium gas giant")]
-    HeliumGasGiant,
+    #[serde(rename = "Earthlike body")]
+    ELW,
+
 }
 
 #[derive(Deserialize, Default, Eq, PartialEq, Clone)]
@@ -569,12 +599,24 @@ pub enum Volcanism {
     MinorMethane,
     #[serde(rename = "Major methane geysers volcanism")]
     MajorMethane,
+    #[serde(rename="methane magma volcanism")]
+    MethaneMagma,
+    #[serde(rename="minor methane magma volcanism")]
+    MinorMethaneMagma,
+    #[serde(rename="major methane magma volcanism")]
+    MajorMethaneMagma,
     #[serde(rename = "nitrogen geysers volcanism")]
-    Nitrogen,
+    NitrogenGeysers,
     #[serde(rename = "minor nitrogen geysers volcanism")]
-    MinorNitrogen,
-    #[serde(rename = "Major nitrogen geysers volcanism")]
-    MajorNitrogen,
+    MinorNitrogenGeysers,
+    #[serde(rename = "major nitrogen geysers volcanism")]
+    MajorNitrogenGeysers,
+    #[serde(rename = "nitrogen magma volcanism")]
+    NitrogenMagma,
+    #[serde(rename = "minor nitrogen magma volcanism")]
+    MinorNitrogenMagma,
+    #[serde(rename = "major nitrogen magma volcanism")]
+    MajorNitrogenMagma,
     #[serde(rename = "ammonia geysers volcanism")]
     Ammonia,
     #[serde(rename = "minor ammonia geysers volcanism")]
