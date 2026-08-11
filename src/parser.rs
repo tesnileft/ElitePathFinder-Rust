@@ -1,7 +1,20 @@
-use crate::elite_events::events::*;
+use crate::elite_journal_data::events::*;
 use serde::Deserialize;
 use serde_json::{Result, Value};
 use std::io::prelude::*;
+use crate::elite_journal_data::events::*;
+use crate::elite_journal_data::events::commander::*;
+use crate::elite_journal_data::events::fsd::*;
+use crate::elite_journal_data::events::fss::*;
+use crate::elite_journal_data::events::game_state::*;
+use crate::elite_journal_data::events::inventory::*;
+use crate::elite_journal_data::events::missions::*;
+use crate::elite_journal_data::events::planetary::*;
+use crate::elite_journal_data::events::scans::*;
+use crate::elite_journal_data::events::ship::*;
+use crate::elite_journal_data::events::shipyard::*;
+use crate::elite_journal_data::events::social::*;
+use crate::elite_journal_data::events::station::*;
 
 //endregion
 #[derive(Deserialize)]
@@ -45,8 +58,11 @@ pub enum EliteEvent {
     ShipTargeted(ShipTargeted),
     Shipyard(Shipyard),
     StoredShips(StoredShips),
+    StoredModules(StoredModules),
     ShipyardTransfer(ShipyardTransfer),
     ShipyardSwap(ShipyardSwap),
+    Repair(Repair),
+    RepairAll(RepairAll),
     Embark(Embark),
     Disembark(Disembark),
     LaunchFighter(LaunchFighter),
@@ -60,20 +76,24 @@ pub enum EliteEvent {
     ReceiveText(ReceiveText),
     Friends(Friends),
     WingInvite(WingInvite),
+    WingJoin(WingJoin),
     WingAdd(WingAdd),
     WingLeave(WingLeave),
     SquadronStartup(SquadronStartup),
     CommunityGoal(CommunityGoal),
+    CommunityGoalReward(CommunityGoalReward),
     Rank(Rank),
     Progress(Progress),
     Reputation(Reputation),
     Powerplay(Powerplay),
     Missions(Missions),
+    MissionAccepted(MissionAccepted),
     EngineerProgress(EngineerProgress),
     Cargo(Cargo),
     CodexEntry(CodexEntry),
     ScanOrganic(ScanOrganic),
     UnderAttack(UnderAttack),
+    Scanned(Scanned),
 }
 pub fn parse_logstring(log: String) -> Result<Vec<EliteEvent>> {
     let mut events: Vec<EliteEvent> = Vec::new();

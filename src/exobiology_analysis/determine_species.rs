@@ -1,14 +1,19 @@
+use crate::custom_structs::exobiospecies::ExoBiologySpecies;
 use crate::custom_structs::system_info::{AtmosphereQuality, Body, Planet, Star};
-use crate::elite_events::enums::ExoBiologyVariant::Emerald;
-use crate::elite_events::enums::Volcanism::Methane;
-use crate::elite_events::enums::{AtmosphereType, BodyParent, PlanetClass, StarClass, Volcanism};
-use crate::elite_events::events::Genus::{Bacterium, Cactoida, Concha, Fonticulua, Frutexa, Fungoida, Osseus, Recepta, Stratum, Tubus, Tussock};
-use crate::elite_events::events::RawMaterial::{
+use crate::elite_journal_data::enums::body_data::{AtmosphereType, BodyParent, PlanetClass, RawMaterial, StarClass};
+use crate::elite_journal_data::enums::exobiology::{ExoBiologyVariant, Species};
+use crate::elite_journal_data::enums::body_data::RawMaterial::{
     Antimony, Cadmium, Mercury, Molybdenum, Niobium, Polonium, Ruthenium, Technetium, Tellurium,
     Tin, Tungsten, Yttrium,
 };
-use crate::{ExoBiologySpecies, ExoBiologyVariant, Species, StarSystem, check_material};
-use gdk::keys::constants::at;
+use crate::exobiology_analysis::species::bacterium::predict_bacterium;
+use crate::{StarSystem};
+use crate::custom_structs::materials::PlanetRawMaterial;
+use crate::elite_journal_data::enums::exobiology::Genus::*;
+
+pub fn check_material(materials: &Vec<PlanetRawMaterial>, checkmaterial: RawMaterial) -> bool {
+    materials.iter().any(|m| m.material == checkmaterial)
+}
 
 fn bacterium_stellar_variant(class: &StarClass) -> ExoBiologyVariant {
     match class {
@@ -231,7 +236,7 @@ fn recepta_stellar_variant(class: &StarClass) -> ExoBiologyVariant {
         | StarClass::DAV
         | StarClass::DBV
         | StarClass::DCV => ExoBiologyVariant::Yellow,
-        StarClass::N => Emerald,
+        StarClass::N => ExoBiologyVariant::Emerald,
         _ => ExoBiologyVariant::Unknown,
     }
 }
@@ -267,12 +272,25 @@ fn find_parent_star<'a>(system: &'a StarSystem, planet: &Planet) -> Option<&'a S
     let parents = planet.parents.as_ref()?;
     for p in parents {
         if let BodyParent::Star(star_id) = p {
-            if let Some(Body::Star(star)) = system.bodies.get(star_id) {
+            if let Some(Body::Star(star)) = system.bodies.get(&star_id) {
                 return Some(star);
             }
         }
     }
     None
+}
+
+fn find_parent_stars<'a>(system: &'a StarSystem, planet: &Planet) -> Vec<&'a Star> {
+    let mut stars = Vec::new();
+    for p in planet.parents.as_ref().unwrap() {
+        if let BodyParent::Star(star_id) = p {
+            match system.bodies.get(&star_id) {
+                Some(Body::Star(star)) => {stars.push(star)}
+                _ => {}
+            }
+        }
+    }
+    stars
 }
 
 pub fn get_species_value(species: Species) -> u64 {
@@ -381,270 +399,273 @@ pub fn determine_exobio_species(
     let body = &system.bodies[&body_id];
     let mut exobios: Vec<ExoBiologySpecies> = Vec::new();
     const EARTH_GRAVITY: f64 = 9.81;
-    if let Body::Planet(planet) = body {
-        //region Bacterium
-        if matches!(
-            planet.volcanism.as_ref().clone()?, //Excludes others
-            Volcanism::Helium
-                | Volcanism::Iron
-                | Volcanism::MajorSilicateVapour
-                | Volcanism::MinorSilicateVapour
-        ) {
-            //Tela
-            let materials = planet.materials.as_ref()?;
-            let variant = match () {
-                _ if check_material(materials, Cadmium) => ExoBiologyVariant::Gold,
-                _ if check_material(materials, Mercury) => ExoBiologyVariant::Orange,
-                _ if check_material(materials, Molybdenum) => ExoBiologyVariant::Yellow,
-                _ if check_material(materials, Niobium) => ExoBiologyVariant::Magenta,
-                _ if check_material(materials, Tungsten) => ExoBiologyVariant::Green,
-                _ if check_material(materials, Tin) => ExoBiologyVariant::Cobalt,
-                _ => ExoBiologyVariant::Unknown,
-            };
-            exobios.push(ExoBiologySpecies {
-                genus: Bacterium,
-                species: Species::Tela,
-                variants: vec![variant],
-            });
-        }
-        match &planet.atmosphere.as_ref()?.atmosphere_type {
-            AtmosphereType::Helium => {
-                if let Some(materials) = planet.materials.as_ref() {
-                    let variant = match () {
-                        _ if check_material(materials, Antimony) => ExoBiologyVariant::Magenta,
-                        _ if check_material(materials, Polonium) => ExoBiologyVariant::Gold,
-                        _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Orange,
-                        _ if check_material(materials, Technetium) => ExoBiologyVariant::Cyan,
-                        _ if check_material(materials, Tellurium) => ExoBiologyVariant::Green,
-                        _ if check_material(materials, Yttrium) => ExoBiologyVariant::Cobalt,
-                        _ => ExoBiologyVariant::Unknown,
-                    };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Nebulus,
-                        variants: vec![variant],
-                    });
-                }
-            }
-            AtmosphereType::Neon | AtmosphereType::NeonRich => {
-                if let Some(materials) = planet.materials.as_ref() {
-                    let variant = match () {
-                        _ if check_material(materials, Antimony) => ExoBiologyVariant::Cyan,
-                        _ if check_material(materials, Polonium) => ExoBiologyVariant::Magenta,
-                        _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Cobalt,
-                        _ if check_material(materials, Technetium) => ExoBiologyVariant::Lime,
-                        _ if check_material(materials, Tellurium) => ExoBiologyVariant::White,
-                        _ if check_material(materials, Yttrium) => ExoBiologyVariant::Aquamarine,
-                        _ => ExoBiologyVariant::Unknown,
-                    };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Acies,
-                        variants: vec![variant],
-                    });
-                }
+    if let (Body::Planet(planet)) = (body) {
+        let parent_star_types = find_parent_stars(system, planet);
+        exobios.append(&mut predict_bacterium(planet, parent_star_types));
 
-                //Omentum - material determinant, requires Nitrogen or Ammonia volcanism
-                if matches!(
-                    planet.volcanism.as_ref()?,
-                    Volcanism::NitrogenGeysers
-                        | Volcanism::MajorNitrogenGeysers
-                        | Volcanism::MinorNitrogenGeysers
-                        | Volcanism::NitrogenMagma
-                        | Volcanism::MinorNitrogenMagma
-                        | Volcanism::MajorNitrogenMagma
-                        | Volcanism::Ammonia
-                        | Volcanism::MajorAmmonia
-                        | Volcanism::MinorAmmonia
-                ) {
-                    if let Some(materials) = planet.materials.as_ref() {
-                        let variant = match () {
-                            _ if check_material(materials, Cadmium) => ExoBiologyVariant::Lime,
-                            _ if check_material(materials, Mercury) => ExoBiologyVariant::White,
-                            _ if check_material(materials, Molybdenum) => {
-                                ExoBiologyVariant::Aquamarine
-                            }
-                            _ if check_material(materials, Niobium) => ExoBiologyVariant::Peach,
-                            _ if check_material(materials, Tin) => ExoBiologyVariant::Red,
-                            _ if check_material(materials, Tungsten) => ExoBiologyVariant::Blue,
-                            _ => ExoBiologyVariant::Unknown,
-                        };
-                        exobios.push(ExoBiologySpecies {
-                            genus: Bacterium,
-                            species: Species::Omentum,
-                            variants: vec![variant],
-                        });
-                    }
-                }
-
-                //Scopulum - material determinant, requires Carbon(dioxide) or Methane volcanism
-                if matches!(
-                    planet.volcanism.as_ref()?,
-                    Volcanism::CarbonDioxide
-                        | Volcanism::MajorCarbonDioxide
-                        | Volcanism::MinorCarbonDioxide
-                        | Volcanism::Methane
-                        | Volcanism::MajorMethane
-                        | Volcanism::MinorMethane
-                ) {
-                    if let Some(materials) = planet.materials.as_ref() {
-                        let variant = match () {
-                            _ if check_material(materials, Cadmium) => ExoBiologyVariant::White,
-                            _ if check_material(materials, Mercury) => ExoBiologyVariant::Peach,
-                            _ if check_material(materials, Molybdenum) => ExoBiologyVariant::Lime,
-                            _ if check_material(materials, Niobium) => ExoBiologyVariant::Red,
-                            _ if check_material(materials, Tin) => ExoBiologyVariant::Mulberry,
-                            _ if check_material(materials, Tungsten) => {
-                                ExoBiologyVariant::Aquamarine
-                            }
-                            _ => ExoBiologyVariant::Unknown,
-                        };
-                        exobios.push(ExoBiologySpecies {
-                            genus: Bacterium,
-                            species: Species::Scopulum,
-                            variants: vec![variant],
-                        });
-                    }
-                }
-
-                //Verrata - material determinant, requires Water volcanism
-                if matches!(
-                    planet.volcanism.as_ref()?,
-                    Volcanism::WaterGeysers
-                        | Volcanism::MajorWaterGeysers
-                        | Volcanism::MinorWaterGeysers
-                ) {
-                    if let Some(materials) = planet.materials.as_ref() {
-                        let variant = match () {
-                            _ if check_material(materials, Cadmium) => ExoBiologyVariant::Peach,
-                            _ if check_material(materials, Mercury) => ExoBiologyVariant::Red,
-                            _ if check_material(materials, Molybdenum) => ExoBiologyVariant::White,
-                            _ if check_material(materials, Niobium) => ExoBiologyVariant::Mulberry,
-                            _ if check_material(materials, Tin) => ExoBiologyVariant::Blue,
-                            _ if check_material(materials, Tungsten) => ExoBiologyVariant::Lime,
-                            _ => ExoBiologyVariant::Unknown,
-                        };
-                        exobios.push(ExoBiologySpecies {
-                            genus: Bacterium,
-                            species: Species::Verrata,
-                            variants: vec![variant],
-                        });
-                    }
-                }
-            }
-
-            AtmosphereType::Methane | AtmosphereType::MethaneRich => {
-                //Bullaris
-                if let Some(materials) = planet.materials.as_ref() {
-                    let variant = match () {
-                        _ if check_material(materials, Antimony) => ExoBiologyVariant::Cobalt,
-                        _ if check_material(materials, Polonium) => ExoBiologyVariant::Yellow,
-                        _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Aquamarine,
-                        _ if check_material(materials, Technetium) => ExoBiologyVariant::Gold,
-                        _ if check_material(materials, Tellurium) => ExoBiologyVariant::Lime,
-                        _ if check_material(materials, Yttrium) => ExoBiologyVariant::Red,
-                        _ => ExoBiologyVariant::Unknown,
-                    };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Bullaris,
-                        variants: vec![variant],
-                    });
-                }
-            }
-            AtmosphereType::Argon | AtmosphereType::ArgonRich => {
-                //Vesicula
-                if let Some(materials) = planet.materials.as_ref() {
-                    let variant = match () {
-                        _ if check_material(materials, Antimony) => ExoBiologyVariant::Cyan,
-                        _ if check_material(materials, Polonium) => ExoBiologyVariant::Orange,
-                        _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Mulberry,
-                        _ if check_material(materials, Technetium) => ExoBiologyVariant::Gold,
-                        _ if check_material(materials, Tellurium) => ExoBiologyVariant::Red,
-                        _ if check_material(materials, Yttrium) => ExoBiologyVariant::Lime,
-                        _ => ExoBiologyVariant::Unknown,
-                    };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Vesicula,
-                        variants: vec![variant],
-                    });
-                }
-            }
-            AtmosphereType::Nitrogen => {
-                //Informem
-                if let Some(materials) = planet.materials.as_ref() {
-                    let variant = match () {
-                        _ if check_material(materials, Antimony) => ExoBiologyVariant::Red,
-                        _ if check_material(materials, Polonium) => ExoBiologyVariant::Lime,
-                        _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Gold,
-                        _ if check_material(materials, Technetium) => ExoBiologyVariant::Aquamarine,
-                        _ if check_material(materials, Tellurium) => ExoBiologyVariant::Yellow,
-                        _ if check_material(materials, Yttrium) => ExoBiologyVariant::Cobalt,
-                        _ => ExoBiologyVariant::Unknown,
-                    };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Informem,
-                        variants: vec![variant],
-                    });
-                }
-            }
-            AtmosphereType::Oxygen => {
-                //Volu
-                if let Some(materials) = planet.materials.as_ref() {
-                    let variant = match () {
-                        _ if check_material(materials, Antimony) => ExoBiologyVariant::Red,
-                        _ if check_material(materials, Polonium) => ExoBiologyVariant::Aquamarine,
-                        _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Cobalt,
-                        _ if check_material(materials, Technetium) => ExoBiologyVariant::Lime,
-                        _ if check_material(materials, Tellurium) => ExoBiologyVariant::Cyan,
-                        _ if check_material(materials, Yttrium) => ExoBiologyVariant::Gold,
-                        _ => ExoBiologyVariant::Unknown,
-                    };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Volu,
-                        variants: vec![variant],
-                    });
-                }
-            }
-            AtmosphereType::Ammonia => {
-                //Alcyoneum
-                if let Some(star) = find_parent_star(system, planet) {
-                    let variant = bacterium_stellar_variant(&star.class);
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Alcyoneum,
-                        variants: vec![variant],
-                    });
-                }
-            }
-            AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich => {
-                //Aurasus
-                if let Some(star) = find_parent_star(system, planet) {
-                    let variant = bacterium_stellar_variant(&star.class);
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Aurasus,
-                        variants: vec![variant],
-                    });
-                }
-            }
-            AtmosphereType::Water | AtmosphereType::WaterRich | AtmosphereType::SulphurDioxide => {
-                //Cerbrus
-                if let Some(star) = find_parent_star(system, planet) {
-                    let variant = bacterium_stellar_variant(&star.class);
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Cerbrus,
-                        variants: vec![variant],
-                    });
-                }
-            }
-            _ => {}
-        }
-        //endregion
+        // //region Bacterium
+        // if matches!(
+        //     planet.volcanism.as_ref().clone()?, //Excludes others
+        //     Volcanism::Helium
+        //         | Volcanism::Iron
+        //         | Volcanism::MajorSilicateVapour
+        //         | Volcanism::MinorSilicateVapour
+        // ) {
+        //     //Tela
+        //     let materials = planet.materials.as_ref()?;
+        //     let variant = match () {
+        //         _ if check_material(materials, Cadmium) => ExoBiologyVariant::Gold,
+        //         _ if check_material(materials, Mercury) => ExoBiologyVariant::Orange,
+        //         _ if check_material(materials, Molybdenum) => ExoBiologyVariant::Yellow,
+        //         _ if check_material(materials, Niobium) => ExoBiologyVariant::Magenta,
+        //         _ if check_material(materials, Tungsten) => ExoBiologyVariant::Green,
+        //         _ if check_material(materials, Tin) => ExoBiologyVariant::Cobalt,
+        //         _ => ExoBiologyVariant::Unknown,
+        //     };
+        //     exobios.push(ExoBiologySpecies {
+        //         genus: Bacterium,
+        //         species: Species::Tela,
+        //         variants: vec![variant],
+        //     });
+        // }
+        // match &planet.atmosphere.as_ref()?.atmosphere_type {
+        //     AtmosphereType::Helium => {
+        //         if let Some(materials) = planet.materials.as_ref() {
+        //             let variant = match () {
+        //                 _ if check_material(materials, Antimony) => ExoBiologyVariant::Magenta,
+        //                 _ if check_material(materials, Polonium) => ExoBiologyVariant::Gold,
+        //                 _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Orange,
+        //                 _ if check_material(materials, Technetium) => ExoBiologyVariant::Cyan,
+        //                 _ if check_material(materials, Tellurium) => ExoBiologyVariant::Green,
+        //                 _ if check_material(materials, Yttrium) => ExoBiologyVariant::Cobalt,
+        //                 _ => ExoBiologyVariant::Unknown,
+        //             };
+        //             exobios.push(ExoBiologySpecies {
+        //                 genus: Bacterium,
+        //                 species: Species::Nebulus,
+        //                 variants: vec![variant],
+        //             });
+        //         }
+        //     }
+        //     AtmosphereType::Neon | AtmosphereType::NeonRich => {
+        //         if let Some(materials) = planet.materials.as_ref() {
+        //             let variant = match () {
+        //                 _ if check_material(materials, Antimony) => ExoBiologyVariant::Cyan,
+        //                 _ if check_material(materials, Polonium) => ExoBiologyVariant::Magenta,
+        //                 _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Cobalt,
+        //                 _ if check_material(materials, Technetium) => ExoBiologyVariant::Lime,
+        //                 _ if check_material(materials, Tellurium) => ExoBiologyVariant::White,
+        //                 _ if check_material(materials, Yttrium) => ExoBiologyVariant::Aquamarine,
+        //                 _ => ExoBiologyVariant::Unknown,
+        //             };
+        //             exobios.push(ExoBiologySpecies {
+        //                 genus: Bacterium,
+        //                 species: Species::Acies,
+        //                 variants: vec![variant],
+        //             });
+        //         }
+        // 
+        //         //Omentum - material determinant, requires Nitrogen or Ammonia volcanism
+        //         if matches!(
+        //             planet.volcanism.as_ref()?,
+        //             Volcanism::NitrogenGeysers
+        //                 | Volcanism::MajorNitrogenGeysers
+        //                 | Volcanism::MinorNitrogenGeysers
+        //                 | Volcanism::NitrogenMagma
+        //                 | Volcanism::MinorNitrogenMagma
+        //                 | Volcanism::MajorNitrogenMagma
+        //                 | Volcanism::Ammonia
+        //                 | Volcanism::MajorAmmonia
+        //                 | Volcanism::MinorAmmonia
+        //         ) {
+        //             if let Some(materials) = planet.materials.as_ref() {
+        //                 let variant = match () {
+        //                     _ if check_material(materials, Cadmium) => ExoBiologyVariant::Lime,
+        //                     _ if check_material(materials, Mercury) => ExoBiologyVariant::White,
+        //                     _ if check_material(materials, Molybdenum) => {
+        //                         ExoBiologyVariant::Aquamarine
+        //                     }
+        //                     _ if check_material(materials, Niobium) => ExoBiologyVariant::Peach,
+        //                     _ if check_material(materials, Tin) => ExoBiologyVariant::Red,
+        //                     _ if check_material(materials, Tungsten) => ExoBiologyVariant::Blue,
+        //                     _ => ExoBiologyVariant::Unknown,
+        //                 };
+        //                 exobios.push(ExoBiologySpecies {
+        //                     genus: Bacterium,
+        //                     species: Species::Omentum,
+        //                     variants: vec![variant],
+        //                 });
+        //             }
+        //         }
+        // 
+        //         //Scopulum - material determinant, requires Carbon(dioxide) or Methane volcanism
+        //         if matches!(
+        //             planet.volcanism.as_ref()?,
+        //             Volcanism::CarbonDioxide
+        //                 | Volcanism::MajorCarbonDioxide
+        //                 | Volcanism::MinorCarbonDioxide
+        //                 | Volcanism::Methane
+        //                 | Volcanism::MajorMethane
+        //                 | Volcanism::MinorMethane
+        //         ) {
+        //             if let Some(materials) = planet.materials.as_ref() {
+        //                 let variant = match () {
+        //                     _ if check_material(materials, Cadmium) => ExoBiologyVariant::White,
+        //                     _ if check_material(materials, Mercury) => ExoBiologyVariant::Peach,
+        //                     _ if check_material(materials, Molybdenum) => ExoBiologyVariant::Lime,
+        //                     _ if check_material(materials, Niobium) => ExoBiologyVariant::Red,
+        //                     _ if check_material(materials, Tin) => ExoBiologyVariant::Mulberry,
+        //                     _ if check_material(materials, Tungsten) => {
+        //                         ExoBiologyVariant::Aquamarine
+        //                     }
+        //                     _ => ExoBiologyVariant::Unknown,
+        //                 };
+        //                 exobios.push(ExoBiologySpecies {
+        //                     genus: Bacterium,
+        //                     species: Species::Scopulum,
+        //                     variants: vec![variant],
+        //                 });
+        //             }
+        //         }
+        // 
+        //         //Verrata - material determinant, requires Water volcanism
+        //         if matches!(
+        //             planet.volcanism.as_ref()?,
+        //             Volcanism::WaterGeysers
+        //                 | Volcanism::MajorWaterGeysers
+        //                 | Volcanism::MinorWaterGeysers
+        //         ) {
+        //             if let Some(materials) = planet.materials.as_ref() {
+        //                 let variant = match () {
+        //                     _ if check_material(materials, Cadmium) => ExoBiologyVariant::Peach,
+        //                     _ if check_material(materials, Mercury) => ExoBiologyVariant::Red,
+        //                     _ if check_material(materials, Molybdenum) => ExoBiologyVariant::White,
+        //                     _ if check_material(materials, Niobium) => ExoBiologyVariant::Mulberry,
+        //                     _ if check_material(materials, Tin) => ExoBiologyVariant::Blue,
+        //                     _ if check_material(materials, Tungsten) => ExoBiologyVariant::Lime,
+        //                     _ => ExoBiologyVariant::Unknown,
+        //                 };
+        //                 exobios.push(ExoBiologySpecies {
+        //                     genus: Bacterium,
+        //                     species: Species::Verrata,
+        //                     variants: vec![variant],
+        //                 });
+        //             }
+        //         }
+        //     }
+        // 
+        //     AtmosphereType::Methane | AtmosphereType::MethaneRich => {
+        //         //Bullaris
+        //         if let Some(materials) = planet.materials.as_ref() {
+        //             let variant = match () {
+        //                 _ if check_material(materials, Antimony) => ExoBiologyVariant::Cobalt,
+        //                 _ if check_material(materials, Polonium) => ExoBiologyVariant::Yellow,
+        //                 _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Aquamarine,
+        //                 _ if check_material(materials, Technetium) => ExoBiologyVariant::Gold,
+        //                 _ if check_material(materials, Tellurium) => ExoBiologyVariant::Lime,
+        //                 _ if check_material(materials, Yttrium) => ExoBiologyVariant::Red,
+        //                 _ => ExoBiologyVariant::Unknown,
+        //             };
+        //             exobios.push(ExoBiologySpecies {
+        //                 genus: Bacterium,
+        //                 species: Species::Bullaris,
+        //                 variants: vec![variant],
+        //             });
+        //         }
+        //     }
+        //     AtmosphereType::Argon | AtmosphereType::ArgonRich => {
+        //         //Vesicula
+        //         if let Some(materials) = planet.materials.as_ref() {
+        //             let variant = match () {
+        //                 _ if check_material(materials, Antimony) => ExoBiologyVariant::Cyan,
+        //                 _ if check_material(materials, Polonium) => ExoBiologyVariant::Orange,
+        //                 _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Mulberry,
+        //                 _ if check_material(materials, Technetium) => ExoBiologyVariant::Gold,
+        //                 _ if check_material(materials, Tellurium) => ExoBiologyVariant::Red,
+        //                 _ if check_material(materials, Yttrium) => ExoBiologyVariant::Lime,
+        //                 _ => ExoBiologyVariant::Unknown,
+        //             };
+        //             exobios.push(ExoBiologySpecies {
+        //                 genus: Bacterium,
+        //                 species: Species::Vesicula,
+        //                 variants: vec![variant],
+        //             });
+        //         }
+        //     }
+        //     AtmosphereType::Nitrogen => {
+        //         //Informem
+        //         if let Some(materials) = planet.materials.as_ref() {
+        //             let variant = match () {
+        //                 _ if check_material(materials, Antimony) => ExoBiologyVariant::Red,
+        //                 _ if check_material(materials, Polonium) => ExoBiologyVariant::Lime,
+        //                 _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Gold,
+        //                 _ if check_material(materials, Technetium) => ExoBiologyVariant::Aquamarine,
+        //                 _ if check_material(materials, Tellurium) => ExoBiologyVariant::Yellow,
+        //                 _ if check_material(materials, Yttrium) => ExoBiologyVariant::Cobalt,
+        //                 _ => ExoBiologyVariant::Unknown,
+        //             };
+        //             exobios.push(ExoBiologySpecies {
+        //                 genus: Bacterium,
+        //                 species: Species::Informem,
+        //                 variants: vec![variant],
+        //             });
+        //         }
+        //     }
+        //     AtmosphereType::Oxygen => {
+        //         //Volu
+        //         if let Some(materials) = planet.materials.as_ref() {
+        //             let variant = match () {
+        //                 _ if check_material(materials, Antimony) => ExoBiologyVariant::Red,
+        //                 _ if check_material(materials, Polonium) => ExoBiologyVariant::Aquamarine,
+        //                 _ if check_material(materials, Ruthenium) => ExoBiologyVariant::Cobalt,
+        //                 _ if check_material(materials, Technetium) => ExoBiologyVariant::Lime,
+        //                 _ if check_material(materials, Tellurium) => ExoBiologyVariant::Cyan,
+        //                 _ if check_material(materials, Yttrium) => ExoBiologyVariant::Gold,
+        //                 _ => ExoBiologyVariant::Unknown,
+        //             };
+        //             exobios.push(ExoBiologySpecies {
+        //                 genus: Bacterium,
+        //                 species: Species::Volu,
+        //                 variants: vec![variant],
+        //             });
+        //         }
+        //     }
+        //     AtmosphereType::Ammonia => {
+        //         //Alcyoneum
+        //         if let Some(star) = find_parent_star(system, planet) {
+        //             let variant = bacterium_stellar_variant(&star.class);
+        //             exobios.push(ExoBiologySpecies {
+        //                 genus: Bacterium,
+        //                 species: Species::Alcyoneum,
+        //                 variants: vec![variant],
+        //             });
+        //         }
+        //     }
+        //     AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich => {
+        //         //Aurasus
+        //         if let Some(star) = find_parent_star(system, planet) {
+        //             let variant = bacterium_stellar_variant(&star.class);
+        //             exobios.push(ExoBiologySpecies {
+        //                 genus: Bacterium,
+        //                 species: Species::Aurasus,
+        //                 variants: vec![variant],
+        //             });
+        //         }
+        //     }
+        //     AtmosphereType::Water | AtmosphereType::WaterRich | AtmosphereType::SulphurDioxide => {
+        //         //Cerbrus
+        //         if let Some(star) = find_parent_star(system, planet) {
+        //             let variant = bacterium_stellar_variant(&star.class);
+        //             exobios.push(ExoBiologySpecies {
+        //                 genus: Bacterium,
+        //                 species: Species::Cerbrus,
+        //                 variants: vec![variant],
+        //             });
+        //         }
+        //     }
+        //     _ => {}
+        // }
+        // //endregion
         //region Stratum
         if let (Some(planet_class), Some(temperature), Some(atmosphere)) = (
             planet.planet_class.as_ref(),

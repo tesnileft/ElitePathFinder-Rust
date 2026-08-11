@@ -1,0 +1,12 @@
+pub mod social;
+pub mod fsd;
+pub mod game_state;
+pub mod scans;
+pub mod fss;
+pub mod inventory;
+pub mod station;
+pub mod planetary;
+pub mod shipyard;
+pub mod missions;
+pub mod ship;
+pub mod commander;

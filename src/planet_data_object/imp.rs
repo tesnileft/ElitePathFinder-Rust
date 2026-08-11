@@ -3,7 +3,7 @@ use glib::Properties;
 use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
-use crate::elite_events::enums::AtmosphereType;
+use crate::elite_journal_data::enums::body_data::AtmosphereType;
 use super::PlanetData;
 
 // Object holding the state

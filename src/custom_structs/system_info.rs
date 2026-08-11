@@ -1,15 +1,15 @@
-use std::fmt::Display;
-use crate::elite_events::enums::{AtmosphereType, BodyParent, PlanetClass, StarClass, Volcanism};
-use crate::elite_events::substructs::{AtmosphericGas, BodyComposition};
-use crate::{ExoBiologySpecies, GeologicalThings};
+use crate::GeologicalThings;
+use crate::custom_structs::exobiospecies::{ExoBiologySpecies, exobio_species_to_string};
 use crate::custom_structs::materials::PlanetRawMaterial;
-use crate::exobio_analysis::get_species_value;
+use crate::elite_journal_data::enums::body_data::{AtmosphereType, BodyParent, PlanetClass, StarClass, Volcanism};
+use std::fmt::Display;
+use crate::elite_journal_data::substructs::body_data::{AtmosphericGas, BodyComposition};
 
-pub enum Body{
+pub enum Body {
     Star(Star),
     Planet(Planet),
 }
-pub struct Star{
+pub struct Star {
     pub body_name: String,
     pub body_id: u64,
     pub class: StarClass,
@@ -118,16 +118,4 @@ impl Display for Planet {
         write!(f, "{}", string)
     }
 }
-fn exobio_species_to_string(species: &Vec<ExoBiologySpecies>)-> String {
-    let mut string = String::new();
-    species.into_iter().for_each(|bio| {
-        string.push_str(&format!(" {} ", bio.to_string().as_str()));
-        bio.variants.iter().for_each(|variant| {
-            string.push_str(&format!("/ {} ", variant.to_string()));
-        });
-        string.push_str("/ ");
-        string.push_str(&format!("¢{} \n", get_species_value(bio.species.clone())));
 
-    });
-    string
-}

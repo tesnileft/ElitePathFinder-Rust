@@ -1,55 +1,51 @@
-use std::default::Default;
-use gtk::{Application, Label, gio, glib, SignalListItemFactory};
-use gtk::{Entry, prelude::*};
-use rusqlite::Connection;
-use serde::Deserialize;
-use std::collections::HashMap;
-use std::env::home_dir;
-use std::fs::File;
-use std::io::prelude::*;
-use std::io::{BufReader, Error, ErrorKind};
-use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex};
-use std::{fs, thread};
-use std::collections::hash_map::Entry::{Occupied, Vacant};
-use std::collections::hash_map::OccupiedEntry;
-use std::ffi::OsStr;
-use std::fmt::{Display, Formatter};
-use std::ops::Deref;
-use std::time::Duration;
+use elite_journal_data::enums::body_data::BodyType;
 use gdk::Event;
 use gtk::glib::property::PropertyGet;
 use gtk::graphene::Plane;
+use gtk::{Application, Label, SignalListItemFactory, gio, glib};
+use gtk::{Entry, prelude::*};
 use log::error;
 use regex::Regex;
+use rusqlite::Connection;
 use rusqlite::fallible_iterator::FallibleIterator;
+use serde::Deserialize;
+use std::collections::HashMap;
+use std::collections::hash_map::Entry::{Occupied, Vacant};
+use std::collections::hash_map::OccupiedEntry;
+use std::default::Default;
+use std::env::home_dir;
+use std::ffi::OsStr;
+use std::fmt::{Display, Formatter};
+use std::fs::File;
+use std::io::prelude::*;
+use std::io::{BufReader, Error, ErrorKind};
+use std::ops::Deref;
+use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex};
+use std::time::Duration;
+use std::{fs, thread};
 
 mod parser;
 mod custom_structs;
-mod elite_events;
+mod elite_journal_data;
 mod settings_area;
 mod topbar;
 mod window;
 mod helpers;
 mod exobio_card;
 mod planet_data_object;
-mod exobio_analysis;
+mod exobiology_analysis;
 
-use crate::UiEvent::SetCurrentSystem;
-use crate::elite_events::enums::*;
+use crate::custom_structs::materials::PlanetRawMaterial;
+use crate::custom_structs::starsystem::StarSystem;
+use crate::custom_structs::system_info::Body;
+use crate::custom_structs::system_info::Body::{Planet, Star};
+use crate::elite_journal_data::enums::misc::JumpType;
+use crate::helpers::extract_latest_journal;
 use crate::parser::EliteEvent;
 use window::Window;
-use crate::custom_structs::materials::PlanetRawMaterial;
-use crate::custom_structs::system_info::Body;
-use crate::custom_structs::system_info::*;
-use crate::custom_structs::system_info::Body::{Planet, Star};
-use crate::elite_events::events::{FSSBodySignals, FSSSignalDiscovered, Genus, Materials, RawMaterial, SAASignalType, Scan};
-use crate::elite_events::events::Genus::Bacterium;
-use crate::elite_events::events::RawMaterial::{Cadmium, Mercury, Molybdenum, Niobium, Tin, Tungsten};
-use crate::elite_events::substructs::{AtmosphericGas, BodyComposition};
-use crate::exobio_analysis::determine_exobio_species;
-use crate::helpers::extract_latest_journal;
-use crate::Species::Cerbrus;
+use crate::elite_journal_data::enums::body_data::RawMaterial;
+use crate::elite_journal_data::enums::signals::SAASignalType;
 
 const APP_ID: &str = "tesnileft.ElitePathfinder_rs";
 
@@ -300,27 +296,8 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
     });
 }
 
-#[derive(Default)]
-struct StarSystem{
-    name: String,
-    address: u64,
-    bodies: HashMap<u64, Body>,
-    star_position: (f64, f64, f64), //Galactic Coordinates
-    security: SystemSecurity,
-    allegiance: Allegiance,
-    economy: Economy,
-    second_economy: Economy,
-    government: Government
-}
-impl StarSystem{
-    ///Returns full list of potential species
-    pub fn get_potential_exobio(&self, body_id: u64) -> Option<Vec<ExoBiologySpecies>>{
-        determine_exobio_species(self, body_id)
-    }
-}
-fn check_material(materials: &Vec<PlanetRawMaterial>, checkmaterial: RawMaterial) -> bool {
-    materials.iter().any(|m| m.material == checkmaterial)
-}
+
+
 enum GeologicalThings{
     Fumarole,
     IceFumarole,
@@ -329,26 +306,12 @@ enum GeologicalThings{
     LavaSpout,
     GasVent,
 }
-struct ExoBiologySpecies{
-    genus: Genus,
-    species: Species,
-    variants: Vec<ExoBiologyVariant>,
-}
-impl Display for ExoBiologySpecies {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} {}", self.genus.to_string(), self.species.to_string())
-    }
-}
-
-
 fn build_ui_xml(
     app: &Application,
     ui_event_receiver: async_channel::Receiver<UiEvent>,
     cache: SharedCache,
 ) {
     let window = Window::new(app, ui_event_receiver, cache);
-
-
     window.present();
 }
 

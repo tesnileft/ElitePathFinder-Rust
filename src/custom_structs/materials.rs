@@ -1,4 +1,4 @@
-use crate::elite_events::events::RawMaterial;
+use crate::elite_journal_data::enums::body_data::RawMaterial;
 
 pub struct PlanetRawMaterial{
     pub material: RawMaterial,
