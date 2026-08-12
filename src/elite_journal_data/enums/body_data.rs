@@ -118,6 +118,8 @@ pub enum PlanetClass {
 
 #[derive(Deserialize, Default, Eq, PartialEq, Clone)]
 pub enum Volcanism {
+    #[serde(rename = "silicate vapour geysers volcanism")]
+    SilicateVapour,
     #[serde(rename = "minor silicate vapour geysers volcanism")]
     MinorSilicateVapour,
     #[serde(rename = "major silicate vapour geysers volcanism")]
@@ -174,7 +176,7 @@ pub enum Volcanism {
     Ammonia,
     #[serde(rename = "minor ammonia geysers volcanism")]
     MinorAmmonia,
-    #[serde(rename = "Major ammonia geysers volcanism")]
+    #[serde(rename = "major ammonia geysers volcanism")]
     MajorAmmonia,
     #[serde(rename = "ammonia magma volcanism")]
     AmmoniaMagma,
@@ -193,6 +195,72 @@ pub enum Volcanism {
     #[serde(rename = "")]
     #[default]
     None,
+}
+
+impl Volcanism{
+    pub(crate) fn is_water(&self) -> bool{
+        matches!(self,
+            Volcanism::WaterGeysers
+            | Volcanism::MinorWaterGeysers
+            | Volcanism::MajorWaterGeysers
+            | Volcanism::WaterMagma
+            | Volcanism::MinorWaterMagma
+            | Volcanism::MajorWaterMagma )
+    }
+    pub(crate) fn is_carbon_dioxide(&self) -> bool{
+        matches!(self,
+            Volcanism::CarbonDioxide
+            | Volcanism::MinorCarbonDioxide
+            | Volcanism::MajorCarbonDioxide)
+    }
+    pub fn is_silicate_vapours(&self) -> bool{
+        matches!(self,
+            Volcanism::SilicateVapour
+            | Volcanism::MinorSilicateVapour
+            | Volcanism::MajorSilicateVapour)
+    }
+
+    pub fn is_iron(&self) -> bool{
+        matches!(self,
+            Volcanism::MetallicMagma
+            | Volcanism::MinorMetallicMagma
+            | Volcanism::MajorMetallicMagma)
+    }
+    pub fn is_rocky(&self) -> bool{
+        matches!(self,
+            Volcanism::RockyMagma
+            | Volcanism::MinorRockyMagma
+            | Volcanism::MajorRockyMagma)
+    }
+    pub fn is_ammonia(&self) -> bool{
+        matches!(self,
+            Volcanism::Ammonia
+            | Volcanism::MinorAmmonia
+            | Volcanism::MajorAmmonia
+            | Volcanism::AmmoniaMagma
+            | Volcanism::MinorAmmoniaMagma
+            | Volcanism::MajorAmmoniaMagma)
+    }
+
+    pub(crate) fn is_methane(&self) -> bool {
+        matches!(self,
+            Volcanism::Methane
+            | Volcanism::MinorMethane
+            | Volcanism::MajorMethane
+            | Volcanism::MethaneMagma
+            | Volcanism::MinorMethaneMagma
+            | Volcanism::MajorMethaneMagma )
+    }
+    pub(crate) fn is_nitrogen(&self) -> bool {
+        matches!(self,
+            Volcanism::NitrogenGeysers
+            | Volcanism::MinorNitrogenGeysers
+            | Volcanism::MajorNitrogenGeysers
+            | Volcanism::NitrogenMagma
+            | Volcanism::MinorNitrogenMagma
+            | Volcanism::MajorNitrogenMagma )
+    }
+    
 }
 
 #[derive(Debug, Deserialize)]

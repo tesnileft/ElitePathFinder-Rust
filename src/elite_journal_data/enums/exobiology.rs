@@ -30,6 +30,8 @@ pub enum Genus {
     Cactoida,
     #[serde(rename = "$Codex_Ent_Sphere_Name;")]
     LuteolumAnemone,
+    #[serde(rename = "$Codex_Ent_Fumerola_Name;")]
+    Fumerola
 }
 
 impl Display for Genus {

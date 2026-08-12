@@ -1,3 +1,3 @@
 pub mod bacterium;
 mod fonticulua;
-mod fumerola;
+pub mod fumerola;
