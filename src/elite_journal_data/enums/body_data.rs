@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use std::fmt;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Eq, Hash, PartialEq)]
 pub enum BodyType {
     Star,
     Planet,
@@ -45,6 +45,24 @@ pub enum StarClass {
     RoguePlanet,
 }
 
+#[derive(Deserialize, Ord, PartialOrd, PartialEq, Eq)]
+pub enum LuminosityClass {
+    O,
+    Ia,
+    Iab,
+    Ib,
+    II,
+    III,
+    IV,
+    V,
+    Va,
+    Vab,
+    Vb,
+    Vz,
+    VI,
+    VII,
+}
+
 #[derive(Deserialize, Default, Debug, Clone)]
 pub enum AtmosphereType {
     Argon,
@@ -75,7 +93,7 @@ impl fmt::Display for AtmosphereType {
     }
 }
 
-#[derive(Deserialize, Eq, PartialEq)]
+#[derive(Deserialize, Eq, PartialEq, Hash, Copy, Clone)]
 pub enum PlanetClass {
     #[serde(rename = "High metal content body")]
     HMC,

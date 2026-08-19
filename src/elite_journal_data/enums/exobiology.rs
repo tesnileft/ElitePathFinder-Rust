@@ -26,12 +26,16 @@ pub enum Genus {
     Osseus,
     #[serde(rename = "$Codex_Ent_Recepta_Genus_Name;")]
     Recepta,
-    #[serde(rename = "$Codex_Ent_Cactoida_Genus_Name;")]
+    #[serde(rename = "$Codex_Ent_Cactoid_Genus_Name;")]
     Cactoida,
     #[serde(rename = "$Codex_Ent_Sphere_Name;")]
     LuteolumAnemone,
     #[serde(rename = "$Codex_Ent_Fumerola_Name;")]
-    Fumerola
+    Fumerola,
+    #[serde(rename = "$Codex_Ent_Electricae_Name;")]
+    Electricae,
+    #[serde(rename = "$Codex_Ent_Clypoid_Name;")]
+    Clypeus
 }
 
 impl Display for Genus {
@@ -45,6 +49,7 @@ pub enum Species {
     //Aleoida
     Arcus,
     Coronamus,
+    #[serde(rename = "$Codex_Ent_Aleoids_05_Name;")]
     Gravis,
     #[serde(rename = "$Codex_Ent_Aleoids_04_Name;")]
     Laminiae,
@@ -112,9 +117,11 @@ pub enum Species {
     Acus,
     Collum,
     Fera,
+    #[serde(rename = "$Codex_Ent_Shrubs_01_Name;")]
     Flabellum,
-    #[serde(rename="$Codex_Ent_Shrubs_04_Name;")]
+    #[serde(rename = "$Codex_Ent_Shrubs_04_Name;")]
     Flammasis,
+    #[serde(rename = "$Codex_Ent_Shrubs_03_Name;")]
     Metallicum,
     Sponsae,
     //Osseus
@@ -124,24 +131,29 @@ pub enum Species {
     Fractus,
     Pellebantus,
     Pumice,
+    #[serde(rename = "$Codex_Ent_Osseus_03_Name;")]
     Spiralis,
     //Stratum
+    #[serde(rename = "$Codex_Ent_Stratum_04_Name;")]
     Araneamus,
-    #[serde(rename="$Codex_Ent_Stratum_06_Name;")]
+    #[serde(rename ="$Codex_Ent_Stratum_06_Name;")]
     Cucumisis,
-    #[serde(rename="$Codex_Ent_Stratum_01_Name;")]
+    #[serde(rename ="$Codex_Ent_Stratum_01_Name;")]
     Excutitus,
     Frigus,
     Laminamus,
     Limaxus,
     #[serde(rename = "$Codex_Ent_Stratum_02_Name;")]
     Paleas,
+    #[serde(rename = "$Codex_Ent_Stratum_07_Name;")]
     Tectonicas,
     //Tussock
     Albata,
     #[serde(rename = "$Codex_Ent_Tussocks_15_Name;")]
     Capillum,
+    #[serde(rename = "$Codex_Ent_Tussocks_11_Name;")]
     Caputus,
+    #[serde(rename = "$Codex_Ent_Tussocks_05_Name;")]
     Catena,
     #[serde(rename = "$Codex_Ent_Tussocks_04_Name;")]
     Cultro,
@@ -153,6 +165,7 @@ pub enum Species {
     Propagito,
     Serrati,
     Stigmasis,
+    #[serde(rename = "$Codex_Ent_Tussocks_12_Name;")]
     Triticum,
     Ventusa,
     Virgam,
@@ -167,11 +180,15 @@ pub enum Species {
     #[serde(rename="$Codex_Ent_Tubus_05_Name;")]
     Compagibus,
     Conifer,
+    #[serde(rename="$Codex_Ent_Tubus_04_Name;")]
     Rosarium,
     Sororibus,
     //Anemone
     #[serde(rename="$Codex_Ent_SphereEFGH_02_Name;")]
     Prasinum,
+    //Clypeus
+    #[serde(rename = "$Codex_Ent_Clypeus_02_Name;")]
+    Margaritus,
 }
 
 impl Display for Species {

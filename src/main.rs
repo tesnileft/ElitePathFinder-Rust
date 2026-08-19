@@ -246,10 +246,11 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                             }
                         }
                         Vacant(entry) => {
-                            if let Some(startype) = scan.star_class{
+                            if let (Some(startype), Some(luminosity)) = (scan.star_class, scan.luminosity){
                                 let newstar = custom_structs::system_info::Star{
                                     body_name: scan.body_name.clone(),
                                     body_id: scan.body_id,
+                                    luminosity,
                                     class: startype,
                                     subclass: scan.star_subclass.unwrap(),
                                     stellar_mass: scan.stellar_mass.unwrap(),

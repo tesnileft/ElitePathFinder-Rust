@@ -1,7 +1,7 @@
 use crate::GeologicalThings;
 use crate::custom_structs::exobiospecies::{ExoBiologySpecies, exobio_species_to_string};
 use crate::custom_structs::materials::PlanetRawMaterial;
-use crate::elite_journal_data::enums::body_data::{AtmosphereType, BodyParent, PlanetClass, StarClass, Volcanism};
+use crate::elite_journal_data::enums::body_data::{AtmosphereType, BodyParent, PlanetClass, StarClass, LuminosityClass, Volcanism};
 use std::fmt::Display;
 use crate::elite_journal_data::substructs::body_data::{AtmosphericGas, BodyComposition};
 
@@ -13,6 +13,7 @@ pub struct Star {
     pub body_name: String,
     pub body_id: u64,
     pub class: StarClass,
+    pub luminosity: LuminosityClass,
     pub subclass: u64,
     pub stellar_mass: f64,
 }

@@ -44,11 +44,11 @@ fn stellar_variant(class: &StarClass) -> ExoBiologyVariant {
         }
     }
 }
-fn bacterium_starvariants(stars: Vec<&Star>) -> Vec<ExoBiologyVariant>{
+fn bacterium_starvariants(stars: &Vec<&Star>) -> Vec<ExoBiologyVariant>{
     stars.iter().map(|star| stellar_variant(&star.class)).collect()
 }
 
-pub fn predict_bacterium(planet: &Planet, star_parents: Vec<& Star>) -> Vec<ExoBiologySpecies>{
+pub fn predict_bacterium(planet: &Planet, star_parents: &Vec<& Star>) -> Vec<ExoBiologySpecies>{
     let mut exobios = Vec::new();
     if let (Some(volcanism), Some(materials), Some(atmosphere)) = (planet.volcanism.clone(), planet.materials.as_ref(), planet.atmosphere.as_ref()){
         if matches!(
