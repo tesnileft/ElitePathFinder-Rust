@@ -1,4 +1,4 @@
-use crate::elite_journal_data::enums::body_data::{AtmosphereType, BodyParent, PlanetClass, StarClass, Volcanism};
+use crate::elite_journal_data::enums::body_data::{AtmosphereType, BodyParent, LuminosityClass, PlanetClass, StarClass, Volcanism};
 use crate::elite_journal_data::enums::signals::SignalType;
 use crate::elite_journal_data::substructs::body_data::{AtmosphericGas, BodyComposition, BodySurfaceSignal};
 use crate::elite_journal_data::substructs::body_data::{CelestialRings, RawMaterialInfo};
@@ -93,7 +93,7 @@ pub struct Scan {
     #[serde(rename = "Age_MY")]
     pub age_million_years: Option<u64>,
     #[serde(rename = "Luminosity")]
-    pub luminosity: Option<String>,
+    pub luminosity: Option<LuminosityClass>,
     #[serde(rename = "Rings")]
     pub rings: Option<Vec<CelestialRings>>,
     #[serde(rename = "Atmosphere")]

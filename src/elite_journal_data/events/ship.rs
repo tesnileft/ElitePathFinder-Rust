@@ -62,6 +62,13 @@ pub struct ModuleInfo {
 }
 
 #[derive(Deserialize)]
+pub struct ShieldState {
+    timestamp: DateTime<Utc>,
+    #[serde(rename="ShieldsUp")]
+    shields_up: bool
+}
+
+#[derive(Deserialize)]
 pub struct UnderAttack {
     timestamp: DateTime<Utc>,
     #[serde(rename = "Target")]
