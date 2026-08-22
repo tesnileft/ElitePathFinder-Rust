@@ -1,6 +1,7 @@
-use crate::elite_journal_data::enums::vessels::ShipType;
+use crate::elite_journal_data::enums::vessels::{ShipType, SlotType};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+use crate::elite_journal_data::substructs::inventory::{MaterialInventory};
 use crate::elite_journal_data::substructs::ship::{FuelCapacity, Module};
 use crate::elite_journal_data::substructs::station_data::StoredShip;
 
@@ -64,7 +65,7 @@ pub struct StoredShips {
     #[serde(rename = "MarketID")]
     market_id: u64,
     #[serde(rename = "StarSystem")]
-    star_system: Option<String>, //This is actually the body name
+    star_system: Option<String>,
     #[serde(rename = "ShipsHere")]
     ships_here: Vec<StoredShip>,
 }
@@ -159,4 +160,25 @@ pub struct StoredModule{
     level: Option<u64>,
     #[serde(rename= "Quality")]
     quality: Option<f64>,
+}
+#[derive(Deserialize)]
+pub struct EngineerCraft{
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "Slot")]
+    slot: SlotType,
+    #[serde(rename = "Module")]
+    module: String,
+    #[serde(rename = "Ingredients")]
+    ingredients: Vec<MaterialInventory>
+}
+
+#[derive(Deserialize)]
+pub struct Outfitting {
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "MarketID")]
+    market_id: u64,
+    #[serde(rename = "StationName")]
+    station_name: String,
+    #[serde(rename = "StarSystem")]
+    star_system: Option<String>,
 }

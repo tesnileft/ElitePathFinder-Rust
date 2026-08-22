@@ -1,6 +1,9 @@
 use crate::elite_journal_data::enums::station_data::{StationService, StationType};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+use crate::elite_journal_data::enums::misc::MaterialCategory;
+use crate::elite_journal_data::enums::system_data::Government;
+use crate::elite_journal_data::substructs::inventory::{MaterialInventory, MaterialTraded};
 use crate::elite_journal_data::substructs::station_data::{LandingPads, StationEconomy, StationFaction};
 
 //endregion
@@ -54,7 +57,7 @@ pub struct Docked {
     #[serde(rename = "StationFaction")]
     station_faction: StationFaction,
     #[serde(rename = "StationGovernment")]
-    station_government: String,
+    station_government: Government,
     #[serde(rename = "StationGovernment_Localised")]
     station_government_localised: String,
     #[serde(rename = "StationServices")]
@@ -135,4 +138,66 @@ pub struct Undocked {
     taxi: bool,
     #[serde(rename = "Multicrew")]
     multicrew: bool,
+}
+
+#[derive(Deserialize)]
+pub struct ApproachSettlement{
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "Name")]
+    name: String,
+    #[serde(rename = "MarketID")]
+    market_id: u64,
+    #[serde(rename = "StationFaction")]
+    station_faction: StationFaction,
+    #[serde(rename = "StationGovernment")]
+    station_government: Government,
+    #[serde(rename = "StationGovernment_Localised")]
+    station_government_localised: String,
+    #[serde(rename = "StationServices")]
+    station_services: Vec<StationService>,
+    #[serde(rename = "StationEconomy")]
+    station_economy: String,
+    #[serde(rename = "StationEconomy_Localised")]
+    station_economy_localised: String,
+    #[serde(rename = "StationEconomies")]
+    station_economies: Vec<StationEconomy>,
+    #[serde(rename = "SystemAddress")]
+    system_address: u64,
+    #[serde(rename = "BodyID")]
+    body_id: u64,
+    #[serde(rename = "BodyName")]
+    body_name: String,
+    #[serde(rename = "Latitude")]
+    latitude: f64,
+    #[serde(rename = "Longitude")]
+    longitude: f64,
+}
+
+#[derive(Deserialize)]
+pub struct MaterialTrade{
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "MarketID")]
+    market_id: u64,
+    #[serde(rename = "TraderType")]
+    trader_type: MaterialCategory,
+    #[serde(rename = "Paid")]
+    paid: MaterialTraded,
+    #[serde(rename = "Received")]
+    received: MaterialTraded,
+}
+
+#[derive(Deserialize)]
+pub struct Market{
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "MarketID")]
+    market_id: u64,
+    #[serde(rename = "StationName")]
+    station_name: String,
+    #[serde(rename = "StationType")]
+    station_type: StationType,
+    #[serde(rename = "StarSystem")]
+    star_system: String,
 }

@@ -1,29 +1,16 @@
 use elite_journal_data::enums::body_data::BodyType;
-use gdk::Event;
-use gtk::glib::property::PropertyGet;
-use gtk::graphene::Plane;
-use gtk::{Application, Label, SignalListItemFactory, gio, glib};
-use gtk::{Entry, prelude::*};
-use log::error;
-use regex::Regex;
+use gtk::{Application, gio, glib};
+use gtk::prelude::*;
 use rusqlite::Connection;
-use rusqlite::fallible_iterator::FallibleIterator;
-use serde::Deserialize;
 use std::collections::HashMap;
 use std::collections::hash_map::Entry::{Occupied, Vacant};
-use std::collections::hash_map::OccupiedEntry;
 use std::default::Default;
-use std::env::home_dir;
-use std::ffi::OsStr;
-use std::fmt::{Display, Formatter};
 use std::fs::File;
 use std::io::prelude::*;
-use std::io::{BufReader, Error, ErrorKind};
-use std::ops::Deref;
-use std::path::{Path, PathBuf};
+use std::io::{BufReader};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
-use std::{fs, thread};
+use std::{thread};
 
 mod parser;
 mod custom_structs;
@@ -44,7 +31,6 @@ use crate::elite_journal_data::enums::misc::JumpType;
 use crate::helpers::extract_latest_journal;
 use crate::parser::EliteEvent;
 use window::Window;
-use crate::elite_journal_data::enums::body_data::RawMaterial;
 use crate::elite_journal_data::enums::signals::SAASignalType;
 
 const APP_ID: &str = "tesnileft.ElitePathfinder_rs";
@@ -82,7 +68,7 @@ fn main() -> glib::ExitCode {
         .expect("Failed to register resources.");
     let settings = gio::Settings::new("tesnileft.ElitePathFinder_rs");
 
-    let mut cache = Arc::new(Mutex::new(Cache::default()));
+    let cache = Arc::new(Mutex::new(Cache::default()));
     let application = Application::builder().application_id(APP_ID).build();
 
     let (ui_event_sender, ui_event_receiver) = async_channel::unbounded::<UiEvent>();
@@ -101,7 +87,6 @@ fn main() -> glib::ExitCode {
 
 fn start_background_reader(ui_event_sender: async_channel::Sender<UiEvent>, shared_cache: SharedCache){
     //Detect current logfile
-    let elite_appdata = helpers::get_current_logfile_path().unwrap();
     let elite_journal_folder = helpers::get_journals_location().unwrap();
     let mut current_log_file = extract_latest_journal(elite_journal_folder.clone());
     //Open logfile
@@ -155,7 +140,7 @@ fn start_background_reader(ui_event_sender: async_channel::Sender<UiEvent>, shar
     });
 }
 
-fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sender<UiEvent>, shared_cache: SharedCache) {
+fn message_bus(event_vec: Vec<EliteEvent>, _: async_channel::Sender<UiEvent>, shared_cache: SharedCache) {
     gio::spawn_blocking(move || {
         for event in event_vec {
             match event {
@@ -163,8 +148,6 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                     println!("Game Loaded:");
                     println!("CMDR: {}", load.commander);
                     println!("Credits: {}", load.credits);
-                }
-                EliteEvent::Music(music) => {
                 }
                 EliteEvent::StartJump(start_jump) => {
                     if start_jump.jump_type == JumpType::Hyperspace
@@ -232,7 +215,9 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                     match entry {
                         Occupied(mut entry) => {
                             match entry.get_mut() {
-                                Star(star) => {}
+                                Star(star) => {
+                                    //TODO
+                                }
                                 Planet(planet) => {
                                     planet.parents = Some(scan.parents.unwrap_or_default());
                                     planet.planet_class = scan.planet_class;
@@ -246,16 +231,16 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                             }
                         }
                         Vacant(entry) => {
-                            if let (Some(startype), Some(luminosity)) = (scan.star_class, scan.luminosity){
-                                let newstar = custom_structs::system_info::Star{
+                            if let (Some(star_type), Some(luminosity)) = (scan.star_class, scan.luminosity){
+                                let new_star = custom_structs::system_info::Star{
                                     body_name: scan.body_name.clone(),
                                     body_id: scan.body_id,
                                     luminosity,
-                                    class: startype,
+                                    class: star_type,
                                     subclass: scan.star_subclass.unwrap(),
                                     stellar_mass: scan.stellar_mass.unwrap(),
                                 };
-                                entry.insert(Star(newstar));
+                                entry.insert(Star(new_star));
                             }
                             else if let Some(plan_clas) = scan.planet_class.as_ref() {
                                 let newplanet = custom_structs::system_info::Planet{
@@ -291,7 +276,7 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                         }
                     }
                 }
-                other => {}
+                _ => {}
             }
         }
     });
@@ -299,14 +284,7 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
 
 
 
-enum GeologicalThings{
-    Fumarole,
-    IceFumarole,
-    Geyser,
-    IceGeyser,
-    LavaSpout,
-    GasVent,
-}
+
 fn build_ui_xml(
     app: &Application,
     ui_event_receiver: async_channel::Receiver<UiEvent>,

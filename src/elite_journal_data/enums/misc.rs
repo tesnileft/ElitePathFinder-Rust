@@ -17,6 +17,7 @@ pub enum Allegiance {
     Empire,
     #[serde(alias = "PilotsFederation")]
     Federation,
+    Alliance,
     Independent,
     #[default]
     #[serde(rename = "")]
@@ -25,6 +26,7 @@ pub enum Allegiance {
 
 #[derive(Deserialize)]
 pub enum LegalStatus {
+    Clean,
     Lawless,
     Wanted,
 }
@@ -45,4 +47,14 @@ pub enum PilotRank {
 #[derive(Deserialize)]
 pub enum ScanType{
     Cargo,
+}
+
+#[derive(Deserialize)]
+pub enum MaterialCategory {
+    #[serde(alias = "raw")]
+    Raw,
+    #[serde(alias = "manufactured")]
+    Manufactured,
+    #[serde(alias = "encoded")]
+    Encoded,
 }

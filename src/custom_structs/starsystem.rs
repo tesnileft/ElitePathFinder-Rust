@@ -1,11 +1,11 @@
 use crate::custom_structs::exobiospecies::ExoBiologySpecies;
 use crate::custom_structs::system_info::Body;
+use crate::custom_structs::system_info::Body::Planet;
+use crate::elite_journal_data::enums::body_data::PlanetClass;
+use crate::elite_journal_data::enums::misc::Allegiance;
 use crate::elite_journal_data::enums::system_data::{Economy, Government, SystemSecurity};
 use crate::exobiology_analysis::determine_species::determine_exobio_species;
 use std::collections::{HashMap, HashSet};
-use crate::custom_structs::system_info::Body::Planet;
-use crate::elite_journal_data::enums::body_data::{BodyType, PlanetClass};
-use crate::elite_journal_data::enums::misc::Allegiance;
 
 #[derive(Default)]
 pub struct StarSystem{

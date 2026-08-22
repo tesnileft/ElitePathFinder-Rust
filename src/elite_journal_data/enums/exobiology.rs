@@ -35,7 +35,9 @@ pub enum Genus {
     #[serde(rename = "$Codex_Ent_Electricae_Name;")]
     Electricae,
     #[serde(rename = "$Codex_Ent_Clypoid_Name;")]
-    Clypeus
+    Clypeus,
+    #[serde(rename = "$Codex_Ent_Ground_Struct_Ice_Name;")]
+    CrystalineShards
 }
 
 impl Display for Genus {

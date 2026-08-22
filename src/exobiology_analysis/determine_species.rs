@@ -1,18 +1,12 @@
 use crate::custom_structs::exobiospecies::ExoBiologySpecies;
-use crate::custom_structs::system_info::{AtmosphereQuality, Body, Planet, Star};
-use crate::elite_journal_data::enums::body_data::{AtmosphereType, BodyParent, PlanetClass, RawMaterial, StarClass};
-use crate::elite_journal_data::enums::exobiology::{ExoBiologyVariant, Species};
-use crate::elite_journal_data::enums::body_data::RawMaterial::{
-    Antimony, Cadmium, Mercury, Molybdenum, Niobium, Polonium, Ruthenium, Technetium, Tellurium,
-    Tin, Tungsten, Yttrium,
-};
-use crate::exobiology_analysis::species::bacterium::predict_bacterium;
-use crate::{StarSystem};
 use crate::custom_structs::materials::PlanetRawMaterial;
 use crate::custom_structs::system_info::AtmosphereQuality::Thin;
+use crate::custom_structs::system_info::{AtmosphereQuality, Body, Planet, Star};
+use crate::elite_journal_data::enums::body_data::{AtmosphereType, BodyParent, PlanetClass, RawMaterial, StarClass};
 use crate::elite_journal_data::enums::exobiology::Genus::*;
-use crate::elite_journal_data::events::inventory::Materials;
+use crate::elite_journal_data::enums::exobiology::{ExoBiologyVariant, Species};
 use crate::exobiology_analysis::species::aleoida::predict_aleoida;
+use crate::exobiology_analysis::species::bacterium::predict_bacterium;
 use crate::exobiology_analysis::species::concha::predict_concha;
 use crate::exobiology_analysis::species::fonticulua::predict_fonticulua;
 use crate::exobiology_analysis::species::frutexa::predict_frutexa;
@@ -20,6 +14,7 @@ use crate::exobiology_analysis::species::fumerola::predict_fumerola;
 use crate::exobiology_analysis::species::fungoida::predict_fungoida;
 use crate::exobiology_analysis::species::recepta::predict_recepta;
 use crate::exobiology_analysis::species::tubus::predict_tubus;
+use crate::StarSystem;
 
 pub fn check_material(materials: &Vec<PlanetRawMaterial>, checkmaterial: RawMaterial) -> bool {
     materials.iter().any(|m| m.material == checkmaterial)
@@ -247,7 +242,7 @@ pub fn determine_exobio_species(
     let body = &system.bodies[&body_id];
     let mut exobios: Vec<ExoBiologySpecies> = Vec::new();
     const EARTH_GRAVITY: f64 = 9.81;
-    if let (Body::Planet(planet)) = (body) {
+    if let Body::Planet(planet) = body {
         let parent_star_types = find_parent_stars(system, planet);
         exobios.append(&mut predict_bacterium(planet, &parent_star_types));
         //region Stratum

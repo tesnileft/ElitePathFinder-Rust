@@ -1,6 +1,8 @@
-use crate::elite_journal_data::substructs::inventory::{Component, Consumable, Data, Item, LocalisedMaterialInventory, RawMaterialInventory, SuitModule};
+use crate::elite_journal_data::substructs::inventory::{Component, Consumable, Data, Item, MaterialInventory, SuitModule};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+use crate::elite_journal_data::enums::cargo::CargoType;
+use crate::elite_journal_data::enums::misc::MaterialCategory;
 use crate::elite_journal_data::substructs::ship::CargoItem;
 
 //endregion
@@ -43,12 +45,25 @@ pub struct Materials {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "Raw")]
-    raw: Vec<RawMaterialInventory>,
+    raw: Vec<MaterialInventory>,
     #[serde(rename = "Manufactured")]
-    manufactured: Vec<LocalisedMaterialInventory>,
+    manufactured: Vec<MaterialInventory>,
     #[serde(rename = "Encoded")]
-    encoded: Vec<LocalisedMaterialInventory>,
+    encoded: Vec<MaterialInventory>,
 }
+#[derive(Deserialize)]
+pub struct MaterialCollected{
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "Category")]
+    category: MaterialCategory,
+    #[serde(rename = "Name")]
+    name: String,
+    #[serde(rename = "Name_Localised")]
+    name_localised: Option<String>,
+    #[serde(rename = "Count")]
+    count: u64,
+}
+
 
 #[derive(Deserialize)]
 pub struct ReservoirReplenished {
@@ -86,4 +101,16 @@ pub struct SuitLoadout {
     loadout_name: String,
     #[serde(rename = "Modules")]
     modules: Vec<SuitModule>, // Actually weapons
+}
+
+
+#[derive(Deserialize)]
+pub struct CollectCargo{
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "Type")]
+    cargo_type: CargoType,
+    #[serde(rename = "Type_Localised")]
+    cargo_localised: String,
+    #[serde(rename = "Stolen")]
+    stolen: bool
 }

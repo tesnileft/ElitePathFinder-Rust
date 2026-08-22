@@ -95,21 +95,21 @@ pub struct Location {
     #[serde(default)]
     station_government: Government,
     #[serde(rename = "StationGovernment_Localised")]
-    station_government_localized: String,
+    station_government_localized: Option<String>,
     #[serde(rename = "StationServices")]
-    station_services: Vec<StationService>,
+    station_services: Option<Vec<StationService>>,
     #[serde(rename = "StationEconomy")]
-    station_economy: String,
+    station_economy: Option<Economy>,
     #[serde(rename = "StationEconomy_Localised")]
-    station_economy_localised: String,
+    station_economy_localised: Option<String>,
     #[serde(rename = "StationAllegiance")]
-    station_allegiance: Allegiance,
+    station_allegiance: Option<Allegiance>,
     #[serde(rename = "StationEconomies")]
-    station_economies: Vec<StationEconomy>,
+    station_economies: Option<Vec<StationEconomy>>,
     #[serde(rename = "Taxi")]
-    taxi: bool,
+    taxi: Option<bool>,
     #[serde(rename = "Multicrew")]
-    multicrew: bool,
+    multicrew: Option<bool>,
     #[serde(rename = "StarSystem")]
     star_system: String,
     #[serde(rename = "SystemAddress")]
@@ -117,7 +117,7 @@ pub struct Location {
     #[serde(rename = "StarPos")]
     pub star_pos: (f64, f64, f64),
     #[serde(rename = "SystemAllegiance")]
-    system_allegiance: Allegiance,
+    system_allegiance: Option<Allegiance>,
     #[serde(rename = "SystemEconomy")]
     system_economy: Economy,
     #[serde(rename = "SystemEconomy_Localised")]
@@ -129,7 +129,7 @@ pub struct Location {
     #[serde(rename = "SystemGovernment")]
     pub system_government: Government,
     #[serde(rename = "SystemGovernment_Localised")]
-    pub system_government_localised: String,
+    pub system_government_localised: Option<String>,
     #[serde(rename = "SystemSecurity")]
     pub system_security: SystemSecurity,
     #[serde(rename = "SystemSecurity_Localised")]
@@ -143,19 +143,19 @@ pub struct Location {
     #[serde(rename = "BodyType")]
     pub body_type: BodyType,
     #[serde(rename = "Powers")]
-    pub powers: Vec<PowerplayPower>,
+    pub powers: Option<Vec<PowerplayPower>>,
     #[serde(rename = "PowerplayState")]
-    pub powerplay_state: PowerplayState,
+    pub powerplay_state: Option<PowerplayState>,
     #[serde(rename = "PowerplayStateControlProgress")]
-    pub powerplay_control_progress: f64,
+    pub powerplay_control_progress: Option<f64>,
     #[serde(rename = "PowerplayStateReinforcement")]
-    pub powerplay_reinforcement: f64,
+    pub powerplay_reinforcement: Option<f64>,
     #[serde(rename = "PowerplayStateUndermining")]
-    pub powerplay_undermining: f64,
+    pub powerplay_undermining: Option<f64>,
     #[serde(rename = "Factions")]
-    pub factions: Vec<Faction>,
+    pub factions: Option<Vec<Faction>>,
     #[serde(rename = "SystemFaction")]
-    pub system_faction: SystemFaction,
+    pub system_faction: Option<SystemFaction>,
 }
 
 #[derive(Deserialize)]
@@ -171,9 +171,6 @@ pub struct Powerplay {
     #[serde(rename = "TimePledged")]
     pub time_pledged: u64,
 }
-
-//endregion
-//region - Social -
 #[derive(Deserialize)]
 pub struct Commander {
     #[serde(rename = "timestamp")]
@@ -182,4 +179,19 @@ pub struct Commander {
     pub fid: String,
     #[serde(rename = "Name")]
     pub name: String,
+}
+#[derive(Deserialize)]
+pub struct PayFines{
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "Amount")]
+    amount: u64,
+    #[serde(rename = "AllFines")]
+    all_fines: bool,
+    #[serde(rename = "Faction")]
+    faction: String,
+    #[serde(rename = "ShipID")]
+    ship_id: u64,
+    #[serde(rename = "BrokerPercentage")]
+    broker_percentage: f64,
 }

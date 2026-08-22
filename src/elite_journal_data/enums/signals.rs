@@ -17,6 +17,9 @@ pub enum SignalType {
     StationONeilOrbis,
     StationAsteroid,
     TouristBeacon,
+    Combat,
+    Titan,
+
 }
 
 #[derive(Deserialize)]
@@ -25,4 +28,10 @@ pub enum SAASignalType {
     Biological,
     #[serde(rename = "$SAA_SignalType_Geological;")]
     Geological,
+    #[serde(rename = "$SAA_SignalType_Human;")]
+    Human,
+    #[serde(rename = "$SAA_SignalType_Thargoid;")]
+    Thargoid,
+    #[serde(rename = "$SAA_SignalType_Other;")]
+    Other,
 }

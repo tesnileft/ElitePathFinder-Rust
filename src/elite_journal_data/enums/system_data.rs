@@ -21,6 +21,8 @@ pub enum Economy {
     Tourism,
     #[serde(rename = "$economy_Refinery;")]
     Refinery,
+    #[serde(rename = "$economy_Colony;")]
+    Colony,
     #[default]
     #[serde(rename = "$economy_None;")]
     None,
@@ -63,11 +65,15 @@ pub enum FactionState {
     Terrorism,
     NaturalDisaster,
     PublicHoliday,
+    CivilLiberty,
+    Investment,
+
 }
 
 ///Possible system governments
 #[derive(Deserialize, Default)]
 pub enum Government {
+    #[serde(alias = "$government_Anarchy;")]
     Anarchy,
     Communist,
     #[serde(alias = "$government_Confederacy;")]
@@ -85,6 +91,8 @@ pub enum Government {
     PrisonColony,
     #[serde(alias = "$government_Theocracy;")]
     Theocracy,
+    #[serde(alias = "$government_Engineer;")]
+    Engineer,
     #[default]
     #[serde(alias = "$government_None;")]
     None,
@@ -113,6 +121,18 @@ pub enum PowerplayPower {
     EdmundMahon,
     #[serde(rename = "Zemina Torval")]
     ZeminaTorval,
+    #[serde(rename = "Li Yong-Rui")]
+    LiYongRui,
+    #[serde(rename = "Jerome Archer")]
+    JeromeArcher,
+    #[serde(rename = "Yuri Grom")]
+    YuriGrom,
+    #[serde(rename = "Felicia Winters")]
+    FeliciaWinters,
+    #[serde(rename = "Nakato Kaine")]
+    NakatoKaine,
+    #[serde(rename = "Pranav Antal")]
+    PranavAntal,
     #[default]
     None, //TODO Fill out
 }

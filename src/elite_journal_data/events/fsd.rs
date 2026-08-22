@@ -149,7 +149,7 @@ pub struct SupercruiseDestinationDrop {
     #[serde(rename = "Threat")]
     threat: u64,
     #[serde(rename = "MarketID")]
-    market_id: u64,
+    market_id: Option<u64>,
 }
 
 #[derive(Deserialize)]

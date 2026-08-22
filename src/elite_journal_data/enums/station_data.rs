@@ -2,10 +2,13 @@ use serde::Deserialize;
 
 #[derive(Deserialize, Default)]
 pub enum StationType {
-    FleetCarrier,
     Coriolis,
     Orbis,
+    Ocellus,
+    Bernal,
+    FleetCarrier,
     MegaShip,
+    CraterPort,
     #[default]
     None,
 }
@@ -81,7 +84,9 @@ pub enum StationService {
     #[serde(rename = "blackmarket")]
     BlackMarket,
     #[serde(rename = "facilitator")]
-    InterstellarFactor
+    InterstellarFactor,
+    #[serde(rename = "techBroker")]
+    TechnologyBroker
 }
 
 #[derive(Deserialize)]

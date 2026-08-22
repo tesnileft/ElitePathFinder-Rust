@@ -1,8 +1,5 @@
-use crate::elite_journal_data::events::*;
 use serde::Deserialize;
 use serde_json::{Result, Value};
-use std::io::prelude::*;
-use crate::elite_journal_data::events::*;
 use crate::elite_journal_data::events::commander::*;
 use crate::elite_journal_data::events::fsd::*;
 use crate::elite_journal_data::events::fss::*;
@@ -19,6 +16,7 @@ use crate::elite_journal_data::events::station::*;
 //endregion
 #[derive(Deserialize)]
 #[serde(tag = "event")]
+#[allow(dead_code)]
 pub enum EliteEvent {
     Fileheader(FileHeader),
     LoadGame(LoadGame),
@@ -33,10 +31,14 @@ pub enum EliteEvent {
     SuitLoadout(SuitLoadout),
     ShipLocker(ShipLocker),
     Materials(Materials),
+    MaterialCollected(MaterialCollected),
+    MaterialDiscovered(MaterialDiscovered),
+    MaterialTrade(MaterialTrade),
     Backpack(Backpack),
     ModuleInfo(ModuleInfo),
     FSSSignalDiscovered(FSSSignalDiscovered),
     FSSDiscoveryScan(FSSDiscoveryScan),
+    NavBeaconScan(NavBeaconScan),
     Scan(Scan),
     FSSBodySignals(FSSBodySignals),
     FSSAllBodiesFound(FSSAllBodiesFound),
@@ -45,6 +47,7 @@ pub enum EliteEvent {
     ScanBaryCentre(ScanBaryCentre),
     DockingRequested(DockingRequested),
     DockingGranted(DockingGranted),
+    ApproachSettlement(ApproachSettlement),
     Docked(Docked),
     Undocked(Undocked),
     Liftoff(Liftoff),
@@ -56,7 +59,9 @@ pub enum EliteEvent {
     JetConeBoost(JetConeBoost),
     ReservoirReplenished(ReservoirReplenished),
     ShipTargeted(ShipTargeted),
+    Market(Market),
     Shipyard(Shipyard),
+    Outfitting(Outfitting),
     StoredShips(StoredShips),
     StoredModules(StoredModules),
     ShipyardTransfer(ShipyardTransfer),
@@ -65,7 +70,10 @@ pub enum EliteEvent {
     RepairAll(RepairAll),
     Embark(Embark),
     Disembark(Disembark),
+    LaunchDrone(LaunchDrone),
+    RepairDrone(RepairDrone),
     LaunchFighter(LaunchFighter),
+    LaunchSRV(LaunchSRV),
     DockSRV(DockSRV),
     FSDTarget(FSDTarget),
     StartJump(StartJump),
@@ -73,6 +81,7 @@ pub enum EliteEvent {
     SupercruiseEntry(SupercruiseEntry),
     SupercruiseExit(SupercruiseExit),
     SupercruiseDestinationDrop(SupercruiseDestinationDrop),
+    SendText(SendText),
     ReceiveText(ReceiveText),
     Friends(Friends),
     WingInvite(WingInvite),
@@ -89,11 +98,17 @@ pub enum EliteEvent {
     Missions(Missions),
     MissionAccepted(MissionAccepted),
     EngineerProgress(EngineerProgress),
+    EngineerCraft(EngineerCraft),
     Cargo(Cargo),
+    CollectCargo(CollectCargo),
+    EjectCargo(EjectCargo),
     CodexEntry(CodexEntry),
     ScanOrganic(ScanOrganic),
     UnderAttack(UnderAttack),
     Scanned(Scanned),
+    DatalinkScan(DatalinkScan),
+
+    PayFines(PayFines),
 }
 pub fn parse_logstring(log: String) -> Result<Vec<EliteEvent>> {
     let mut events: Vec<EliteEvent> = Vec::new();

@@ -3,6 +3,18 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 #[derive(Deserialize)]
+pub struct SendText {
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "To")]
+    to: String,
+    #[serde(rename = "Message")]
+    message: String,
+    #[serde(rename = "Sent")]
+    sent: bool,
+}
+
+#[derive(Deserialize)]
 pub struct ReceiveText {
     #[serde(rename = "timestamp")]
     pub timestamp: DateTime<Utc>,

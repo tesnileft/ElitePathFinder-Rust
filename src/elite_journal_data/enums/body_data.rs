@@ -18,6 +18,8 @@ pub enum StarClass {
     G,
     F,
     K,
+    #[serde(rename = "K_OrangeGiant")]
+    KOrangeGiant,
     L,
     T,
     TTS,
@@ -162,7 +164,7 @@ pub enum Volcanism {
     MinorRockyMagma,
     #[serde(rename = "carbon dioxide geysers volcanism")]
     CarbonDioxide,
-    #[serde(rename = "carbon dioxide geysers volcanism")]
+    #[serde(rename = "major carbon dioxide geysers volcanism")]
     MajorCarbonDioxide,
     #[serde(rename = "minor carbon dioxide geysers volcanism")]
     MinorCarbonDioxide,
@@ -279,6 +281,15 @@ impl Volcanism{
             | Volcanism::MajorNitrogenMagma )
     }
     
+}
+#[derive(Deserialize)]
+pub enum Geological{
+    Fumarole,
+    IceFumarole,
+    Geyser,
+    IceGeyser,
+    LavaSpout,
+    GasVent,
 }
 
 #[derive(Debug, Deserialize)]

@@ -2,6 +2,7 @@ use crate::elite_journal_data::enums::exobiology::Species;
 use crate::elite_journal_data::substructs::body_data::{BodySurfaceSignal, ExobioGenus};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+use crate::elite_journal_data::enums::misc::MaterialCategory;
 
 #[derive(Deserialize)]
 pub struct ScanOrganic {
@@ -60,11 +61,11 @@ pub struct CodexEntry {
     #[serde(rename = "NearestDestination")]
     pub nearest_destination: Option<String>,
     #[serde(rename = "Latitude")]
-    pub latitude: f64,
+    pub latitude: Option<f64>,
     #[serde(rename = "Longitude")]
-    pub longitude: f64,
+    pub longitude: Option<f64>,
     #[serde(rename = "IsNewEntry")]
-    pub is_new_entry: bool,
+    pub is_new_entry: Option<bool>,
 }
 
 #[derive(Deserialize)]
@@ -101,4 +102,41 @@ pub struct SAASignalsFound {
     pub genuses: Vec<ExobioGenus>,
 }
 
+#[derive(Deserialize)]
+pub struct MaterialDiscovered{
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "Category")]
+    category: MaterialCategory,
+    #[serde(rename = "Name")]
+    name: String,
+    #[serde(rename = "Name_Localised")]
+    name_localised: Option<String>,
+    #[serde(rename = "DiscoveryNumber")]
+    discovery_number: u64,
+}
 
+#[derive(Deserialize)]
+pub struct DatalinkScan {
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "Message")]
+    pub message: DatalinkScanMessage,
+    #[serde(rename = "Message_Localised")]
+    pub message_localised: String
+}
+
+#[derive(Deserialize)]
+pub enum DatalinkScanMessage{
+    #[serde(rename = "$DATAPOINT_GAMEPLAY_complete;")]
+    DataLinkScanComplete,
+}
+#[derive(Deserialize)]
+pub struct NavBeaconScan{
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "SystemAddress")]
+    pub system_address: u64,
+    #[serde(rename = "NumBodies")]
+    pub num_bodies: u64,
+}

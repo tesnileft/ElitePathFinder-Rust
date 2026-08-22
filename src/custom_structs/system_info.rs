@@ -1,7 +1,6 @@
-use crate::GeologicalThings;
 use crate::custom_structs::exobiospecies::{ExoBiologySpecies, exobio_species_to_string};
 use crate::custom_structs::materials::PlanetRawMaterial;
-use crate::elite_journal_data::enums::body_data::{AtmosphereType, BodyParent, PlanetClass, StarClass, LuminosityClass, Volcanism};
+use crate::elite_journal_data::enums::body_data::{AtmosphereType, BodyParent, PlanetClass, StarClass, LuminosityClass, Volcanism, Geological};
 use std::fmt::Display;
 use crate::elite_journal_data::substructs::body_data::{AtmosphericGas, BodyComposition};
 
@@ -33,7 +32,7 @@ pub struct Planet {
     pub potential_species: Option<Vec<ExoBiologySpecies>>,
     pub confirmed_species: Vec<ExoBiologySpecies>,
     pub geological_signals: Option<u64>,
-    pub confirmed_geology: Option<Vec<GeologicalThings>>,
+    pub confirmed_geology: Option<Vec<Geological>>,
     pub body_composition: Option<BodyComposition>,
     pub materials: Option<Vec<PlanetRawMaterial>>
 }

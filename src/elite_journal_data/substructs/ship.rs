@@ -5,7 +5,7 @@ pub struct CargoItem{
     #[serde(rename = "Name")]
     pub name: String,
     #[serde(rename = "Name_Localized")]
-    pub name_localized: String,
+    pub name_localized: Option<String>,
     #[serde(rename = "Count")]
     pub count: u64,
     #[serde(rename = "Stolen")]

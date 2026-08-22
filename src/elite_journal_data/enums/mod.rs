@@ -6,3 +6,4 @@ pub mod vessels;
 pub mod station_data;
 pub mod misc;
 pub mod signals;
+pub mod cargo;
