@@ -1,7 +1,7 @@
 use crate::elite_journal_data::substructs::inventory::{Component, Consumable, Data, Item, MaterialInventory, SuitModule};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
-use crate::elite_journal_data::enums::cargo::CargoType;
+use crate::elite_journal_data::enums::cargo::CommodityType;
 use crate::elite_journal_data::enums::misc::MaterialCategory;
 use crate::elite_journal_data::substructs::ship::CargoItem;
 
@@ -108,9 +108,10 @@ pub struct SuitLoadout {
 pub struct CollectCargo{
     timestamp: DateTime<Utc>,
     #[serde(rename = "Type")]
-    cargo_type: CargoType,
+    cargo_type: CommodityType,
     #[serde(rename = "Type_Localised")]
     cargo_localised: String,
     #[serde(rename = "Stolen")]
     stolen: bool
 }
+

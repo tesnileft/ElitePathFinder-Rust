@@ -34,6 +34,7 @@ pub enum EliteEvent {
     MaterialCollected(MaterialCollected),
     MaterialDiscovered(MaterialDiscovered),
     MaterialTrade(MaterialTrade),
+
     Backpack(Backpack),
     ModuleInfo(ModuleInfo),
     FSSSignalDiscovered(FSSSignalDiscovered),
@@ -68,6 +69,7 @@ pub enum EliteEvent {
     ShipyardSwap(ShipyardSwap),
     Repair(Repair),
     RepairAll(RepairAll),
+    MarketBuy(MarketBuy),
     Embark(Embark),
     Disembark(Disembark),
     LaunchDrone(LaunchDrone),
@@ -102,6 +104,10 @@ pub enum EliteEvent {
     Cargo(Cargo),
     CollectCargo(CollectCargo),
     EjectCargo(EjectCargo),
+
+    ColonisationConstructionDepot(ColonisationConstructionDepot),
+    ColonisationContribution(ColonisationContribution),
+
     CodexEntry(CodexEntry),
     ScanOrganic(ScanOrganic),
     UnderAttack(UnderAttack),

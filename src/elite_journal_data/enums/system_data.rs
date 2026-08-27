@@ -93,6 +93,8 @@ pub enum Government {
     Theocracy,
     #[serde(alias = "$government_Engineer;")]
     Engineer,
+    #[serde(alias = "$government_Megaconstruction;")]
+    MegaConstruction,
     #[default]
     #[serde(alias = "$government_None;")]
     None,

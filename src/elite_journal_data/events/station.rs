@@ -1,9 +1,11 @@
 use crate::elite_journal_data::enums::station_data::{StationService, StationType};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+use crate::elite_journal_data::enums::cargo::CommodityType;
 use crate::elite_journal_data::enums::misc::MaterialCategory;
 use crate::elite_journal_data::enums::system_data::Government;
 use crate::elite_journal_data::substructs::inventory::{MaterialInventory, MaterialTraded};
+use crate::elite_journal_data::substructs::ship::CargoItem;
 use crate::elite_journal_data::substructs::station_data::{LandingPads, StationEconomy, StationFaction};
 
 //endregion
@@ -200,4 +202,61 @@ pub struct Market{
     station_type: StationType,
     #[serde(rename = "StarSystem")]
     star_system: String,
+}
+
+#[derive(Deserialize)]
+pub struct ColonisationConstructionDepot{
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "MarketID")]
+    market_id: u64,
+    #[serde(rename = "ConstructionProgress")]
+    construction_progress: f64,
+    #[serde(rename = "ConstructionComplete")]
+    construction_complete: bool,
+    #[serde(rename = "ConstructionFailed")]
+    construction_failed: bool,
+    #[serde(rename = "ResourcesRequired")]
+    resources_required: Vec<ConstructionCommodity>,
+
+}
+#[derive(Deserialize)]
+pub struct ConstructionCommodity{
+    #[serde(rename = "Name")]
+    name: CommodityType,
+    #[serde(rename = "Name_Localised")]
+    name_localised: String,
+    #[serde(rename = "RequiredAmount")]
+    required_amount: u64,
+    #[serde(rename = "ProvidedAmount")]
+    provided_amount: u64,
+    #[serde(rename = "Payment")]
+    payment: u64,
+
+}
+
+#[derive(Deserialize)]
+pub struct ColonisationContribution{
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "MarketID")]
+    market_id: u64,
+    #[serde(rename = "Contributions")]
+    contributions: Vec<CargoItem>,
+}
+
+#[derive(Deserialize)]
+pub struct MarketBuy{
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "MarketID")]
+    market_id: u64,
+    #[serde(rename = "Type")]
+    commodity_type: CommodityType,
+    #[serde(rename = "Count")]
+    count: u64,
+    #[serde(rename = "BuyPrice")]
+    buy_price: u64,
+    #[serde(rename = "TotalCost")]
+    total_cost: u64,
 }

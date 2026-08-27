@@ -9,7 +9,7 @@ pub struct CargoItem{
     #[serde(rename = "Count")]
     pub count: u64,
     #[serde(rename = "Stolen")]
-    pub stolen: u64,
+    pub stolen: Option<u64>,
 }
 
 #[derive(Deserialize)]

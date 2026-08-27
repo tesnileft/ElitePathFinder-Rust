@@ -6,6 +6,9 @@ pub enum StationType {
     Orbis,
     Ocellus,
     Bernal,
+    AsteroidBase,
+    PlanetaryConstructionDepot,
+    SpaceConstructionDepot,
     FleetCarrier,
     MegaShip,
     CraterPort,
@@ -81,6 +84,8 @@ pub enum StationService {
     FrontlineSolutions,
     #[serde(rename = "registeringcolonisation")]
     RegisteringColonisation,
+    #[serde(rename = "colonisationcontribution")]
+    ColonisationContribution,
     #[serde(rename = "blackmarket")]
     BlackMarket,
     #[serde(rename = "facilitator")]

@@ -1,5 +1,6 @@
 use crate::elite_journal_data::enums::body_data::RawMaterial;
 use serde::Deserialize;
+use crate::elite_journal_data::enums::cargo::CommodityType;
 use crate::elite_journal_data::enums::misc::MaterialCategory;
 
 //region - Inventory Items -
@@ -10,7 +11,7 @@ pub struct Item {
     #[serde(rename = "Name_Localised")]
     name_localised: Option<String>,
     #[serde(rename = "OwnerID")]
-    owner_id: u32,
+    owner_id: Option<u32>,
     #[serde(rename = "Count")]
     count: u32,
 }
@@ -90,3 +91,4 @@ pub struct SuitModule{
     #[serde(rename = "WeaponMods")]
     weapon_mods: Vec<String>
 }
+
