@@ -24,11 +24,11 @@ pub struct StoredShip{
     #[serde(rename = "ShipType_Localised")]
     ship_type_localised: String,
     #[serde(rename = "Name")]
-    name: String,
+    name: Option<String>,
     #[serde(rename = "StarSystem")]
-    star_system: String,
+    star_system: Option<String>, //Possibly null for carriers
     #[serde(rename = "ShipMarketID")]
-    ship_market_id: u64,
+    ship_market_id: Option<u64>,
     #[serde(rename = "TransferPrice")]
     transfer_price: u64,
     #[serde(rename = "Value")]

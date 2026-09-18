@@ -20,7 +20,10 @@ use crate::elite_journal_data::events::station::*;
 pub enum EliteEvent {
     Fileheader(FileHeader),
     LoadGame(LoadGame),
+    GameModeChange(GameModeChange),
     Location(Location),
+    CarrierLocation(CarrierLocation),
+    CarrierStats(CarrierStats),
     Commander(Commander),
     Statistics(Statistics),
     Shutdown(Shutdown),

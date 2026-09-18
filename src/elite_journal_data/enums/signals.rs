@@ -1,6 +1,6 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum SignalType {
     Generic,
     Codex,
@@ -15,6 +15,8 @@ pub enum SignalType {
     StationMegaShip,
     StationBernalSphere,
     StationONeilOrbis,
+    StationONeilCylinder,
+    StationDodec,
     StationAsteroid,
     TouristBeacon,
     Combat,
@@ -22,7 +24,7 @@ pub enum SignalType {
 
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum SAASignalType {
     #[serde(alias = "$SAA_SignalType_Biological;")]
     Biological,

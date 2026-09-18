@@ -1,8 +1,8 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::fmt::Display;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub enum Genus {
     #[serde(rename = "$Codex_Ent_Aleoids_Genus_Name;")]
     Aleoida,
@@ -46,7 +46,7 @@ impl Display for Genus {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub enum Species {
     //Aleoida
     Arcus,
@@ -199,7 +199,7 @@ impl Display for Species {
     }
 }
 
-#[derive(Deserialize, Default, Debug)]
+#[derive(Deserialize, Serialize, Default, Debug)]
 pub enum ExoBiologyVariant {
     Emerald,
     Gold,

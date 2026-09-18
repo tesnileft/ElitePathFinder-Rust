@@ -1,18 +1,18 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::fmt::Display;
-#[derive(Deserialize, PartialEq, Eq)]
+#[derive(Deserialize, Serialize, PartialEq, Eq)]
 pub enum JumpType {
     Supercruise,
     Hyperspace,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum FriendStatus {
     Online,
     Offline,
 }
 ///Faction Allegiances
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Serialize, Default)]
 pub enum Allegiance {
     Empire,
     #[serde(alias = "PilotsFederation")]
@@ -24,14 +24,14 @@ pub enum Allegiance {
     None,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum LegalStatus {
     Clean,
     Lawless,
     Wanted,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum PilotRank {
     Harmless,
     MostlyHarmless,
@@ -44,12 +44,12 @@ pub enum PilotRank {
     Elite,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum ScanType{
     Cargo,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum MaterialCategory {
     #[serde(alias = "raw")]
     Raw,

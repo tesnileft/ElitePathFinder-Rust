@@ -1,22 +1,26 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Serialize, Default)]
 pub enum StationType {
     Coriolis,
     Orbis,
     Ocellus,
+    StationONeilCylinder,
     Bernal,
+    Dodec,
     AsteroidBase,
     PlanetaryConstructionDepot,
     SpaceConstructionDepot,
     FleetCarrier,
     MegaShip,
     CraterPort,
+    CraterOutpost,
+
     #[default]
     None,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum StationService {
     #[serde(rename = "dock")]
     Dock,
@@ -94,7 +98,7 @@ pub enum StationService {
     TechnologyBroker
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum EngineerUnlockedStatus {
     Known,
     Invited,

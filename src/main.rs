@@ -1,19 +1,19 @@
 use elite_journal_data::enums::body_data::BodyType;
-use gtk::{Application, gio, glib};
 use gtk::prelude::*;
-use rusqlite::Connection;
+use gtk::{Application, gio, glib};
 use std::collections::HashMap;
 use std::collections::hash_map::Entry::{Occupied, Vacant};
 use std::default::Default;
 use std::fs::File;
+use std::io::BufReader;
 use std::io::prelude::*;
-use std::io::{BufReader};
 use std::sync::{Arc, Mutex};
+use std::thread;
 use std::time::Duration;
-use std::{thread};
 
 mod parser;
 mod custom_structs;
+mod db;
 mod elite_journal_data;
 mod settings_area;
 mod topbar;
@@ -28,10 +28,10 @@ use crate::custom_structs::starsystem::StarSystem;
 use crate::custom_structs::system_info::Body;
 use crate::custom_structs::system_info::Body::{Planet, Star};
 use crate::elite_journal_data::enums::misc::JumpType;
+use crate::elite_journal_data::enums::signals::SAASignalType;
 use crate::helpers::extract_latest_journal;
 use crate::parser::EliteEvent;
 use window::Window;
-use crate::elite_journal_data::enums::signals::SAASignalType;
 
 const APP_ID: &str = "tesnileft.ElitePathfinder_rs";
 
@@ -75,7 +75,7 @@ fn main() -> glib::ExitCode {
     application.connect_activate(move |app| {
         build_ui_xml(app, ui_event_receiver.clone(), cache.clone());
     });
-    let database_connection = Connection::open_in_memory().unwrap();
+    let database_connection = db::open("elitepathfinder.db");
 
     let shared_cache = Arc::new(Mutex::new(Cache::default()));
     //TODO load cache from database

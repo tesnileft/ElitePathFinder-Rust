@@ -6,6 +6,8 @@ use crate::elite_journal_data::substructs::factions::{Faction, SystemFaction};
 use crate::elite_journal_data::substructs::station_data::{Engineer, StationEconomy};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+use crate::elite_journal_data::enums::vessels::{CarrierType, DockingAccess};
+use crate::elite_journal_data::substructs::inventory::{CarrierCrew, CarrierFinance, CarrierPack, SpaceUsage};
 
 #[derive(Deserialize)]
 pub struct Rank {
@@ -156,6 +158,56 @@ pub struct Location {
     pub factions: Option<Vec<Faction>>,
     #[serde(rename = "SystemFaction")]
     pub system_faction: Option<SystemFaction>,
+}
+
+#[derive(Deserialize)]
+pub struct CarrierLocation{
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "CarrierType")]
+    pub carrier_type: CarrierType,
+    #[serde(rename = "CarrierID")]
+    pub carrier_id: u64,
+    #[serde(rename = "StarSystem")]
+    pub star_system: String,
+    #[serde(rename = "SystemAddress")]
+    pub system_address: u64,
+}
+
+#[derive(Deserialize)]
+pub struct CarrierStats{
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "CarrierID")]
+    pub carrier_id: u64,
+    #[serde(rename = "CarrierType")]
+    pub carrier_type: CarrierType,
+    #[serde(rename = "Callsign")]
+    pub call_sign: String,
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "DockingAccess")]
+    pub docking_access: DockingAccess,
+    #[serde(rename = "AllowNotorious")]
+    pub allow_notorious: bool,
+    #[serde(rename = "FuelLevel")]
+    pub fuel_level: u64,
+    #[serde(rename = "JumpRangeCurr")]
+    pub jump_range_current: f64,
+    #[serde(rename = "JumpRangeMax")]
+    pub jump_range_max: f64,
+    #[serde(rename = "PendingDecommission")]
+    pub pending_decommission: bool,
+    #[serde(rename = "SpaceUsage")]
+    pub space_usage: SpaceUsage,
+    #[serde(rename = "Finance")]
+    pub finance: CarrierFinance,
+    #[serde(rename = "Crew")]
+    pub crew: Vec<CarrierCrew>,
+    #[serde(rename = "ShipPacks")]
+    pub ship_packs: Vec<CarrierPack>,
+    #[serde(rename = "ModulePacks")]
+    pub module_packs: Vec<CarrierPack>,
 }
 
 #[derive(Deserialize)]

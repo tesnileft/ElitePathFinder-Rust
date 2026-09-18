@@ -182,3 +182,12 @@ pub struct Outfitting {
     #[serde(rename = "StarSystem")]
     star_system: Option<String>,
 }
+
+#[derive(Deserialize)]
+pub struct ModuleStore{
+    timestamp: DateTime<Utc>,
+}
+#[derive(Deserialize)]
+pub struct ModuleSell{
+
+}

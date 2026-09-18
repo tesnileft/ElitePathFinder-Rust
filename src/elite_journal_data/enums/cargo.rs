@@ -1,6 +1,6 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum CommodityType {
     //Refinery/extraction
     #[serde(alias = "$aluminium_name;", alias = "aluminium")]
@@ -9,7 +9,12 @@ pub enum CommodityType {
     Copper,
     #[serde(alias = "$steel_name;", alias = "steel")]
     Steel,
-
+    #[serde(alias = "$serendibite_name;", alias = "serendibite")]
+    Serendibite,
+    #[serde(alias = "$palladium_name;", alias = "palladium")]
+    Palladium,
+    #[serde(alias = "$osmium_name;", alias = "osmium")]
+    Osmium,
     //Medical
     #[serde(alias = "$combatstabilisers_name;", alias = "combatstabilisers")]
     Combatstabilisers,

@@ -260,3 +260,28 @@ pub struct MarketBuy{
     #[serde(rename = "TotalCost")]
     total_cost: u64,
 }
+
+#[derive(Deserialize)]
+pub struct MarketSell{
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "MarketID")]
+    market_id: u64,
+    #[serde(rename = "Type")]
+    commodity_type: CommodityType,
+    #[serde(rename = "Count")]
+    count: u64,
+    #[serde(rename = "SellPrice")]
+    sell_price: u64,
+    #[serde(rename = "TotalSale")]
+    total_sale: u64,
+    #[serde(rename = "AvgPricePaid")]
+    avg_price_paid: u64,
+}
+
+#[derive(Deserialize)]
+pub struct TechnologyBroker{
+    #[serde(rename = "timestamp")]
+    timestamp: DateTime<Utc>,
+    
+}

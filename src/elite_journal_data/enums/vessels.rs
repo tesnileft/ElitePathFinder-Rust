@@ -1,6 +1,6 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum ShipType {
     #[serde(rename = "anaconda")]
     Anaconda,
@@ -16,6 +16,8 @@ pub enum ShipType {
     Type8,
     #[serde(rename = "type9")]
     Type9,
+    #[serde(rename = "lakonminer")]
+    Type11,
     #[serde(rename = "python")]
     Python,
     PythonNX,
@@ -37,7 +39,7 @@ pub enum ShipType {
     KraitMkII,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum SRVType {
     #[serde(rename = "lander01")]
     Nomad,
@@ -45,14 +47,55 @@ pub enum SRVType {
     Scarab,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum SlotType{
     MainEngines,
     FrameShiftDrive,
     Thrusters,
+    Slot02_Size6, //Needs to be renamed to something more sensible
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
+pub enum CarrierType{
+    FleetCarrier,
+    SquadronCarrier,
+}
+
+#[derive(Deserialize, Serialize)]
+pub enum DockingAccess{
+    #[serde(rename = "all")]
+    All,
+    #[serde(rename = "none")]
+    None,
+    #[serde(rename = "friends")]
+    Friends,
+    #[serde(rename = "squadron")]
+    Squadron,
+    #[serde(rename = "squadronfriends")]
+    SquadronFriends,
+}
+
+#[derive(Deserialize, Serialize)]
+pub enum CarrierCrewRole{
+    BlackMarket,
+    Captain,
+    Refuel,
+    Repair,
+    Rearm,
+    Commodities,
+    VoucherRedemption,
+    Exploration,
+    Shipyard,
+    Outfitting,
+    CarrierFuel,
+    VistaGenomics,
+    PioneerSupplies,
+    Bartender,
+}
+
+
+
+#[derive(Deserialize, Serialize)]
 pub enum LimpetType{
     Collection,
 

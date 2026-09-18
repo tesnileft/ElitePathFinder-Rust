@@ -2,6 +2,7 @@ use crate::elite_journal_data::enums::body_data::RawMaterial;
 use serde::Deserialize;
 use crate::elite_journal_data::enums::cargo::CommodityType;
 use crate::elite_journal_data::enums::misc::MaterialCategory;
+use crate::elite_journal_data::enums::vessels::CarrierCrewRole;
 
 //region - Inventory Items -
 #[derive(Deserialize)]
@@ -92,3 +93,67 @@ pub struct SuitModule{
     weapon_mods: Vec<String>
 }
 
+//Fleet carrier
+#[derive(Deserialize)]
+pub struct SpaceUsage{
+    #[serde(rename = "TotalCapacity")]
+    total_capacity: u64,
+    #[serde(rename = "Crew")]
+    crew: u64,
+    #[serde(rename = "Cargo")]
+    cargo: u64,
+    #[serde(rename = "CargoSpaceReserved")]
+    cargo_space_reserved: u64,
+    #[serde(rename = "ShipPacks")]
+    ship_packs: u64,
+    #[serde(rename = "ModulePacks")]
+    module_packs: u64,
+    #[serde(rename = "FreeSpace")]
+    free_space: u64,
+}
+
+#[derive(Deserialize)]
+pub struct CarrierFinance{
+    #[serde(rename = "CarrierBalance")]
+    carrier_balance: u64,
+    #[serde(rename = "ReserveBalance")]
+    reserve_balance: u64,
+    #[serde(rename = "AvailableBalance")]
+    available_balance: u64,
+    #[serde(rename = "ReservePercent")]
+    reserve_percent: f64,
+    #[serde(rename = "TaxRate")]
+    tax_rate: Option<f64>,
+    #[serde(rename = "TaxRate_Shipyard")]
+    tax_rate_shipyard: Option<f64>,
+    #[serde(rename = "TaxRate_Outfitting")]
+    tax_rate_outfitting: Option<f64>,
+    #[serde(rename = "TaxRate_Refuel")]
+    tax_rate_refuel: Option<f64>,
+    #[serde(rename = "TaxRate_Repair")]
+    tax_rate_repair: Option<f64>,
+    #[serde(rename = "TaxRate_Rearm")]
+    tax_rate_rearm: Option<f64>,
+    #[serde(rename = "TaxRate_pioneersupplies")]
+    tax_rate_pioneer_supplies: Option<f64>,
+}
+
+#[derive(Deserialize)]
+pub struct CarrierCrew{
+    #[serde(rename = "CrewRole")]
+    crew_role: CarrierCrewRole,
+    #[serde(rename = "Activated")]
+    activated: bool,
+    #[serde(rename = "Enabled")]
+    enabled: Option<bool>,
+    #[serde(rename = "CrewName")]
+    crew_name: Option<String>,
+}
+
+#[derive(Deserialize)]
+pub struct CarrierPack{
+    #[serde(rename = "PackTheme")]
+    pack_theme: String,
+    #[serde(rename = "PackTier")]
+    pack_tier: u64,
+}

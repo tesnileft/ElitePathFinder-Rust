@@ -1,14 +1,15 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::fmt;
 
-#[derive(Deserialize, Eq, Hash, PartialEq)]
+#[derive(Deserialize, Serialize, Eq, Hash, PartialEq)]
 pub enum BodyType {
     Star,
     Planet,
     Station,
+    Null, //Barycenters or not near any body
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum StarClass {
     O,
     A,
@@ -47,7 +48,7 @@ pub enum StarClass {
     RoguePlanet,
 }
 
-#[derive(Deserialize, Ord, PartialOrd, PartialEq, Eq)]
+#[derive(Deserialize, Serialize, Ord, PartialOrd, PartialEq, Eq)]
 pub enum LuminosityClass {
     O,
     Ia,
@@ -65,7 +66,7 @@ pub enum LuminosityClass {
     VII,
 }
 
-#[derive(Deserialize, Default, Debug, Clone)]
+#[derive(Deserialize, Serialize, Default, Debug, Clone)]
 pub enum AtmosphereType {
     Argon,
     ArgonRich,
@@ -95,7 +96,7 @@ impl fmt::Display for AtmosphereType {
     }
 }
 
-#[derive(Deserialize, Eq, PartialEq, Hash, Copy, Clone)]
+#[derive(Deserialize, Serialize, Eq, PartialEq, Hash, Copy, Clone)]
 pub enum PlanetClass {
     #[serde(rename = "High metal content body")]
     HMC,
@@ -136,7 +137,7 @@ pub enum PlanetClass {
 
 }
 
-#[derive(Deserialize, Default, Eq, PartialEq, Clone)]
+#[derive(Deserialize, Serialize, Default, Eq, PartialEq, Clone)]
 pub enum Volcanism {
     #[serde(rename = "silicate vapour geysers volcanism")]
     SilicateVapour,
@@ -282,7 +283,7 @@ impl Volcanism{
     }
     
 }
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub enum Geological{
     Fumarole,
     IceFumarole,
@@ -292,7 +293,7 @@ pub enum Geological{
     GasVent,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub enum BodyParent {
     Ring(u64),
     Star(u64),
@@ -300,7 +301,7 @@ pub enum BodyParent {
     Planet(u64),
 }
 
-#[derive(Deserialize, Eq, PartialEq, Clone)]
+#[derive(Deserialize, Serialize, Eq, PartialEq, Clone)]
 pub enum RawMaterial {
     //Grade 1
     #[serde(rename = "carbon")]

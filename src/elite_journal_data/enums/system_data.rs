@@ -1,7 +1,7 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::fmt;
 
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Serialize, Default)]
 pub enum Economy {
     #[serde(rename = "$economy_Agri;")]
     Agricultural,
@@ -30,7 +30,7 @@ pub enum Economy {
 
 //region - System Factions -
 ///System Security states, Anarchy is lowest
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Serialize, Default)]
 pub enum SystemSecurity {
     #[default]
     #[serde(rename = "$GAlAXY_MAP_INFO_state_anarchy;")]
@@ -44,7 +44,7 @@ pub enum SystemSecurity {
 }
 
 ///All states a faction (and thus system at large) can be in, will be represented with an `Option<FactionState>` field, since there can be no active state.
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Serialize, Default)]
 pub enum FactionState {
     #[default]
     None,
@@ -67,15 +67,17 @@ pub enum FactionState {
     PublicHoliday,
     CivilLiberty,
     Investment,
+    PirateAttack,
 
 }
 
 ///Possible system governments
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Serialize, Default)]
 pub enum Government {
     #[serde(alias = "$government_Anarchy;")]
     Anarchy,
-    Communist,
+    #[serde(alias = "$government_Communism;")]
+    Communism,
     #[serde(alias = "$government_Confederacy;")]
     Confederacy,
     #[serde(alias = "$government_Cooperative;")]
@@ -95,13 +97,15 @@ pub enum Government {
     Engineer,
     #[serde(alias = "$government_Megaconstruction;")]
     MegaConstruction,
+    #[serde(alias = "$government_Carrier;")]
+    Carrier,
     #[default]
     #[serde(alias = "$government_None;")]
     None,
 }
 
 ///Current Powerplay State a system can be in, only covers the state the ruling faction is part of, so will never be "Exploiting" or "Undermining"
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Serialize, Default)]
 pub enum PowerplayState {
     #[default]
     Unoccupied,
@@ -111,7 +115,7 @@ pub enum PowerplayState {
 }
 
 /// Enum of all Powerplay factions, Spaces and dashes removed. Use <enum value>.to_string() for the full name.
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Serialize, Default)]
 pub enum PowerplayPower {
     #[serde(rename = "A. Lavigny-Duval")]
     ALavignyDuval,

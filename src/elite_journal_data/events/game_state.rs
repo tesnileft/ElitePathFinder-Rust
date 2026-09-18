@@ -115,3 +115,11 @@ pub struct FileHeader {
     pub build: String,
 }
 
+#[derive(Deserialize)]
+pub struct GameModeChange {
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "GameMode")]
+    pub game_mode: GameMode,
+}
+

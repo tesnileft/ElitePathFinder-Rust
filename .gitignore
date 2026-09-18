@@ -1,4 +1,5 @@
 /target
+/elitepathfinder.db
 /build/
 /.idea/.gitignore
 /.idea/ElitePathFinder-Rust.iml
