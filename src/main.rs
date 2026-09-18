@@ -37,6 +37,8 @@ const APP_ID: &str = "tesnileft.ElitePathfinder_rs";
 
 pub enum UiEvent {
     SetCurrentSystem { system_name: String },
+    SetLocationName { location_name: Option<String> },
+    SetCommanderName { name: String },
     UpdateCurrency { arx: u64, credits: u64 },
 }
 #[derive(Default)]
@@ -44,6 +46,7 @@ pub struct Cache {
     pub current_system: StarSystem,
     pub current_body: Option<String>,
     pub current_body_type: Option<BodyType>,
+    pub commander_name: String,
     pub credits: u64,
     pub arx: u64,
     pub in_hyperspace: bool,
@@ -140,14 +143,55 @@ fn start_background_reader(ui_event_sender: async_channel::Sender<UiEvent>, shar
     });
 }
 
-fn message_bus(event_vec: Vec<EliteEvent>, _: async_channel::Sender<UiEvent>, shared_cache: SharedCache) {
+fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sender<UiEvent>, shared_cache: SharedCache) {
     gio::spawn_blocking(move || {
         for event in event_vec {
             match event {
                 EliteEvent::LoadGame(load) => {
-                    println!("Game Loaded:");
-                    println!("CMDR: {}", load.commander);
-                    println!("Credits: {}", load.credits);
+                    let mut cache = shared_cache.lock().unwrap();
+                    cache.commander_name = load.commander.clone();
+                    cache.credits = load.credits;
+                    let arx = cache.arx;
+                    drop(cache);
+                    let _ = ui_event_sender.send_blocking(UiEvent::SetCommanderName { name: load.commander });
+                    let _ = ui_event_sender.send_blocking(UiEvent::UpdateCurrency { arx, credits: load.credits });
+                }
+                EliteEvent::Commander(commander) => {
+                    let mut cache = shared_cache.lock().unwrap();
+                    cache.commander_name = commander.name.clone();
+                    drop(cache);
+                    let _ = ui_event_sender.send_blocking(UiEvent::SetCommanderName { name: commander.name });
+                }
+                EliteEvent::Location(location) => {
+                    let mut cache = shared_cache.lock().unwrap();
+                    let current_system = StarSystem {
+                        name: location.star_system.clone(),
+                        address: location.system_address,
+                        star_position: location.star_pos,
+                        security: location.system_security,
+                        allegiance: location.system_allegiance.unwrap_or_default(),
+                        economy: location.system_economy,
+                        second_economy: location.system_second_economy,
+                        government: location.system_government,
+                        ..Default::default()
+                    };
+                    cache.current_system = current_system;
+                    cache.game_location = location.station_name.clone().unwrap_or_default();
+                    drop(cache);
+                    let _ = ui_event_sender.send_blocking(UiEvent::SetCurrentSystem { system_name: location.star_system });
+                    let _ = ui_event_sender.send_blocking(UiEvent::SetLocationName { location_name: location.station_name });
+                }
+                EliteEvent::Docked(docked) => {
+                    let mut cache = shared_cache.lock().unwrap();
+                    cache.game_location = docked.station_name.clone();
+                    drop(cache);
+                    let _ = ui_event_sender.send_blocking(UiEvent::SetLocationName { location_name: Some(docked.station_name) });
+                }
+                EliteEvent::Undocked(_) => {
+                    let mut cache = shared_cache.lock().unwrap();
+                    cache.game_location.clear();
+                    drop(cache);
+                    let _ = ui_event_sender.send_blocking(UiEvent::SetLocationName { location_name: None });
                 }
                 EliteEvent::StartJump(start_jump) => {
                     if start_jump.jump_type == JumpType::Hyperspace
@@ -168,8 +212,12 @@ fn message_bus(event_vec: Vec<EliteEvent>, _: async_channel::Sender<UiEvent>, sh
                         government: fsdjump.system_government,
                         ..Default::default()
                     };
-                    println!("Jumped to {}", jumpingto.name);
                     unlocked_cache.current_system = jumpingto;
+                    unlocked_cache.game_location.clear();
+                    let system_name = unlocked_cache.current_system.name.clone();
+                    drop(unlocked_cache);
+                    let _ = ui_event_sender.send_blocking(UiEvent::SetCurrentSystem { system_name });
+                    let _ = ui_event_sender.send_blocking(UiEvent::SetLocationName { location_name: None });
                 }
                 EliteEvent::FSSBodySignals(signals) => {
                     let mut cache = shared_cache.lock().unwrap();

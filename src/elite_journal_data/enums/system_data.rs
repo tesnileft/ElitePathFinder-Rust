@@ -24,7 +24,7 @@ pub enum Economy {
     #[serde(rename = "$economy_Colony;")]
     Colony,
     #[default]
-    #[serde(rename = "$economy_None;")]
+    #[serde(alias = "$economy_None;", alias = "")]
     None,
 }
 

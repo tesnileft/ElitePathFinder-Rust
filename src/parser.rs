@@ -38,8 +38,11 @@ pub enum EliteEvent {
     MaterialDiscovered(MaterialDiscovered),
     MaterialTrade(MaterialTrade),
 
+    //Inventory
     Backpack(Backpack),
     ModuleInfo(ModuleInfo),
+
+    //Scans
     FSSSignalDiscovered(FSSSignalDiscovered),
     FSSDiscoveryScan(FSSDiscoveryScan),
     NavBeaconScan(NavBeaconScan),
@@ -49,6 +52,8 @@ pub enum EliteEvent {
     SAASignalsFound(SAASignalsFound),
     SAAScanComplete(SAAScanComplete),
     ScanBaryCentre(ScanBaryCentre),
+
+    //Ships Events
     DockingRequested(DockingRequested),
     DockingGranted(DockingGranted),
     ApproachSettlement(ApproachSettlement),
@@ -63,6 +68,12 @@ pub enum EliteEvent {
     JetConeBoost(JetConeBoost),
     ReservoirReplenished(ReservoirReplenished),
     ShipTargeted(ShipTargeted),
+    ShieldState(ShieldState),
+    UnderAttack(UnderAttack),
+    Scanned(Scanned),
+
+
+    //Station related
     Market(Market),
     Shipyard(Shipyard),
     Outfitting(Outfitting),
@@ -86,6 +97,8 @@ pub enum EliteEvent {
     SupercruiseEntry(SupercruiseEntry),
     SupercruiseExit(SupercruiseExit),
     SupercruiseDestinationDrop(SupercruiseDestinationDrop),
+
+    //Social
     SendText(SendText),
     ReceiveText(ReceiveText),
     Friends(Friends),
@@ -94,6 +107,8 @@ pub enum EliteEvent {
     WingAdd(WingAdd),
     WingLeave(WingLeave),
     SquadronStartup(SquadronStartup),
+
+
     CommunityGoal(CommunityGoal),
     CommunityGoalReward(CommunityGoalReward),
     Rank(Rank),
@@ -113,8 +128,7 @@ pub enum EliteEvent {
 
     CodexEntry(CodexEntry),
     ScanOrganic(ScanOrganic),
-    UnderAttack(UnderAttack),
-    Scanned(Scanned),
+
     DatalinkScan(DatalinkScan),
 
     PayFines(PayFines),

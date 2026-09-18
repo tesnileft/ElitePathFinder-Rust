@@ -88,7 +88,7 @@ pub struct LoadGame {
     #[serde(rename = "GameMode")]
     pub game_mode: GameMode,
     #[serde(rename = "Group")]
-    pub group: String,
+    pub group: Option<String>,
     #[serde(rename = "Credits")]
     pub credits: u64,
     #[serde(rename = "Loan")]

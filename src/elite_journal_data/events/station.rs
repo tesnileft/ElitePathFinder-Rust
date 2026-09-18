@@ -43,7 +43,7 @@ pub struct Docked {
     #[serde(rename = "timestamp")]
     timestamp: DateTime<Utc>,
     #[serde(rename = "StationName")]
-    station_name: String,
+    pub station_name: String,
     #[serde(rename = "StationType")]
     station_type: StationType,
     #[serde(rename = "Taxi")]

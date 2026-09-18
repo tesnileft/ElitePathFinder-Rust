@@ -36,8 +36,15 @@ impl Window {
     fn update_ui(&self, event: UiEvent) {
         let imp = self.imp();
         match event {
-            UiEvent::SetCurrentSystem { system_name: name } => { imp.topbar.set_systemname(&name)}
-            other => {}
+            UiEvent::SetCurrentSystem { system_name } => imp.topbar.set_systemname(&system_name),
+            UiEvent::SetLocationName { location_name } => {
+                imp.topbar.set_locationname(&location_name.unwrap_or_else(|| "In Space".to_string()));
+            }
+            UiEvent::SetCommanderName { name } => imp.topbar.set_commandername(&name),
+            UiEvent::UpdateCurrency { arx, credits } => {
+                imp.topbar.set_arx(arx);
+                imp.topbar.set_credits(credits);
+            }
         }
     }
     fn exobio_cards(&self) -> gio::ListStore {

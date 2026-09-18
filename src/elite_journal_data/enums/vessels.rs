@@ -22,6 +22,8 @@ pub enum ShipType {
     Python,
     PythonNX,
     SmallCombat01NX,
+    #[serde(alias = "diamondbackxl")]
+    DiamondbackExplorer,
     #[serde(alias = "Explorer_NX", alias = "explorer_nx")]
     CaspianExplorer,
     Mandalay,
@@ -50,6 +52,7 @@ pub enum SRVType {
 #[derive(Deserialize, Serialize)]
 pub enum SlotType{
     MainEngines,
+    PowerPlant,
     FrameShiftDrive,
     Thrusters,
     Slot02_Size6, //Needs to be renamed to something more sensible

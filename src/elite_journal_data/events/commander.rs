@@ -83,9 +83,9 @@ pub struct Location {
     #[serde(rename = "DistFromStarLS")]
     distance_from_star_ls: Option<f64>,
     #[serde(rename = "Docked")]
-    docked: bool,
+    pub docked: bool,
     #[serde(rename = "StationName")]
-    station_name: Option<String>,
+    pub station_name: Option<String>,
     #[serde(rename = "StationType")]
     #[serde(default)]
     station_type: StationType,
@@ -113,15 +113,15 @@ pub struct Location {
     #[serde(rename = "Multicrew")]
     multicrew: Option<bool>,
     #[serde(rename = "StarSystem")]
-    star_system: String,
+    pub star_system: String,
     #[serde(rename = "SystemAddress")]
-    system_address: u64,
+    pub system_address: u64,
     #[serde(rename = "StarPos")]
     pub star_pos: (f64, f64, f64),
     #[serde(rename = "SystemAllegiance")]
-    system_allegiance: Option<Allegiance>,
+    pub system_allegiance: Option<Allegiance>,
     #[serde(rename = "SystemEconomy")]
-    system_economy: Economy,
+    pub system_economy: Economy,
     #[serde(rename = "SystemEconomy_Localised")]
     system_economy_localised: String,
     #[serde(rename = "SystemSecondEconomy")]

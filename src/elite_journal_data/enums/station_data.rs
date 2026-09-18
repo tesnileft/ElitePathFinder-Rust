@@ -15,6 +15,8 @@ pub enum StationType {
     MegaShip,
     CraterPort,
     CraterOutpost,
+    SurfaceStation,
+
 
     #[default]
     None,

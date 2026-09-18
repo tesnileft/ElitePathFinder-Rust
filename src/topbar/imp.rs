@@ -16,6 +16,8 @@ pub struct EliteHeaderBar
     pub commandername_label: TemplateChild<gtk::Label>,
     #[template_child]
     pub systemname_label: TemplateChild<gtk::Label>,
+    #[template_child]
+    pub locationname_label: TemplateChild<gtk::Label>,
 }
 
 // The central trait for subclassing a GObject

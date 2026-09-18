@@ -34,6 +34,8 @@ pub enum SAASignalType {
     Human,
     #[serde(rename = "$SAA_SignalType_Thargoid;")]
     Thargoid,
+    #[serde(rename = "$PlanetaryMiningLocation_Name;")]
+    PlanetaryMining,
     #[serde(rename = "$SAA_SignalType_Other;")]
     Other,
 }
