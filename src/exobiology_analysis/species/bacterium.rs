@@ -68,11 +68,7 @@ pub fn predict_bacterium(planet: &Planet, star_parents: &Vec<& Star>) -> Vec<Exo
                 _ if check_material(materials, Tin) => ExoBiologyVariant::Cobalt,
                 _ => ExoBiologyVariant::Unknown,
             };
-            exobios.push(ExoBiologySpecies {
-                genus: Bacterium,
-                species: Species::Tela,
-                variants: vec![variant],
-            });
+            exobios.push(ExoBiologySpecies::new(Bacterium, Species::Tela, vec![variant]));
         }
         match atmosphere.atmosphere_type {
             AtmosphereType::Helium => {
@@ -86,11 +82,7 @@ pub fn predict_bacterium(planet: &Planet, star_parents: &Vec<& Star>) -> Vec<Exo
                         _ if check_material(materials, Yttrium) => ExoBiologyVariant::Cobalt,
                         _ => ExoBiologyVariant::Unknown,
                     };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Nebulus,
-                        variants: vec![variant],
-                    });
+                    exobios.push(ExoBiologySpecies::new(Bacterium, Species::Nebulus, vec![variant]));
                 }
             }
             AtmosphereType::Neon | AtmosphereType::NeonRich => {
@@ -104,11 +96,7 @@ pub fn predict_bacterium(planet: &Planet, star_parents: &Vec<& Star>) -> Vec<Exo
                         _ if check_material(materials, Yttrium) => ExoBiologyVariant::Aquamarine,
                         _ => ExoBiologyVariant::Unknown,
                     };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Acies,
-                        variants: vec![variant],
-                    });
+                    exobios.push(ExoBiologySpecies::new(Bacterium, Species::Acies, vec![variant]));
                 }
 
                 //Omentum - material determinant, requires Nitrogen or Ammonia volcanism
@@ -135,11 +123,7 @@ pub fn predict_bacterium(planet: &Planet, star_parents: &Vec<& Star>) -> Vec<Exo
                             _ if check_material(materials, Tungsten) => ExoBiologyVariant::Blue,
                             _ => ExoBiologyVariant::Unknown,
                         };
-                        exobios.push(ExoBiologySpecies {
-                            genus: Bacterium,
-                            species: Species::Omentum,
-                            variants: vec![variant],
-                        });
+                        exobios.push(ExoBiologySpecies::new(Bacterium, Species::Omentum, vec![variant]));
                 }
 
                 //Scopulum - material determinant, requires Carbon(dioxide) or Methane volcanism
@@ -164,11 +148,7 @@ pub fn predict_bacterium(planet: &Planet, star_parents: &Vec<& Star>) -> Vec<Exo
                             }
                             _ => ExoBiologyVariant::Unknown,
                         };
-                        exobios.push(ExoBiologySpecies {
-                            genus: Bacterium,
-                            species: Species::Scopulum,
-                            variants: vec![variant],
-                        });
+                        exobios.push(ExoBiologySpecies::new(Bacterium, Species::Scopulum, vec![variant]));
                     }
                 }
 
@@ -188,11 +168,7 @@ pub fn predict_bacterium(planet: &Planet, star_parents: &Vec<& Star>) -> Vec<Exo
                             _ if check_material(materials, Tungsten) => ExoBiologyVariant::Lime,
                             _ => ExoBiologyVariant::Unknown,
                         };
-                        exobios.push(ExoBiologySpecies {
-                            genus: Bacterium,
-                            species: Species::Verrata,
-                            variants: vec![variant],
-                        });
+                        exobios.push(ExoBiologySpecies::new(Bacterium, Species::Verrata, vec![variant]));
                 }
             }
             AtmosphereType::Methane | AtmosphereType::MethaneRich => {
@@ -206,11 +182,7 @@ pub fn predict_bacterium(planet: &Planet, star_parents: &Vec<& Star>) -> Vec<Exo
                         _ if check_material(materials, Yttrium) => ExoBiologyVariant::Red,
                         _ => ExoBiologyVariant::Unknown,
                     };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Bullaris,
-                        variants: vec![variant],
-                    });
+                    exobios.push(ExoBiologySpecies::new(Bacterium, Species::Bullaris, vec![variant]));
             }
             AtmosphereType::Argon | AtmosphereType::ArgonRich => {
                 //Vesicula
@@ -223,11 +195,7 @@ pub fn predict_bacterium(planet: &Planet, star_parents: &Vec<& Star>) -> Vec<Exo
                         _ if check_material(materials, Yttrium) => ExoBiologyVariant::Lime,
                         _ => ExoBiologyVariant::Unknown,
                     };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Vesicula,
-                        variants: vec![variant],
-                    });
+                    exobios.push(ExoBiologySpecies::new(Bacterium, Species::Vesicula, vec![variant]));
             }
             AtmosphereType::Nitrogen => {
                 //Informem
@@ -240,11 +208,7 @@ pub fn predict_bacterium(planet: &Planet, star_parents: &Vec<& Star>) -> Vec<Exo
                         _ if check_material(materials, Yttrium) => ExoBiologyVariant::Cobalt,
                         _ => ExoBiologyVariant::Unknown,
                     };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Informem,
-                        variants: vec![variant],
-                    });
+                    exobios.push(ExoBiologySpecies::new(Bacterium, Species::Informem, vec![variant]));
             }
             AtmosphereType::Oxygen => {
                 //Volu
@@ -257,35 +221,19 @@ pub fn predict_bacterium(planet: &Planet, star_parents: &Vec<& Star>) -> Vec<Exo
                         _ if check_material(materials, Yttrium) => ExoBiologyVariant::Gold,
                         _ => ExoBiologyVariant::Unknown,
                     };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Volu,
-                        variants: vec![variant],
-                    });
+                    exobios.push(ExoBiologySpecies::new(Bacterium, Species::Volu, vec![variant]));
             }
             AtmosphereType::Ammonia => {
                 //Alcyoneum
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Alcyoneum,
-                        variants: bacterium_starvariants(star_parents)
-                    });
+                    exobios.push(ExoBiologySpecies::new(Bacterium, Species::Alcyoneum, bacterium_starvariants(star_parents)));
             }
             AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich => {
                 //Aurasus
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Aurasus,
-                        variants: bacterium_starvariants(star_parents)
-                    });
+                    exobios.push(ExoBiologySpecies::new(Bacterium, Species::Aurasus, bacterium_starvariants(star_parents)));
             }
             AtmosphereType::Water | AtmosphereType::WaterRich | AtmosphereType::SulphurDioxide => {
                 //Cerbrus
-                    exobios.push(ExoBiologySpecies {
-                        genus: Bacterium,
-                        species: Species::Cerbrus,
-                        variants: bacterium_starvariants(star_parents)
-                    });
+                    exobios.push(ExoBiologySpecies::new(Bacterium, Species::Cerbrus, bacterium_starvariants(star_parents)));
             }
             _ => {}
         }

@@ -19,11 +19,27 @@ pub struct StarSystem{
     pub(crate) second_economy: Economy,
     pub(crate) government: Government,
     pub(crate) present_planets: HashSet<PlanetClass>,
+    ///Set by FSSAllBodiesFound. Exobio prediction depends on the whole system being scanned
+    pub(crate) all_bodies_found: bool,
  }
 impl StarSystem{
     ///Returns full list of potential species
     pub fn get_potential_exobio(&self, body_id: u64) -> Option<Vec<ExoBiologySpecies>>{
         determine_exobio_species(self, body_id)
+    }
+    ///Computes and stores potential species for a planet with biological signals.
+    ///Returns (body_name, species) if the planet qualified
+    pub fn update_potential_exobio(&mut self, body_id: u64) -> Option<(String, Vec<ExoBiologySpecies>)> {
+        match self.bodies.get(&body_id) {
+            Some(Planet(p)) if p.biological_signals.unwrap_or(0) > 0 => {}
+            _ => return None,
+        }
+        let potential = self.get_potential_exobio(body_id);
+        if let Some(Planet(planet)) = self.bodies.get_mut(&body_id) {
+            planet.potential_species = potential.clone();
+            return potential.map(|species| (planet.body_name.clone(), species));
+        }
+        None
     }
     pub fn add_body(&mut self, id: u64, body: Body)
     {

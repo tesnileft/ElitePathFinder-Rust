@@ -8,6 +8,7 @@ use crate::elite_journal_data::enums::exobiology::{ExoBiologyVariant, Species};
 use crate::exobiology_analysis::species::aleoida::predict_aleoida;
 use crate::exobiology_analysis::species::bacterium::predict_bacterium;
 use crate::exobiology_analysis::species::concha::predict_concha;
+use crate::exobiology_analysis::species::crystaline_shard::predict_shards;
 use crate::exobiology_analysis::species::fonticulua::predict_fonticulua;
 use crate::exobiology_analysis::species::frutexa::predict_frutexa;
 use crate::exobiology_analysis::species::fumerola::predict_fumerola;
@@ -231,6 +232,8 @@ pub fn get_species_value(species: Species) -> u64 {
         Species::Triticum => 7_774_700,
         Species::Ventusa => 3_227_700,
         Species::Virgam => 14_313_700,
+        //Crystalline Shards
+        Species::CrystalineShards => 1_700_000,
         //Sphere
         _ => 696969
     }
@@ -265,95 +268,39 @@ pub fn determine_exobio_species(
                                 | AtmosphereType::SulphurDioxide
                         )
                     {
-                        exobios.push(ExoBiologySpecies {
-                            genus: Stratum,
-                            species: Species::Tectonicas,
-                            variants: vec![stratum_stellar_variant(&star.class)],
-                        })
+                        exobios.push(ExoBiologySpecies::new(Stratum, Species::Tectonicas, vec![stratum_stellar_variant(&star.class)]))
                     }
                     if matches!(planet_class, PlanetClass::Rocky) {
                         match atmosphere.atmosphere_type {
                             AtmosphereType::Ammonia => {
-                                exobios.push(ExoBiologySpecies {
-                                    genus: Stratum,
-                                    species: Species::Paleas,
-                                    variants: vec![stratum_stellar_variant(&star.class)],
-                                });
-                                exobios.push(ExoBiologySpecies {
-                                    genus: Stratum,
-                                    species: Species::Laminamus,
-                                    variants: vec![stratum_stellar_variant(&star.class)],
-                                });
+                                exobios.push(ExoBiologySpecies::new(Stratum, Species::Paleas, vec![stratum_stellar_variant(&star.class)]));
+                                exobios.push(ExoBiologySpecies::new(Stratum, Species::Laminamus, vec![stratum_stellar_variant(&star.class)]));
                             }
                             AtmosphereType::Water | AtmosphereType::WaterRich => {
-                                exobios.push(ExoBiologySpecies {
-                                    genus: Stratum,
-                                    species: Species::Paleas,
-                                    variants: vec![stratum_stellar_variant(&star.class)],
-                                });
+                                exobios.push(ExoBiologySpecies::new(Stratum, Species::Paleas, vec![stratum_stellar_variant(&star.class)]));
                             }
                             AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich => {
-                                exobios.push(ExoBiologySpecies {
-                                    genus: Stratum,
-                                    species: Species::Paleas,
-                                    variants: vec![stratum_stellar_variant(&star.class)],
-                                });
+                                exobios.push(ExoBiologySpecies::new(Stratum, Species::Paleas, vec![stratum_stellar_variant(&star.class)]));
                                 if (160.0..=190.0).contains(&temperature) {
-                                    exobios.push(ExoBiologySpecies {
-                                        genus: Stratum,
-                                        species: Species::Excutitus,
-                                        variants: vec![stratum_stellar_variant(&star.class)],
-                                    });
+                                    exobios.push(ExoBiologySpecies::new(Stratum, Species::Excutitus, vec![stratum_stellar_variant(&star.class)]));
                                 }
                                 if temperature <= 190.0 {
-                                    exobios.push(ExoBiologySpecies {
-                                        genus: Stratum,
-                                        species: Species::Limaxus,
-                                        variants: vec![stratum_stellar_variant(&star.class)],
-                                    });
+                                    exobios.push(ExoBiologySpecies::new(Stratum, Species::Limaxus, vec![stratum_stellar_variant(&star.class)]));
                                 }
                                 if temperature > 190.0 {
-                                    exobios.push(ExoBiologySpecies {
-                                        genus: Stratum,
-                                        species: Species::Frigus,
-                                        variants: vec![stratum_stellar_variant(&star.class)],
-                                    });
-                                    exobios.push(ExoBiologySpecies {
-                                        genus: Stratum,
-                                        species: Species::Cucumisis,
-                                        variants: vec![stratum_stellar_variant(&star.class)],
-                                    });
+                                    exobios.push(ExoBiologySpecies::new(Stratum, Species::Frigus, vec![stratum_stellar_variant(&star.class)]));
+                                    exobios.push(ExoBiologySpecies::new(Stratum, Species::Cucumisis, vec![stratum_stellar_variant(&star.class)]));
                                 }
                             }
                             AtmosphereType::SulphurDioxide => {
-                                exobios.push(ExoBiologySpecies {
-                                    genus: Stratum,
-                                    species: Species::Araneamus,
-                                    variants: vec![stratum_stellar_variant(&star.class)],
-                                });
+                                exobios.push(ExoBiologySpecies::new(Stratum, Species::Araneamus, vec![stratum_stellar_variant(&star.class)]));
                                 if temperature <= 190.0 {
-                                    exobios.push(ExoBiologySpecies {
-                                        genus: Stratum,
-                                        species: Species::Excutitus,
-                                        variants: vec![stratum_stellar_variant(&star.class)],
-                                    });
-                                    exobios.push(ExoBiologySpecies {
-                                        genus: Stratum,
-                                        species: Species::Limaxus,
-                                        variants: vec![stratum_stellar_variant(&star.class)],
-                                    });
+                                    exobios.push(ExoBiologySpecies::new(Stratum, Species::Excutitus, vec![stratum_stellar_variant(&star.class)]));
+                                    exobios.push(ExoBiologySpecies::new(Stratum, Species::Limaxus, vec![stratum_stellar_variant(&star.class)]));
                                 }
                                 if temperature > 190.0 {
-                                    exobios.push(ExoBiologySpecies {
-                                        genus: Stratum,
-                                        species: Species::Frigus,
-                                        variants: vec![stratum_stellar_variant(&star.class)],
-                                    });
-                                    exobios.push(ExoBiologySpecies {
-                                        genus: Stratum,
-                                        species: Species::Cucumisis,
-                                        variants: vec![stratum_stellar_variant(&star.class)],
-                                    });
+                                    exobios.push(ExoBiologySpecies::new(Stratum, Species::Frigus, vec![stratum_stellar_variant(&star.class)]));
+                                    exobios.push(ExoBiologySpecies::new(Stratum, Species::Cucumisis, vec![stratum_stellar_variant(&star.class)]));
                                 }
                             }
                             _ => {}
@@ -389,22 +336,14 @@ pub fn determine_exobio_species(
                         | AtmosphereType::ArgonRich => {
                             //Capillum
                             if let Some(star) = find_parent_star(system, planet) {
-                                exobios.push(ExoBiologySpecies {
-                                    genus: Tussock,
-                                    species: Species::Capillum,
-                                    variants: vec![tussock_stellar_variant(&star.class)],
-                                });
+                                exobios.push(ExoBiologySpecies::new(Tussock, Species::Capillum, vec![tussock_stellar_variant(&star.class)]));
                             }
                         }
                         AtmosphereType::Ammonia => {
                             //Catena, Cultro, Divisa - all occur under identical conditions
                             if let Some(star) = find_parent_star(system, planet) {
                                 for species in [Species::Catena, Species::Cultro, Species::Divisa] {
-                                    exobios.push(ExoBiologySpecies {
-                                        genus: Tussock,
-                                        species,
-                                        variants: vec![tussock_stellar_variant(&star.class)],
-                                    });
+                                    exobios.push(ExoBiologySpecies::new(Tussock, species, vec![tussock_stellar_variant(&star.class)]));
                                 }
                             }
                         }
@@ -413,16 +352,8 @@ pub fn determine_exobio_species(
                                 if let Some(star) = find_parent_star(system, planet) {
                                     //Propagito and Pennatis - anywhere below 195 K
                                     if temp < 195.0 {
-                                        exobios.push(ExoBiologySpecies {
-                                            genus: Tussock,
-                                            species: Species::Propagito,
-                                            variants: vec![tussock_stellar_variant(&star.class)],
-                                        });
-                                        exobios.push(ExoBiologySpecies {
-                                            genus: Tussock,
-                                            species: Species::Pennatis,
-                                            variants: vec![tussock_stellar_variant(&star.class)],
-                                        });
+                                        exobios.push(ExoBiologySpecies::new(Tussock, Species::Propagito, vec![tussock_stellar_variant(&star.class)]));
+                                        exobios.push(ExoBiologySpecies::new(Tussock, Species::Pennatis, vec![tussock_stellar_variant(&star.class)]));
                                     }
                                     //Temperature-banded species
                                     let banded = match () {
@@ -436,11 +367,7 @@ pub fn determine_exobio_species(
                                         _ => None,
                                     };
                                     if let Some(species) = banded {
-                                        exobios.push(ExoBiologySpecies {
-                                            genus: Tussock,
-                                            species,
-                                            variants: vec![tussock_stellar_variant(&star.class)],
-                                        });
+                                        exobios.push(ExoBiologySpecies::new(Tussock, species, vec![tussock_stellar_variant(&star.class)]));
                                     }
                                 }
                             }
@@ -448,21 +375,13 @@ pub fn determine_exobio_species(
                         AtmosphereType::Water | AtmosphereType::WaterRich => {
                             //Virgam
                             if let Some(star) = find_parent_star(system, planet) {
-                                exobios.push(ExoBiologySpecies {
-                                    genus: Tussock,
-                                    species: Species::Virgam,
-                                    variants: vec![tussock_stellar_variant(&star.class)],
-                                });
+                                exobios.push(ExoBiologySpecies::new(Tussock, Species::Virgam, vec![tussock_stellar_variant(&star.class)]));
                             }
                         }
                         AtmosphereType::SulphurDioxide => {
                             //Stigmasis
                             if let Some(star) = find_parent_star(system, planet) {
-                                exobios.push(ExoBiologySpecies {
-                                    genus: Tussock,
-                                    species: Species::Stigmasis,
-                                    variants: vec![tussock_stellar_variant(&star.class)],
-                                });
+                                exobios.push(ExoBiologySpecies::new(Tussock, Species::Stigmasis, vec![tussock_stellar_variant(&star.class)]));
                             }
                         }
                         _ => {}
@@ -475,45 +394,25 @@ pub fn determine_exobio_species(
                     AtmosphereType::Ammonia => {
                         //Lapis
                         if let Some(star) = find_parent_star(system, planet) {
-                            exobios.push(ExoBiologySpecies {
-                                genus: Cactoida,
-                                species: Species::Lapis,
-                                variants: vec![cactoida_stellar_variant(&star.class)],
-                            });
+                            exobios.push(ExoBiologySpecies::new(Cactoida, Species::Lapis, vec![cactoida_stellar_variant(&star.class)]));
                             //Peperatis
-                            exobios.push(ExoBiologySpecies {
-                                genus: Cactoida,
-                                species: Species::Peperatis,
-                                variants: vec![cactoida_stellar_variant(&star.class)],
-                            });
+                            exobios.push(ExoBiologySpecies::new(Cactoida, Species::Peperatis, vec![cactoida_stellar_variant(&star.class)]));
                         }
                     },
                     AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich => {
                         if (180.0..=195.0).contains(&temperature){
                             //Coretxum
                             if let Some(star) = find_parent_star(system, planet) {
-                                exobios.push(ExoBiologySpecies {
-                                    genus: Cactoida,
-                                    species: Species::Cortexum,
-                                    variants: vec![cactoida_stellar_variant(&star.class)],
-                                });
+                                exobios.push(ExoBiologySpecies::new(Cactoida, Species::Cortexum, vec![cactoida_stellar_variant(&star.class)]));
                                 //Pullulanta
-                                exobios.push(ExoBiologySpecies {
-                                    genus: Cactoida,
-                                    species: Species::Pullulanta,
-                                    variants: vec![cactoida_stellar_variant(&star.class)],
-                                });
+                                exobios.push(ExoBiologySpecies::new(Cactoida, Species::Pullulanta, vec![cactoida_stellar_variant(&star.class)]));
                             }
                         }
                     },
                     AtmosphereType::Water | AtmosphereType::WaterRich => {
                         //Vermis
                         if let Some(star) = find_parent_star(system, planet) {
-                            exobios.push(ExoBiologySpecies {
-                                genus: Cactoida,
-                                species: Species::Vermis,
-                                variants: vec![cactoida_stellar_variant(&star.class)],
-                            });
+                            exobios.push(ExoBiologySpecies::new(Cactoida, Species::Vermis, vec![cactoida_stellar_variant(&star.class)]));
                         }
                     }
                     _ => {}
@@ -545,50 +444,26 @@ pub fn determine_exobio_species(
                             | AtmosphereType::ArgonRich
                             | AtmosphereType::Nitrogen
                     ) {
-                        exobios.push(ExoBiologySpecies {
-                            genus: Osseus,
-                            species: Species::Pumice,
-                            variants: vec![osseus_stellar_variant(&star.class)],
-                        });
+                        exobios.push(ExoBiologySpecies::new(Osseus, Species::Pumice, vec![osseus_stellar_variant(&star.class)]));
                     }
                     if !matches!(planet_class, PlanetClass::RockyIce) {
                         match atmosphere.atmosphere_type {
                             AtmosphereType::Ammonia => {
-                                exobios.push(ExoBiologySpecies {
-                                    genus: Osseus,
-                                    species: Species::Spiralis,
-                                    variants: vec![osseus_stellar_variant(&star.class)],
-                                });
+                                exobios.push(ExoBiologySpecies::new(Osseus, Species::Spiralis, vec![osseus_stellar_variant(&star.class)]));
                             }
                             AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich => {
                                 if (180.0..=195.0).contains(&temperature) {
-                                    exobios.push(ExoBiologySpecies {
-                                        genus: Osseus,
-                                        species: Species::Cornibus,
-                                        variants: vec![osseus_stellar_variant(&star.class)],
-                                    });
+                                    exobios.push(ExoBiologySpecies::new(Osseus, Species::Cornibus, vec![osseus_stellar_variant(&star.class)]));
                                     if temperature <= 190.0 {
-                                        exobios.push(ExoBiologySpecies {
-                                            genus: Osseus,
-                                            species: Species::Fractus,
-                                            variants: vec![osseus_stellar_variant(&star.class)],
-                                        });
+                                        exobios.push(ExoBiologySpecies::new(Osseus, Species::Fractus, vec![osseus_stellar_variant(&star.class)]));
                                     }
                                     if temperature >= 190.0 {
-                                        exobios.push(ExoBiologySpecies {
-                                            genus: Osseus,
-                                            species: Species::Pellebantus,
-                                            variants: vec![osseus_stellar_variant(&star.class)],
-                                        });
+                                        exobios.push(ExoBiologySpecies::new(Osseus, Species::Pellebantus, vec![osseus_stellar_variant(&star.class)]));
                                     }
                                 }
                             }
                             AtmosphereType::Water | AtmosphereType::WaterRich => {
-                                exobios.push(ExoBiologySpecies {
-                                    genus: Osseus,
-                                    species: Species::Discus,
-                                    variants: vec![osseus_stellar_variant(&star.class)],
-                                });
+                                exobios.push(ExoBiologySpecies::new(Osseus, Species::Discus, vec![osseus_stellar_variant(&star.class)]));
                             }
                             _ => {}
                         }
@@ -597,6 +472,9 @@ pub fn determine_exobio_species(
             }
         }
         //endregion
+        if let Some(star_distance) = planet.distance_from_arrival_ls {
+            exobios.append(&mut predict_shards(planet, star_distance, &parent_star_types));
+        }
     }
     Some(exobios)
 }

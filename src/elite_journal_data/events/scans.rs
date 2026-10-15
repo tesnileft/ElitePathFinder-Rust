@@ -1,15 +1,17 @@
-use crate::elite_journal_data::enums::exobiology::Species;
+use crate::elite_journal_data::enums::exobiology::{BioScanType, Species};
 use crate::elite_journal_data::substructs::body_data::{BodySurfaceSignal, ExobioGenus};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
-use crate::elite_journal_data::enums::misc::MaterialCategory;
+use crate::elite_journal_data::enums::misc::{CodexCategory, MaterialCategory};
 
+/// Indicates using the Genetic Sampler on an organism
+/// Will happen anytime it's used, but `scan_type` will differ: `Sample` -> `Analyse` -> `Log`
 #[derive(Deserialize)]
 pub struct ScanOrganic {
     #[serde(rename = "timestamp")]
     pub timestamp: DateTime<Utc>,
     #[serde(rename = "ScanType")]
-    pub scan_type: String,
+    pub scan_type: BioScanType,
     #[serde(rename = "Genus")]
     pub genus: String,
     #[serde(rename = "Genus_Localised")]
@@ -30,6 +32,8 @@ pub struct ScanOrganic {
     pub body_id: u64,
 }
 
+///Getting a codex entry for a planet/exobio etc.
+///Happens before scan event is put in log.
 #[derive(Deserialize)]
 pub struct CodexEntry {
     #[serde(rename = "timestamp")]
@@ -41,7 +45,7 @@ pub struct CodexEntry {
     #[serde(rename = "Name_Localised")]
     pub name_localised: String,
     #[serde(rename = "SubCategory")]
-    pub sub_category: String,
+    pub sub_category: CodexCategory,
     #[serde(rename = "SubCategory_Localised")]
     pub sub_category_localised: String,
     #[serde(rename = "Category")]
@@ -68,6 +72,8 @@ pub struct CodexEntry {
     pub is_new_entry: Option<bool>,
 }
 
+///Completing a Surface Scan of a planet
+///Returns basic info
 #[derive(Deserialize)]
 pub struct SAAScanComplete {
     //Surface Scan
@@ -85,7 +91,7 @@ pub struct SAAScanComplete {
     pub efficiency_target: f64,
 }
 #[derive(Deserialize)]
-///Surface scan signal results (Bio, geo)
+///Surface scan signal results (Bio, geo, human)
 pub struct SAASignalsFound {
     #[serde(rename = "timestamp")]
     pub timestamp: DateTime<Utc>,
@@ -101,7 +107,7 @@ pub struct SAASignalsFound {
     #[serde(rename = "Genuses")]
     pub genuses: Vec<ExobioGenus>,
 }
-
+///On finding a new engineering material
 #[derive(Deserialize)]
 pub struct MaterialDiscovered{
     #[serde(rename = "timestamp")]
@@ -131,6 +137,7 @@ pub enum DatalinkScanMessage{
     #[serde(rename = "$DATAPOINT_GAMEPLAY_complete;")]
     DataLinkScanComplete,
 }
+///On scanning a nav Beacon
 #[derive(Deserialize)]
 pub struct NavBeaconScan{
     #[serde(rename = "timestamp")]

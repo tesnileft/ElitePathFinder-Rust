@@ -1,5 +1,4 @@
-use gdk::gio::spawn_blocking;
-use gdk::glib::{clone, IsA};
+use gtk::gio::spawn_blocking;
 use gtk::{gio, glib, CompositeTemplate};
 use gtk::glib::subclass::InitializingObject;
 use gtk::prelude::{ButtonExt, EditableExt, ObjectExt, SettingsExt, SettingsExtManual};

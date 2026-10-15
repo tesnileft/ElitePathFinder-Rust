@@ -46,16 +46,12 @@ pub fn predict_recepta(planet_class: &PlanetClass, atmosphere: &AtmosphereInfo, 
                 _ if check_material(materials, Tungsten) => ExoBiologyVariant::Red,
                 _ => ExoBiologyVariant::Unknown,
             };
-            exobios.push(ExoBiologySpecies {
-                genus: Recepta,
-                species: Species::Deltahedronix,
-                variants: vec![variant],
-            });
-                exobios.push(ExoBiologySpecies {
-                    genus: Recepta,
-                    species: Species::Umbrux,
-                    variants: parent_stars.iter().map(|star| recepta_stellar_variant(&star.class)).collect(),
-                });
+            exobios.push(ExoBiologySpecies::new(Recepta, Species::Deltahedronix, vec![variant]));
+                exobios.push(ExoBiologySpecies::new(
+                    Recepta,
+                    Species::Umbrux,
+                    parent_stars.iter().map(|star| recepta_stellar_variant(&star.class)).collect(),
+                ));
         }
         PlanetClass::Icy | PlanetClass::RockyIce => {
             let variant = match () {
@@ -68,16 +64,12 @@ pub fn predict_recepta(planet_class: &PlanetClass, atmosphere: &AtmosphereInfo, 
                 _ if check_material(materials, Yttrium) => ExoBiologyVariant::Green,
                 _ => ExoBiologyVariant::Unknown,
             };
-            exobios.push(ExoBiologySpecies {
-                genus: Recepta,
-                species: Species::Deltahedronix,
-                variants: vec![variant],
-            });
-                exobios.push(ExoBiologySpecies {
-                    genus: Recepta,
-                    species: Species::Umbrux,
-                    variants: parent_stars.iter().map(|star| recepta_stellar_variant(&star.class)).collect(),
-                });
+            exobios.push(ExoBiologySpecies::new(Recepta, Species::Deltahedronix, vec![variant]));
+                exobios.push(ExoBiologySpecies::new(
+                    Recepta,
+                    Species::Umbrux,
+                    parent_stars.iter().map(|star| recepta_stellar_variant(&star.class)).collect(),
+                ));
         }
         _ => {}
     }

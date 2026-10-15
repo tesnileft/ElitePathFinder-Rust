@@ -25,11 +25,7 @@ pub fn predict(planet_class: &PlanetClass, atmosphere: &AtmosphereInfo, material
                 _ if check_material(materials, Yttrium) => ExoBiologyVariant::Mulberry,
                 _ => ExoBiologyVariant::Unknown,
             };
-            exobios.push(ExoBiologySpecies{
-                genus: Electricae,
-                species: Pluma,
-                variants: vec![variant]
-            })
+            exobios.push(ExoBiologySpecies::new(Electricae, Pluma, vec![variant]))
         }
     }
     if matches!(atmosphere.atmosphere_type, AtmosphereType::Helium | AtmosphereType::Neon | AtmosphereType::Argon | AtmosphereType::Nitrogen) && matches!(planet_class, Icy){
@@ -43,11 +39,7 @@ pub fn predict(planet_class: &PlanetClass, atmosphere: &AtmosphereInfo, material
             _ if check_material(materials, Yttrium) => ExoBiologyVariant::Green,
             _ => ExoBiologyVariant::Unknown,
         };
-        exobios.push(ExoBiologySpecies{
-            genus: Electricae,
-            species: Radialem,
-            variants: vec![variant]
-        });
+        exobios.push(ExoBiologySpecies::new(Electricae, Radialem, vec![variant]));
     }
     exobios
 }

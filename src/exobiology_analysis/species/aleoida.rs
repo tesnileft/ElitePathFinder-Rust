@@ -24,11 +24,11 @@ fn aleoida_stellar_variant(star_class: &StarClass) -> ExoBiologyVariant{
     }
 }
 fn new_aleoida(species: Species, parent_stars: &Vec<&Star>) -> ExoBiologySpecies{
-    ExoBiologySpecies{
-        genus: Aleoida,
+    ExoBiologySpecies::new(
+        Aleoida,
         species,
-        variants: parent_stars.iter().map(|startype| aleoida_stellar_variant(&startype.class)).collect()
-    }
+        parent_stars.iter().map(|startype| aleoida_stellar_variant(&startype.class)).collect(),
+    )
 }
 
 pub fn predict_aleoida(atmosphere: &AtmosphereInfo, temperature: f64, parent_stars: &Vec<&Star>) -> Vec<ExoBiologySpecies> {

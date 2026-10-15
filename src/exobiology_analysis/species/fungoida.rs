@@ -35,11 +35,7 @@ pub fn predict_fungoida(atmosphere: &AtmosphereInfo, materials: &Vec<PlanetRawMa
                     }
                     _ => ExoBiologyVariant::Unknown,
                 };
-                exobios.push(ExoBiologySpecies {
-                    genus: Fungoida,
-                    species: Species::Setisis,
-                    variants: vec![variant],
-                });
+                exobios.push(ExoBiologySpecies::new(Fungoida, Species::Setisis, vec![variant]));
         }
         AtmosphereType::Argon | AtmosphereType::ArgonRich => {
             //Bullarum
@@ -64,11 +60,7 @@ pub fn predict_fungoida(atmosphere: &AtmosphereInfo, materials: &Vec<PlanetRawMa
                     }
                     _ => ExoBiologyVariant::Unknown,
                 };
-                exobios.push(ExoBiologySpecies {
-                    genus: Fungoida,
-                    species: Species::Bullarum,
-                    variants: vec![variant],
-                });
+                exobios.push(ExoBiologySpecies::new(Fungoida, Species::Bullarum, vec![variant]));
         }
         AtmosphereType::CarbonDioxide
         | AtmosphereType::CarbonDioxideRich
@@ -101,11 +93,7 @@ pub fn predict_fungoida(atmosphere: &AtmosphereInfo, materials: &Vec<PlanetRawMa
                         }
                         _ => ExoBiologyVariant::Unknown,
                     };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Fungoida,
-                        species: Species::Gelata,
-                        variants: vec![gelata_variant],
-                    });
+                    exobios.push(ExoBiologySpecies::new(Fungoida, Species::Gelata, vec![gelata_variant]));
 
                     //Stabitis
                     let stabitis_variant = match () {
@@ -129,11 +117,7 @@ pub fn predict_fungoida(atmosphere: &AtmosphereInfo, materials: &Vec<PlanetRawMa
                         }
                         _ => ExoBiologyVariant::Unknown,
                     };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Fungoida,
-                        species: Species::Stabitis,
-                        variants: vec![stabitis_variant],
-                    });
+                    exobios.push(ExoBiologySpecies::new(Fungoida, Species::Stabitis, vec![stabitis_variant]));
             }
         }
         _ => {}

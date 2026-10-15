@@ -46,6 +46,7 @@ pub enum StarClass {
     SupermassiveBlackHole,
     X,
     RoguePlanet,
+    S,
 }
 
 #[derive(Deserialize, Serialize, Ord, PartialOrd, PartialEq, Eq)]

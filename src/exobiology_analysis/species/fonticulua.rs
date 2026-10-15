@@ -49,11 +49,11 @@ pub fn predict_fonticulua(planet_class: &PlanetClass, atmosphere_type: &Atmosphe
             _ => None,
         };
         if let Some(species) = species {
-            exobios.push(ExoBiologySpecies {
-                genus: Fonticulua,
+            exobios.push(ExoBiologySpecies::new(
+                Fonticulua,
                 species,
-                variants: startypes.iter().map(|startype| fonticulua_stellar_variant(&startype.class)).collect(),
-            });
+                startypes.iter().map(|startype| fonticulua_stellar_variant(&startype.class)).collect(),
+            ));
             
         }
     }

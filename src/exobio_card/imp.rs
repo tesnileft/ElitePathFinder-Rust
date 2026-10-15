@@ -1,6 +1,4 @@
 use std::cell::RefCell;
-use gdk::gio::spawn_blocking;
-use gdk::glib::{clone, IsA};
 use gtk::{gio, glib, CompositeTemplate};
 use gtk::glib::Binding;
 use gtk::glib::subclass::InitializingObject;

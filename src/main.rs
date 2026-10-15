@@ -32,6 +32,7 @@ use crate::elite_journal_data::enums::signals::SAASignalType;
 use crate::helpers::extract_latest_journal;
 use crate::parser::EliteEvent;
 use window::Window;
+use crate::custom_structs::exobiospecies::ExoBiologySpecies;
 
 const APP_ID: &str = "tesnileft.ElitePathfinder_rs";
 
@@ -40,6 +41,9 @@ pub enum UiEvent {
     SetLocationName { location_name: Option<String> },
     SetCommanderName { name: String },
     UpdateCurrency { arx: u64, credits: u64 },
+    SetJumping { jumping: bool, destination: Option<String> },
+    SetPotentialExobioList{ body_name: String, species: Vec<ExoBiologySpecies> },
+    ClearExobioList,
 }
 #[derive(Default)]
 pub struct Cache {
@@ -73,6 +77,7 @@ fn main() -> glib::ExitCode {
 
     let cache = Arc::new(Mutex::new(Cache::default()));
     let application = Application::builder().application_id(APP_ID).build();
+
 
     let (ui_event_sender, ui_event_receiver) = async_channel::unbounded::<UiEvent>();
     application.connect_activate(move |app| {
@@ -196,7 +201,10 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                 EliteEvent::StartJump(start_jump) => {
                     if start_jump.jump_type == JumpType::Hyperspace
                     {
-
+                        let mut cache = shared_cache.lock().unwrap();
+                        cache.in_hyperspace = true;
+                        drop(cache);
+                        let _ = ui_event_sender.send_blocking(UiEvent::SetJumping { jumping: true, destination: start_jump.star_system });
                     }
                 }
                 EliteEvent::FSDJump(fsdjump) => {
@@ -214,10 +222,13 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                     };
                     unlocked_cache.current_system = jumpingto;
                     unlocked_cache.game_location.clear();
+                    unlocked_cache.in_hyperspace = false;
                     let system_name = unlocked_cache.current_system.name.clone();
                     drop(unlocked_cache);
+                    let _ = ui_event_sender.send_blocking(UiEvent::ClearExobioList);
                     let _ = ui_event_sender.send_blocking(UiEvent::SetCurrentSystem { system_name });
                     let _ = ui_event_sender.send_blocking(UiEvent::SetLocationName { location_name: None });
+                    let _ = ui_event_sender.send_blocking(UiEvent::SetJumping { jumping: false, destination: None });
                 }
                 EliteEvent::FSSBodySignals(signals) => {
                     let mut cache = shared_cache.lock().unwrap();
@@ -253,6 +264,12 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                             entry.insert(Planet(newplanet));
                         }
                     }
+                    if cache.current_system.all_bodies_found {
+                        if let Some((body_name, species)) = cache.current_system.update_potential_exobio(signals.body_id) {
+                            drop(cache);
+                            let _ = ui_event_sender.send_blocking(UiEvent::SetPotentialExobioList { body_name, species });
+                        }
+                    }
                 }
                 EliteEvent::Scan(scan) => {
                     let mut cache = shared_cache.lock().unwrap();
@@ -272,6 +289,7 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                                     planet.gravity = scan.surface_gravity;
                                     planet.mean_temperature = scan.surface_temperature;
                                     planet.volcanism = Some(scan.volcanism);
+                                    planet.distance_from_arrival_ls = Some(scan.distance_from_arrival_ls);
                                     planet.atmosphere = Some(custom_structs::system_info::AtmosphereInfo::new(scan.atmosphere_type, scan.atmosphere, scan.atmosphere_composition.unwrap_or_default()));
                                     planet.body_composition = scan.composition;
                                     planet.materials = Some(mats);
@@ -300,6 +318,7 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                                     gravity: scan.surface_gravity,
                                     mean_temperature: scan.surface_temperature,
                                     volcanism: Some(scan.volcanism),
+                                    distance_from_arrival_ls: Some(scan.distance_from_arrival_ls),
                                     atmosphere: Some(custom_structs::system_info::AtmosphereInfo::new(scan.atmosphere_type, scan.atmosphere, scan.atmosphere_composition.unwrap_or_default())),
                                     body_composition: scan.composition,
                                     materials: Some(mats),
@@ -310,18 +329,28 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
 
                         }
                     }
-
-                    if let Some(Planet(planet)) = cache.current_system.bodies.get(&scan.body_id) {
-                        if let Some(signals) = planet.biological_signals {
-                            if signals > 0 {
-                                let potential_exobio = cache.current_system.get_potential_exobio(scan.body_id);
-
-                                if let Some(Planet(planet)) = cache.current_system.bodies.get_mut(&scan.body_id) {
-                                    planet.potential_species = potential_exobio;
-                                    println!("{}", planet.to_string());
-                                }
-                            }
+                    //Only predict once the whole system is scanned, otherwise results are incomplete
+                    if cache.current_system.all_bodies_found {
+                        if let Some((body_name, species)) = cache.current_system.update_potential_exobio(scan.body_id) {
+                            drop(cache);
+                            let _ = ui_event_sender.send_blocking(UiEvent::SetPotentialExobioList { body_name, species });
                         }
+                    }
+                }
+                EliteEvent::FSSAllBodiesFound(found) => {
+                    let mut cache = shared_cache.lock().unwrap();
+                    if found.system_address != cache.current_system.address {
+                        continue;
+                    }
+                    cache.current_system.all_bodies_found = true;
+                    let ids: Vec<u64> = cache.current_system.bodies.keys().copied().collect();
+                    let results: Vec<_> = ids
+                        .into_iter()
+                        .filter_map(|id| cache.current_system.update_potential_exobio(id))
+                        .collect();
+                    drop(cache);
+                    for (body_name, species) in results {
+                        let _ = ui_event_sender.send_blocking(UiEvent::SetPotentialExobioList { body_name, species });
                     }
                 }
                 _ => {}
@@ -338,6 +367,11 @@ fn build_ui_xml(
     ui_event_receiver: async_channel::Receiver<UiEvent>,
     cache: SharedCache,
 ) {
+    let provider = gtk::CssProvider::new();
+    provider.load_from_resource("/elite_pathfinder/style.css");
+    if let Some(display) = gtk::gdk::Display::default() {
+        gtk::style_context_add_provider_for_display(&display, &provider, gtk::STYLE_PROVIDER_PRIORITY_APPLICATION);
+    }
     let window = Window::new(app, ui_event_receiver, cache);
     window.present();
 }

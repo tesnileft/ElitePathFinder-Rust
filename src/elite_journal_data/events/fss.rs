@@ -6,6 +6,7 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 //region - FSS -
+///Unused?
 #[derive(Deserialize)]
 #[allow(non_snake_case)]
 pub struct FSSSignal {
@@ -16,7 +17,7 @@ pub struct FSSSignal {
     #[serde(rename = "IsStation")]
     is_station: Option<bool>,
 }
-
+///On discovery of FSS only signal like stations, fleet carriers, extraction sites
 #[derive(Deserialize)]
 pub struct FSSSignalDiscovered {
     #[serde(rename = "timestamp")]
@@ -31,6 +32,8 @@ pub struct FSSSignalDiscovered {
     pub is_station: Option<bool>,
 }
 
+///On every time progress is made on an FSS scan, or when initiated for the first time
+/// Comes with progress from 0 - 1 and a total target of signals
 #[derive(Deserialize)]
 pub struct FSSDiscoveryScan {
     #[serde(rename = "timestamp")]
@@ -45,6 +48,7 @@ pub struct FSSDiscoveryScan {
     system_address: u64,
 }
 
+///On FSS scanning a planet with any kind of SAA signals
 #[derive(Deserialize)]
 pub struct FSSBodySignals {
     #[serde(rename = "timestamp")]
@@ -60,6 +64,8 @@ pub struct FSSBodySignals {
 }
 
 ///This struct is so omega dumb because the devs thought putting planets, stars, and EVERY OTHER ASTRAL BODY scans in one event was a GREAT idea!!! hence we have 1389040 optional fields that you need to check sdlknfasJDBLKJRGB;PIQWUBGPOIBDW
+///On scanning any astral body with FSS (By proximity=AutoScan, FSS scanner=Detailed) and an additional time when SAA scanned (Detailed)
+///
 #[derive(Deserialize)]
 pub struct Scan {
     #[serde(rename = "timestamp")]
@@ -154,6 +160,7 @@ pub struct Scan {
     //TODO
 }
 
+///On completing the FSS scan (Auto or Detailed)
 #[derive(Deserialize)]
 pub struct FSSAllBodiesFound {
     #[serde(rename = "timestamp")]
@@ -166,6 +173,9 @@ pub struct FSSAllBodiesFound {
     pub count: u64,
 }
 
+/// On finding planets orbiting a barycentre
+/// This means they aren't orbiting a specific body, but are rather orbiting an imaginary point in between them
+/// Important for the structure of the system, also allows docking fleet carriers
 #[derive(Deserialize)]
 pub struct ScanBaryCentre {
     #[serde(rename = "timestamp")]

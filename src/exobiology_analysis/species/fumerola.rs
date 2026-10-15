@@ -53,11 +53,7 @@ pub fn predict_fumerola(planet: &Planet) -> Vec<ExoBiologySpecies> {
             _ => {return exobios}
         };
 
-        exobios.push(ExoBiologySpecies{
-            genus: Fumerola,
-            species,
-            variants: vec![variant],
-        })
+        exobios.push(ExoBiologySpecies::new(Fumerola, species, vec![variant]))
 
     }
     exobios

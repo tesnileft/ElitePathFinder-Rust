@@ -4,15 +4,17 @@ use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use crate::elite_journal_data::enums::body_data::AtmosphereType;
-use super::PlanetData;
+use super::{PlanetData, SpeciesRow};
 
 // Object holding the state
 #[derive(Properties, Default)]
 #[properties(wrapper_type = super::PlanetDataObject)]
 pub struct PlanetDataObject {
-    #[property(name = "valuable", get, set, type = bool, member = valuable)]
-    #[property(name = "body_name", get, set, type = String, member = body_name)]
+    #[property(name = "body-name", get, set, type = String, member = body_name)]
+    #[property(name = "species-text", get, set, type = String, member = species_text)]
+    #[property(name = "total-value", get, set, type = String, member = total_value)]
     pub data: RefCell<PlanetData>,
+    pub rows: RefCell<Vec<SpeciesRow>>,
 }
 
 // The central trait for subclassing a GObject

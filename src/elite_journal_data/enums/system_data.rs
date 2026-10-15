@@ -154,3 +154,13 @@ impl fmt::Display for PowerplayPower {
         }
     }
 }
+
+#[derive(Deserialize, Serialize)]
+pub enum GalacticRegion {
+    #[serde(rename = "$Codex_RegionName_1;")]
+    GalacticCentre,
+    #[serde(rename = "$Codex_RegionName_4;")]
+    OdinsHold,
+    #[serde(rename = "$Codex_RegionName_9;")]
+    InnerScutumCentaurusArm
+}

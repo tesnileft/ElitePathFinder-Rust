@@ -21,7 +21,7 @@
                         <child>
                             <object class="GtkStack" id="stack">
                                 <property name="hexpand">True</property>
-                                <property name="vexpand">True</property>M
+                                <property name="vexpand">True</property>
                                 <child>
                                     <object class="GtkStackPage">
                                         <property name="name">page1</property>
@@ -52,17 +52,6 @@
                                                 <object class="GtkBox" id="exobio_area_box">
                                                     <property name="orientation">vertical</property>
                                                     <property name="spacing">6</property>
-
-                                                    <child>
-                                                        <object class="GtkLabel">
-                                                            <property name="label">Exobiology</property>
-                                                            <property name="halign">start</property>
-                                                            <style>
-                                                                <class name="title-2"/>
-                                                            </style>
-                                                        </object>
-                                                    </child>
-
                                                     <child>
                                                         <object class="GtkScrolledWindow" id="exobio_scroller">
                                                             <property name="vexpand">True</property>

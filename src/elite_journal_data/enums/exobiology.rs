@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::fmt::Display;
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub enum Genus {
     #[serde(rename = "$Codex_Ent_Aleoids_Genus_Name;")]
     Aleoida,
@@ -191,6 +191,9 @@ pub enum Species {
     //Clypeus
     #[serde(rename = "$Codex_Ent_Clypeus_02_Name;")]
     Margaritus,
+    //Crystalline Shards - single species per genus, no sub-classification
+    #[serde(rename = "$Codex_Ent_Ground_Struct_Ice_Name;")]
+    CrystalineShards,
 }
 
 impl Display for Species {
@@ -199,7 +202,7 @@ impl Display for Species {
     }
 }
 
-#[derive(Deserialize, Serialize, Default, Debug)]
+#[derive(Deserialize, Serialize, Default, Debug, Clone)]
 pub enum ExoBiologyVariant {
     Emerald,
     Gold,
@@ -236,4 +239,11 @@ impl Display for ExoBiologyVariant {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}", self)
     }
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub enum BioScanType{
+    Sample,
+    Analyse,
+    Log
 }

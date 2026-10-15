@@ -2,14 +2,24 @@ use crate::exobiology_analysis::determine_species::get_species_value;
 use std::fmt::{Display, Formatter};
 use crate::elite_journal_data::enums::exobiology::*;
 
+#[derive(Clone)]
 pub struct ExoBiologySpecies{
     pub(crate) genus: Genus,
     pub(crate) species: Species,
     pub(crate) variants: Vec<ExoBiologyVariant>,
+    pub(crate) confirmed: bool,
+    pub(crate) absent: bool,
 }
+
+impl ExoBiologySpecies {
+    pub fn new(genus: Genus, species: Species, variants: Vec<ExoBiologyVariant>) -> Self {
+        Self { genus, species, variants, confirmed: false, absent: false }
+    }
+}
+
 impl Display for ExoBiologySpecies {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} {}", self.genus.to_string(), self.species.to_string())
+        write!(f, "{} {} {}", if self.absent { "x" } else if self.confirmed { "✓" } else { "" }, self.genus.to_string(), self.species.to_string())
     }
 }
 pub fn exobio_species_to_string(species: &Vec<ExoBiologySpecies>)-> String {

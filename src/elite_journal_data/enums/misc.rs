@@ -58,3 +58,12 @@ pub enum MaterialCategory {
     #[serde(alias = "encoded")]
     Encoded,
 }
+
+#[derive(Deserialize, Serialize)]
+pub enum CodexCategory{
+    #[serde(rename = "$Codex_Category_Biology;")]
+    Biology,
+    #[serde(rename = "$Codex_Category_StellarBodies;")]
+    StellarBodies,
+    
+}

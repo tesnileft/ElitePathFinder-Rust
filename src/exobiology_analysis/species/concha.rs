@@ -28,11 +28,11 @@ pub fn predict_concha(atmosphere_type: &AtmosphereType, materials: & Vec<PlanetR
     match atmosphere_type {
         AtmosphereType::Ammonia => {
             //Aureolas
-                exobios.push(ExoBiologySpecies {
-                    genus: Concha,
-                    species: Species::Aureolas,
-                    variants: stars.iter().map(|star| concha_stellar_variant(&star.class)).collect(),
-                });
+                exobios.push(ExoBiologySpecies::new(
+                    Concha,
+                    Species::Aureolas,
+                    stars.iter().map(|star| concha_stellar_variant(&star.class)).collect(),
+                ));
         }
         AtmosphereType::Nitrogen => {
             //Biconcavis
@@ -49,20 +49,16 @@ pub fn predict_concha(atmosphere_type: &AtmosphereType, materials: & Vec<PlanetR
                     }
                     _ => ExoBiologyVariant::Unknown,
                 };
-                exobios.push(ExoBiologySpecies {
-                    genus: Concha,
-                    species: Species::Biconcavis,
-                    variants: vec![variant],
-                });
+                exobios.push(ExoBiologySpecies::new(Concha, Species::Biconcavis, vec![variant]));
         }
         AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich => {
             //Labiata - mean temperature below 190 K
             if mean_temperature < 190.0 {
-                    exobios.push(ExoBiologySpecies {
-                        genus: Concha,
-                        species: Species::Labiata,
-                        variants: stars.iter().map(|star| concha_stellar_variant(&star.class)).collect(),
-                    });
+                    exobios.push(ExoBiologySpecies::new(
+                        Concha,
+                        Species::Labiata,
+                        stars.iter().map(|star| concha_stellar_variant(&star.class)).collect(),
+                    ));
             }
             //Renibus - mean temperature between 180 K and 195 K
             if (180.0..=195.0).contains(&mean_temperature)
@@ -88,11 +84,7 @@ pub fn predict_concha(atmosphere_type: &AtmosphereType, materials: & Vec<PlanetR
                         }
                         _ => ExoBiologyVariant::Unknown,
                     };
-                    exobios.push(ExoBiologySpecies {
-                        genus: Concha,
-                        species: Species::Renibus,
-                        variants: vec![variant],
-                    });
+                    exobios.push(ExoBiologySpecies::new(Concha, Species::Renibus, vec![variant]));
             }
         }
         AtmosphereType::Water | AtmosphereType::WaterRich => {
@@ -114,11 +106,7 @@ pub fn predict_concha(atmosphere_type: &AtmosphereType, materials: & Vec<PlanetR
                     }
                     _ => ExoBiologyVariant::Unknown,
                 };
-                exobios.push(ExoBiologySpecies {
-                    genus: Concha,
-                    species: Species::Renibus,
-                    variants: vec![variant],
-                });
+                exobios.push(ExoBiologySpecies::new(Concha, Species::Renibus, vec![variant]));
         }
         _ => {}
     }

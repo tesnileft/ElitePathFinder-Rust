@@ -1,4 +1,3 @@
-use gdk::glib::IsA;
 use gtk::{glib, CompositeTemplate};
 use gtk::glib::subclass::InitializingObject;
 use gtk::subclass::prelude::*;
@@ -18,6 +17,12 @@ pub struct EliteHeaderBar
     pub systemname_label: TemplateChild<gtk::Label>,
     #[template_child]
     pub locationname_label: TemplateChild<gtk::Label>,
+    #[template_child]
+    pub jump_overlay_box: TemplateChild<gtk::Box>,
+    #[template_child]
+    pub jump_spinner: TemplateChild<gtk::Spinner>,
+    #[template_child]
+    pub jump_status_label: TemplateChild<gtk::Label>,
 }
 
 // The central trait for subclassing a GObject

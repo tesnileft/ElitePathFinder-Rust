@@ -26,6 +26,7 @@ pub struct Planet {
     pub gravity: Option<f64>,
     pub mean_temperature: Option<f64>,
     pub volcanism: Option<Volcanism>,
+    pub distance_from_arrival_ls: Option<f64>,
 
     pub atmosphere: Option<AtmosphereInfo>,
     pub biological_signals: Option<u64>,

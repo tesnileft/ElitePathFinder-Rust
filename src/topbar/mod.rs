@@ -1,5 +1,6 @@
 use glib::Object;
 use gtk::glib;
+use gtk::prelude::WidgetExt;
 use gtk::subclass::prelude::ObjectSubclassIsExt;
 
 mod imp;
@@ -34,6 +35,21 @@ impl EliteHeaderBar {
     pub fn set_arx(&self, arx: u64){
         let imp = self.imp();
         imp.arx_label.set_text(&arx.to_string());
+    }
+    pub fn set_jumping(&self, jumping: bool, destination: Option<&str>){
+        let imp = self.imp();
+        if jumping {
+            let status = match destination {
+                Some(dest) => format!("Jumping to {dest}…"),
+                None => "Charging FSD…".to_string(),
+            };
+            imp.jump_status_label.set_text(&status);
+            imp.jump_spinner.set_spinning(true);
+            imp.jump_overlay_box.set_visible(true);
+        } else {
+            imp.jump_spinner.set_spinning(false);
+            imp.jump_overlay_box.set_visible(false);
+        }
     }
 }
 

@@ -48,35 +48,35 @@ pub fn predict_tubus(atmosphere: &AtmosphereInfo, planet_class: &PlanetClass, te
     | AtmosphereType::CarbonDioxideRich
     )
         {
-            exobios.push(ExoBiologySpecies {
-                genus: Tubus,
-                species: Species::Sororibus,
-                variants: parent_stars.iter().map(|star| tubus_stellar_variant(&star.class)).collect(),
-            })
+            exobios.push(ExoBiologySpecies::new(
+                Tubus,
+                Species::Sororibus,
+                parent_stars.iter().map(|star| tubus_stellar_variant(&star.class)).collect(),
+            ))
         }
         if matches!(planet_class, PlanetClass::Rocky) {
             match atmosphere.atmosphere_type {
-                AtmosphereType::Ammonia => exobios.push(ExoBiologySpecies {
-                    genus: Tubus,
-                    species: Species::Rosarium,
-                    variants: parent_stars.iter().map(|star| tubus_stellar_variant(&star.class)).collect(),
-                }),
+                AtmosphereType::Ammonia => exobios.push(ExoBiologySpecies::new(
+                    Tubus,
+                    Species::Rosarium,
+                    parent_stars.iter().map(|star| tubus_stellar_variant(&star.class)).collect(),
+                )),
                 AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich => {
-                    exobios.push(ExoBiologySpecies {
-                        genus: Tubus,
-                        species: Species::Cavas,
-                        variants: parent_stars.iter().map(|star| tubus_stellar_variant(&star.class)).collect(),
-                    });
-                    exobios.push(ExoBiologySpecies {
-                        genus: Tubus,
-                        species: Species::Compagibus,
-                        variants: parent_stars.iter().map(|star| tubus_stellar_variant(&star.class)).collect(),
-                    });
-                    exobios.push(ExoBiologySpecies {
-                        genus: Tubus,
-                        species: Species::Conifer,
-                        variants: parent_stars.iter().map(|star| tubus_stellar_variant(&star.class)).collect(),
-                    })
+                    exobios.push(ExoBiologySpecies::new(
+                        Tubus,
+                        Species::Cavas,
+                        parent_stars.iter().map(|star| tubus_stellar_variant(&star.class)).collect(),
+                    ));
+                    exobios.push(ExoBiologySpecies::new(
+                        Tubus,
+                        Species::Compagibus,
+                        parent_stars.iter().map(|star| tubus_stellar_variant(&star.class)).collect(),
+                    ));
+                    exobios.push(ExoBiologySpecies::new(
+                        Tubus,
+                        Species::Conifer,
+                        parent_stars.iter().map(|star| tubus_stellar_variant(&star.class)).collect(),
+                    ))
                 }
                 _ => {}
             }

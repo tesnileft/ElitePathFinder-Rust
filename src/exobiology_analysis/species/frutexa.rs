@@ -46,93 +46,93 @@ pub fn predict_frutexa(
         AtmosphereType::Ammonia => {
             if is_rocky {
                 //Flabellum, Flammasis
-                exobios.push(ExoBiologySpecies {
-                    genus: Frutexa,
-                    species: Species::Flabellum,
-                    variants: parent_stars
+                exobios.push(ExoBiologySpecies::new(
+                    Frutexa,
+                    Species::Flabellum,
+                    parent_stars
                         .iter()
                         .map(|star| frutexa_stellar_variant(&star.class))
                         .collect(),
-                });
-                exobios.push(ExoBiologySpecies {
-                    genus: Frutexa,
-                    species: Species::Flammasis,
-                    variants: parent_stars
+                ));
+                exobios.push(ExoBiologySpecies::new(
+                    Frutexa,
+                    Species::Flammasis,
+                    parent_stars
                         .iter()
                         .map(|star| frutexa_stellar_variant(&star.class))
                         .collect(),
-                });
+                ));
             }
             if is_hmc {
                 //Metallicum
-                exobios.push(ExoBiologySpecies {
-                    genus: Frutexa,
-                    species: Species::Metallicum,
-                    variants: parent_stars
+                exobios.push(ExoBiologySpecies::new(
+                    Frutexa,
+                    Species::Metallicum,
+                    parent_stars
                         .iter()
                         .map(|star| frutexa_stellar_variant(&star.class))
                         .collect(),
-                });
+                ));
             }
         }
         AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich => {
             if temperature < 195.0 {
                 if is_rocky {
                     //Acus, Fera
-                    exobios.push(ExoBiologySpecies {
-                        genus: Frutexa,
-                        species: Species::Acus,
-                        variants: parent_stars
+                    exobios.push(ExoBiologySpecies::new(
+                        Frutexa,
+                        Species::Acus,
+                        parent_stars
                             .iter()
                             .map(|star| frutexa_stellar_variant(&star.class))
                             .collect(),
-                    });
-                    exobios.push(ExoBiologySpecies {
-                        genus: Frutexa,
-                        species: Species::Fera,
-                        variants: parent_stars
+                    ));
+                    exobios.push(ExoBiologySpecies::new(
+                        Frutexa,
+                        Species::Fera,
+                        parent_stars
                             .iter()
                             .map(|star| frutexa_stellar_variant(&star.class))
                             .collect(),
-                    });
+                    ));
                 }
                 if is_hmc {
                     //Metallicum
-                    exobios.push(ExoBiologySpecies {
-                        genus: Frutexa,
-                        species: Species::Metallicum,
-                        variants: parent_stars
+                    exobios.push(ExoBiologySpecies::new(
+                        Frutexa,
+                        Species::Metallicum,
+                        parent_stars
                             .iter()
                             .map(|star| frutexa_stellar_variant(&star.class))
                             .collect(),
-                    });
+                    ));
                 }
             }
         }
         AtmosphereType::Water | AtmosphereType::WaterRich => {
             if is_rocky {
                 //Sponsae
-                exobios.push(ExoBiologySpecies {
-                    genus: Frutexa,
-                    species: Species::Sponsae,
-                    variants: parent_stars
+                exobios.push(ExoBiologySpecies::new(
+                    Frutexa,
+                    Species::Sponsae,
+                    parent_stars
                         .iter()
                         .map(|star| frutexa_stellar_variant(&star.class))
                         .collect(),
-                });
+                ));
             }
         }
         AtmosphereType::SulphurDioxide => {
             if is_rocky {
                 //Collum
-                exobios.push(ExoBiologySpecies {
-                    genus: Frutexa,
-                    species: Species::Collum,
-                    variants: parent_stars
+                exobios.push(ExoBiologySpecies::new(
+                    Frutexa,
+                    Species::Collum,
+                    parent_stars
                         .iter()
                         .map(|star| frutexa_stellar_variant(&star.class))
                         .collect(),
-                });
+                ));
             }
         }
         _ => {}

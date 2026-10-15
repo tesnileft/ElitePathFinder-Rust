@@ -1,0 +1,55 @@
+.jump-overlay {
+    background-color: rgba(20, 20, 20, 0.92);
+    color: #ffffff;
+    border: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+/* Exobio cards */
+.dimmed {
+    opacity: 0.35;
+}
+
+.exobio-total {
+    font-weight: bold;
+}
+
+.swatch {
+    min-width: 16px;
+    min-height: 16px;
+    border-radius: 4px;
+    border: 1px solid alpha(currentColor, 0.35);
+    background-color: #888888; /* Unknown */
+}
+
+.variant-emerald    { background-color: #2ecc71; }
+.variant-gold       { background-color: #f1c40f; }
+.variant-maroon     { background-color: #800000; }
+.variant-cobalt     { background-color: #0047ab; }
+.variant-green      { background-color: #2e9e3a; }
+.variant-yellow     { background-color: #ffe135; }
+.variant-orange     { background-color: #ff8c00; }
+.variant-red        { background-color: #d62828; }
+.variant-magenta    { background-color: #d6249f; }
+.variant-lime       { background-color: #a4de02; }
+.variant-peach      { background-color: #ffcba4; }
+.variant-mulberry   { background-color: #8e3b6e; }
+.variant-cyan       { background-color: #1ec8e0; }
+.variant-white      { background-color: #f5f5f5; }
+.variant-blue       { background-color: #2f6fe0; }
+.variant-aquamarine { background-color: #7fffd4; }
+.variant-turquoise  { background-color: #30d5c8; }
+.variant-grey       { background-color: #9a9a9a; }
+.variant-teal       { background-color: #008080; }
+.variant-sage       { background-color: #9caf88; }
+.variant-russet     { background-color: #80461b; }
+.variant-mauve      { background-color: #b784a7; }
+.variant-amber      { background-color: #ffbf00; }
+.variant-ochre,
+.variant-ocher      { background-color: #cc7722; }
+.variant-indigo     { background-color: #4b0082; }
+.variant-amethyst   { background-color: #9966cc; }
+.variant-unknown    { background-color: #888888; }

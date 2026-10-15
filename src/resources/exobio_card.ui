@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="ExobioCard" parent="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">4</property>
+        <property name="margin-start">8</property>
+        <property name="margin-end">8</property>
+        <property name="margin-top">8</property>
+        <property name="margin-bottom">8</property>
+
+        <child>
+            <object class="GtkExpander" id="expander">
+                <property name="expanded">True</property>
+                <child type="label">
+                    <object class="GtkBox">
+                        <property name="spacing">12</property>
+                        <property name="hexpand">True</property>
+                        <child>
+                            <object class="GtkLabel" id="planet_name">
+                                <property name="halign">start</property>
+                                <property name="xalign">0</property>
+                                <property name="hexpand">True</property>
+                                <style>
+                                    <class name="heading"/>
+                                </style>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel" id="planet_info">
+                                <style>
+                                    <class name="dim-label"/>
+                                </style>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel" id="total_value">
+                                <property name="halign">end</property>
+                                <style>
+                                    <class name="exobio-total"/>
+                                </style>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox" id="species_box">
+                        <property name="orientation">vertical</property>
+                        <property name="margin-top">6</property>
+                        <property name="margin-start">18</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

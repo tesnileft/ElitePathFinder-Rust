@@ -41,6 +41,7 @@ impl ObjectImpl for Window {
         //Setup
         let obj = self.obj();
         obj.setup_exobio();
+        obj.setup_exobio_factory();
     }
 
 }
