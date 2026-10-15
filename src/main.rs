@@ -33,6 +33,7 @@ use crate::helpers::extract_latest_journal;
 use crate::parser::EliteEvent;
 use window::Window;
 use crate::custom_structs::exobiospecies::ExoBiologySpecies;
+use crate::elite_journal_data::enums::exobiology::BioScanType;
 
 const APP_ID: &str = "tesnileft.ElitePathfinder_rs";
 
@@ -56,7 +57,6 @@ pub struct Cache {
     pub in_hyperspace: bool,
     pub game_location: String,
     pub log_location: String,
-    pub system_bodies: HashMap<String, Body>,
 }
 pub type SharedCache = Arc<Mutex<Cache>>;
 fn load_custom_widgets()
@@ -351,6 +351,25 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                     drop(cache);
                     for (body_name, species) in results {
                         let _ = ui_event_sender.send_blocking(UiEvent::SetPotentialExobioList { body_name, species });
+                    }
+                }
+                EliteEvent::ScanOrganic(scan) => {
+                    if scan.scan_type == BioScanType::Log{
+                        let mut cache = shared_cache.lock().unwrap();
+                        let mut update = None;
+                        if let Some(Planet(planet)) = cache.current_system.bodies.get_mut(&scan.body_id) {
+                            if let Some(bio) = planet.potential_species.as_mut().and_then(|potential| potential.iter_mut().find(|bio| bio.species == scan.species)) {
+                                bio.confirmed = true;
+                                if !planet.confirmed_species.iter().any(|bio| bio.species == scan.species) {
+                                    planet.confirmed_species.push(bio.clone());
+                                }
+                            }
+                            update = planet.potential_species.clone().map(|species| (planet.body_name.clone(), species));
+                        }
+                        drop(cache);
+                        if let Some((body_name, species)) = update {
+                            let _ = ui_event_sender.send_blocking(UiEvent::SetPotentialExobioList { body_name, species });
+                        }
                     }
                 }
                 _ => {}

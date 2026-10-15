@@ -46,7 +46,7 @@ impl Display for Genus {
     }
 }
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone, PartialEq, Eq)]
 pub enum Species {
     //Aleoida
     Arcus,
@@ -241,7 +241,7 @@ impl Display for ExoBiologyVariant {
     }
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, PartialEq)]
 pub enum BioScanType{
     Sample,
     Analyse,
