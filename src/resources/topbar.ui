@@ -69,7 +69,7 @@
                 </child>
                 <child type="overlay">
                     <object class="GtkBox" id="jump_overlay_box">
-                        <property name="halign">fill</property>
+                        <property name="halign">center</property>
                         <property name="valign">fill</property>
                         <property name="visible">false</property>
                         <style>
