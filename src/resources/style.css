@@ -8,6 +8,21 @@
     border-bottom-right-radius: 12px;
 }
 
+.default_overlay{
+    background-color: rgba(20, 20, 20, 0.95);
+    color: #ffffff;
+    border: none;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-start: 4px;
+    margin-end: 4px;
+
+}
+
 /* Exobio cards */
 .dimmed {
     opacity: 0.35;

@@ -30,8 +30,41 @@
                                             <object class="GtkNotebook">
                                             <property name="vexpand">True</property>
                                             <child>
-                                                <object class="GtkLabel">
-                                                    <property name="label">Content</property>
+                                                <object class ="GtkOverlay">
+                                                    <child>
+                                                        <object class="GtkLabel">
+                                                            <property name="label">Content</property>
+                                                        </object>
+                                                    </child>
+                                                    <child type="overlay">
+                                                        <object class="GtkBox" id="progress_box">
+                                                            <property name="spacing">8</property>
+                                                            <property name="orientation">vertical</property>
+                                                            <property name="visible">true</property>
+                                                            <property name="halign">fill</property>
+                                                            <property name="valign">center</property>
+                                                            <style>
+                                                                <class name="jump-overlay"/>
+                                                            </style>
+                                                            <child>
+                                                                <object class="GtkLabel" id="progress_label">
+                                                                    <property name="label">x / x</property>
+                                                                </object>
+                                                            </child>
+                                                            <child>
+                                                                <object class="GtkLevelBar" id="progress_bar">
+                                                                    <property name="max-value">10</property>
+                                                                    <property name="value">5</property>
+                                                                    <property name="hexpand">true</property>
+                                                                    <property name="vexpand">false</property>
+                                                                    <property name="height-request">10</property>
+                                                                    <style>
+                                                                        <class name="overlay_default"/>
+                                                                    </style>
+                                                                </object>
+                                                            </child>
+                                                        </object>
+                                                    </child>
                                                 </object>
                                             </child>
                                             <child type="tab">
