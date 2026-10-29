@@ -8,7 +8,7 @@ use crate::exobiology_analysis::determine_species::check_material;
 
 pub fn predict_fumerola(planet: &Planet) -> Vec<ExoBiologySpecies> {
     let mut exobios = Vec::new();
-    if let (Some(volcanism), Some(materials) )= (planet.volcanism.as_ref(), planet.materials.as_ref()) {
+    if let (volcanism, materials )= (&planet.volcanism, planet.materials.as_ref()) {
         let (species, variant) = match (){
             _ if volcanism.is_water() => { let variant = match () {
                 _ if check_material(materials, Cadmium) => ExoBiologyVariant::Green,

@@ -115,3 +115,49 @@ pub struct CollectCargo{
     stolen: bool
 }
 
+#[derive(Deserialize)]
+pub struct BackpackChange{
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "Removed")]
+    removed: Option<Vec<BackpackItem>>,
+    #[serde(rename = "Added")]
+    added: Option<Vec<BackpackItem>>
+}
+
+#[derive(Deserialize)]
+pub struct BackpackItem {
+    #[serde(rename = "Name")]
+    name: String,
+    #[serde(rename = "Name_Localised")]
+    name_localised: Option<String>,
+    #[serde(rename = "OwnerID")]
+    owner_id: u64,
+    #[serde(rename = "Count")]
+    count: u64,
+    #[serde(rename = "Type")]
+    item_type: ItemType,
+}
+
+#[derive(Deserialize)]
+pub struct CollectItem {
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "Name")]
+    name: String,
+    #[serde(rename = "Name_Localised")]
+    name_localised: Option<String>,
+    #[serde(rename = "OwnerID")]
+    owner_id: u64,
+    #[serde(rename = "Count")]
+    count: u64,
+    #[serde(rename = "Type")]
+    item_type: ItemType,
+    #[serde(rename = "Stolen")]
+    stolen: bool,
+}
+
+#[derive(Deserialize)]
+enum ItemType{
+    Item,
+    Consumable,
+
+}

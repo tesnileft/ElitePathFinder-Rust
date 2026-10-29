@@ -123,21 +123,21 @@ pub struct SupercruiseEntry {
 #[derive(Deserialize)]
 pub struct SupercruiseExit {
     #[serde(rename = "timestamp")]
-    timestamp: DateTime<Utc>,
+    pub timestamp: DateTime<Utc>,
     #[serde(rename = "Taxi")]
-    taxi: bool,
+    pub taxi: bool,
     #[serde(rename = "Multicrew")]
-    multicrew: bool,
+    pub multicrew: bool,
     #[serde(rename = "StarSystem")]
-    star_system: String,
+    pub star_system: String,
     #[serde(rename = "SystemAddress")]
-    system_address: u64,
+    pub system_address: u64,
     #[serde(rename = "Body")]
-    body: String,
+    pub body: String,
     #[serde(rename = "BodyID")]
-    body_id: u64,
+    pub body_id: u64,
     #[serde(rename = "BodyType")]
-    body_type: BodyType,
+    pub body_type: BodyType,
 }
 
 #[derive(Deserialize)]

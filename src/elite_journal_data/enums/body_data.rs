@@ -9,7 +9,7 @@ pub enum BodyType {
     Null, //Barycenters or not near any body
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, PartialEq)]
 pub enum StarClass {
     O,
     A,
@@ -137,6 +137,15 @@ pub enum PlanetClass {
     ELW,
 
 }
+#[derive(Deserialize, Serialize, Default, Eq, PartialEq, Clone)]
+pub enum TerraformState {
+    #[default]
+    None,
+    Terraformable,
+    Terraformed // TBD
+}
+
+
 
 #[derive(Deserialize, Serialize, Default, Eq, PartialEq, Clone)]
 pub enum Volcanism {

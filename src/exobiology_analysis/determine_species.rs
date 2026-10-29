@@ -114,8 +114,7 @@ fn cactoida_stellar_variant(class: &StarClass) -> ExoBiologyVariant {
 }
 
 fn find_parent_star<'a>(system: &'a StarSystem, planet: &Planet) -> Option<&'a Star> {
-    let parents = planet.parents.as_ref()?;
-    for p in parents {
+    for p in &planet.parents {
         if let BodyParent::Star(star_id) = p {
             if let Some(Body::Star(star)) = system.bodies.get(&star_id) {
                 return Some(star);
@@ -127,7 +126,7 @@ fn find_parent_star<'a>(system: &'a StarSystem, planet: &Planet) -> Option<&'a S
 
 fn find_parent_stars<'a>(system: &'a StarSystem, planet: &Planet) -> Vec<&'a Star> {
     let mut stars = Vec::new();
-    for p in planet.parents.as_ref().unwrap() {
+    for p in &planet.parents {
         if let BodyParent::Star(star_id) = p {
             match system.bodies.get(&star_id) {
                 Some(Body::Star(star)) => {stars.push(star)}
@@ -249,16 +248,13 @@ pub fn determine_exobio_species(
         let parent_star_types = find_parent_stars(system, planet);
         exobios.append(&mut predict_bacterium(planet, &parent_star_types));
         //region Stratum
-        if let (Some(planet_class), Some(temperature), Some(atmosphere)) = (
-            planet.planet_class.as_ref(),
-            planet.mean_temperature,
-            planet.atmosphere.as_ref(),
-        ) {
-            if atmosphere.quality.contains(&AtmosphereQuality::Thin) && temperature >= 160.0 {
+        //Base requirements
+            if planet.atmosphere.quality.contains(&AtmosphereQuality::Thin) && planet.mean_temperature >= 160.0 {
                 if let Some(star) = find_parent_star(system, planet) {
-                    if matches!(planet_class, PlanetClass::HMC)
+                    //Tectonicas
+                    if matches!(planet.planet_class, PlanetClass::HMC)
                         && matches!(
-                            atmosphere.atmosphere_type,
+                            planet.atmosphere.atmosphere_type,
                             AtmosphereType::Oxygen
                                 | AtmosphereType::Ammonia
                                 | AtmosphereType::Water
@@ -270,8 +266,9 @@ pub fn determine_exobio_species(
                     {
                         exobios.push(ExoBiologySpecies::new(Stratum, Species::Tectonicas, vec![stratum_stellar_variant(&star.class)]))
                     }
-                    if matches!(planet_class, PlanetClass::Rocky) {
-                        match atmosphere.atmosphere_type {
+                    //Paleas, Laminamus, Excutitus, Frigus, Cucumisis
+                    if matches!(planet.planet_class, PlanetClass::Rocky) {
+                        match planet.atmosphere.atmosphere_type {
                             AtmosphereType::Ammonia => {
                                 exobios.push(ExoBiologySpecies::new(Stratum, Species::Paleas, vec![stratum_stellar_variant(&star.class)]));
                                 exobios.push(ExoBiologySpecies::new(Stratum, Species::Laminamus, vec![stratum_stellar_variant(&star.class)]));
@@ -281,24 +278,24 @@ pub fn determine_exobio_species(
                             }
                             AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich => {
                                 exobios.push(ExoBiologySpecies::new(Stratum, Species::Paleas, vec![stratum_stellar_variant(&star.class)]));
-                                if (160.0..=190.0).contains(&temperature) {
+                                if (160.0..=190.0).contains(&planet.mean_temperature) {
                                     exobios.push(ExoBiologySpecies::new(Stratum, Species::Excutitus, vec![stratum_stellar_variant(&star.class)]));
                                 }
-                                if temperature <= 190.0 {
+                                if planet.mean_temperature <= 190.0 {
                                     exobios.push(ExoBiologySpecies::new(Stratum, Species::Limaxus, vec![stratum_stellar_variant(&star.class)]));
                                 }
-                                if temperature > 190.0 {
+                                if planet.mean_temperature > 190.0 {
                                     exobios.push(ExoBiologySpecies::new(Stratum, Species::Frigus, vec![stratum_stellar_variant(&star.class)]));
                                     exobios.push(ExoBiologySpecies::new(Stratum, Species::Cucumisis, vec![stratum_stellar_variant(&star.class)]));
                                 }
                             }
                             AtmosphereType::SulphurDioxide => {
                                 exobios.push(ExoBiologySpecies::new(Stratum, Species::Araneamus, vec![stratum_stellar_variant(&star.class)]));
-                                if temperature <= 190.0 {
+                                if planet.mean_temperature <= 190.0 {
                                     exobios.push(ExoBiologySpecies::new(Stratum, Species::Excutitus, vec![stratum_stellar_variant(&star.class)]));
                                     exobios.push(ExoBiologySpecies::new(Stratum, Species::Limaxus, vec![stratum_stellar_variant(&star.class)]));
                                 }
-                                if temperature > 190.0 {
+                                if planet.mean_temperature > 190.0 {
                                     exobios.push(ExoBiologySpecies::new(Stratum, Species::Frigus, vec![stratum_stellar_variant(&star.class)]));
                                     exobios.push(ExoBiologySpecies::new(Stratum, Species::Cucumisis, vec![stratum_stellar_variant(&star.class)]));
                                 }
@@ -308,27 +305,26 @@ pub fn determine_exobio_species(
                     }
                 }
             }
-        }
         //endregion
-        if let (Some(gravity), Some(temperature), Some(planet_class), Some(atmosphere), ) = (
+        if let (gravity, temperature, planet_class, atmosphere, ) = (
             planet.gravity,
             planet.mean_temperature,
-            planet.planet_class.as_ref(),
-            planet.atmosphere.as_ref(),
+            planet.planet_class,
+            &planet.atmosphere,
         ) {
             if gravity / EARTH_GRAVITY < 0.27 && atmosphere.quality.contains(&Thin) { // < 0.27G, thin atmo planets (required for most species)
                 exobios.append(&mut predict_fumerola(planet));
                 
-                if let Some(materials) = &planet.materials{
+                if let materials = &planet.materials{
                     exobios.append(&mut predict_fungoida(atmosphere, materials, temperature));
                     exobios.append(&mut predict_concha(&atmosphere.atmosphere_type, materials, &parent_star_types, temperature));
-                    exobios.append(&mut predict_recepta(planet_class, atmosphere, materials, &parent_star_types));
+                    exobios.append(&mut predict_recepta(&planet_class, &atmosphere, materials, &parent_star_types));
                 }
-                exobios.append(&mut predict_aleoida(atmosphere, temperature, &parent_star_types));
-                exobios.append(&mut predict_fonticulua(planet_class, &atmosphere.atmosphere_type, &parent_star_types));
-                exobios.append(&mut predict_frutexa(planet_class, atmosphere, temperature,  &parent_star_types));
+                exobios.append(&mut predict_aleoida(&atmosphere, temperature, &parent_star_types));
+                exobios.append(&mut predict_fonticulua(&planet_class, &atmosphere.atmosphere_type, &parent_star_types));
+                exobios.append(&mut predict_frutexa(&planet_class, &atmosphere, temperature, &parent_star_types));
                 //region Tussock
-                if matches!(planet.planet_class, Some(PlanetClass::Rocky)){
+                if matches!(planet.planet_class, PlanetClass::Rocky){
                     match atmosphere.atmosphere_type {
                         AtmosphereType::Methane
                         | AtmosphereType::MethaneRich
@@ -348,7 +344,7 @@ pub fn determine_exobio_species(
                             }
                         }
                         AtmosphereType::CarbonDioxide | AtmosphereType::CarbonDioxideRich => {
-                            if let Some(temp) = planet.mean_temperature {
+                            if let temp = planet.mean_temperature {
                                 if let Some(star) = find_parent_star(system, planet) {
                                     //Propagito and Pennatis - anywhere below 195 K
                                     if temp < 195.0 {
@@ -419,16 +415,16 @@ pub fn determine_exobio_species(
                 }
                 //endregion
                 if gravity / EARTH_GRAVITY < 0.15{
-                    exobios.append(&mut predict_tubus(atmosphere, planet_class, temperature, &parent_star_types))
+                    exobios.append(&mut predict_tubus(&atmosphere, &planet_class, temperature, &parent_star_types))
                 }
             }
         }
         //region Osseus
-        if let (Some(gravity), Some(temperature), Some(planet_class), Some(atmosphere)) = (
+        if let (gravity, temperature, planet_class, atmosphere) = (
             planet.gravity,
             planet.mean_temperature,
-            planet.planet_class.as_ref(),
-            planet.atmosphere.as_ref(),
+            planet.planet_class,
+            &planet.atmosphere,
         ) {
             if matches!(
                 planet_class,
@@ -472,9 +468,7 @@ pub fn determine_exobio_species(
             }
         }
         //endregion
-        if let Some(star_distance) = planet.distance_from_arrival_ls {
-            exobios.append(&mut predict_shards(planet, star_distance, &parent_star_types));
-        }
+        exobios.append(&mut predict_shards(planet, planet.distance_from_arrival_ls, &parent_star_types));
     }
     Some(exobios)
 }

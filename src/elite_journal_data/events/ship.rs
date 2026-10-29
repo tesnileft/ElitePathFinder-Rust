@@ -99,9 +99,9 @@ pub struct EjectCargo{
 pub struct LaunchSRV{
     timestamp: DateTime<Utc>,
     #[serde(rename = "SRVType")]
-    srv_type: SRVType,
+    vessel_type: SRVType,
     #[serde(rename = "SRVType_Localised")]
-    srv_type_localised: String,
+    vessel_type_localised: String,
     #[serde(rename = "Loadout")]
     loadout: String,
     #[serde(rename = "ID")]
@@ -109,6 +109,21 @@ pub struct LaunchSRV{
     #[serde(rename = "PlayerControlled")]
     player_controlled: bool,
 }
+#[derive(Deserialize)]
+pub struct LaunchVessel{
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "VesselType")]
+    vessel_type: SRVType,
+    #[serde(rename = "VesselType_Localised")]
+    vessel_type_localised: String,
+    #[serde(rename = "Loadout")]
+    loadout: String,
+    #[serde(rename = "ID")]
+    id: u64,
+    #[serde(rename = "PlayerControlled")]
+    player_controlled: bool,
+}
+
 
 #[derive(Deserialize)]
 pub struct LaunchDrone{

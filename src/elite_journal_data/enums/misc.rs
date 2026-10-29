@@ -19,6 +19,7 @@ pub enum Allegiance {
     Federation,
     Alliance,
     Independent,
+    FrontlineSolutions,
     #[default]
     #[serde(rename = "")]
     None,
@@ -63,6 +64,8 @@ pub enum MaterialCategory {
 pub enum CodexCategory{
     #[serde(rename = "$Codex_Category_Biology;")]
     Biology,
+    #[serde(rename = "$Codex_SubCategory_Organic_Structures;")]
+    OrganicStructures,
     #[serde(rename = "$Codex_Category_StellarBodies;")]
     StellarBodies,
     

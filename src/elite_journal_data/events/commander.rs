@@ -8,6 +8,7 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use crate::elite_journal_data::enums::vessels::{CarrierType, DockingAccess};
 use crate::elite_journal_data::substructs::inventory::{CarrierCrew, CarrierFinance, CarrierPack, SpaceUsage};
+use crate::elite_journal_data::substructs::ship::Module;
 
 #[derive(Deserialize)]
 pub struct Rank {
@@ -246,4 +247,40 @@ pub struct PayFines{
     ship_id: u64,
     #[serde(rename = "BrokerPercentage")]
     broker_percentage: f64,
+}
+
+#[derive(Deserialize)]
+pub struct SwitchSuitLoadout{
+    #[serde(rename = "timestamp")]
+    pub timestamp: DateTime<Utc>,
+    #[serde(rename = "SuitID")]
+    pub suit_id: u64,
+    #[serde(rename = "SuitName")]
+    pub suit_name: String,
+    #[serde(rename = "SuitName_Localised")]
+    pub suit_name_localised: String,
+    #[serde(rename = "SuitMods")]
+    pub suit_mods: Vec<String>,
+    #[serde(rename = "LoadoutID")]
+    pub loadout_id: u64,
+    #[serde(rename = "LoadoutName")]
+    pub loadout_name: String,
+    #[serde(rename = "Modules")]
+    pub modules: Vec<SuitModule>,
+
+}
+#[derive(Deserialize)]
+pub struct SuitModule{
+    #[serde(rename = "SlotName")]
+    pub slot: String,
+    #[serde(rename = "SuitModuleID")]
+    pub suit_module_id: u64,
+    #[serde(rename = "ModuleName")]
+    pub module_name: String,
+    #[serde(rename = "ModuleName_Localised")]
+    pub module_name_localised: String,
+    #[serde(rename = "Class")]
+    pub module_class: u64,
+    #[serde(rename = "WeaponMods")]
+    pub weapon_mods: Vec<String>,
 }

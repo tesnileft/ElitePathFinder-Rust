@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::fmt::Display;
 
+///Exobiology genus, renamed from their name in the logs to the way its worded in the English translation
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub enum Genus {
     #[serde(rename = "$Codex_Ent_Aleoids_Genus_Name;")]
@@ -45,7 +46,7 @@ impl Display for Genus {
         write!(f, "{:?}", self)
     }
 }
-
+///Exobiology species
 #[derive(Deserialize, Serialize, Debug, Clone, PartialEq, Eq)]
 pub enum Species {
     //Aleoida
@@ -115,26 +116,27 @@ pub enum Species {
     Setisis,
     Stabitis,
     //Frutexa
-    #[serde(rename = "$Codex_Ent_Shrubs_02_Name;")]
-    Acus,
-    Collum,
-    Fera,
     #[serde(rename = "$Codex_Ent_Shrubs_01_Name;")]
     Flabellum,
-    #[serde(rename = "$Codex_Ent_Shrubs_04_Name;")]
-    Flammasis,
+    #[serde(rename = "$Codex_Ent_Shrubs_02_Name;")]
+    Acus,
     #[serde(rename = "$Codex_Ent_Shrubs_03_Name;")]
     Metallicum,
+    #[serde(rename = "$Codex_Ent_Shrubs_04_Name;")]
+    Flammasis,
+    Collum,
+    Fera,
     Sponsae,
     //Osseus
-    Cornibus,
-    Discus,
     #[serde(rename = "$Codex_Ent_Osseus_01_Name;")]
     Fractus,
-    Pellebantus,
-    Pumice,
     #[serde(rename = "$Codex_Ent_Osseus_03_Name;")]
     Spiralis,
+    #[serde(rename = "$Codex_Ent_Osseus_05_Name;")]
+    Cornibus,
+    Discus,
+    Pellebantus,
+    Pumice,
     //Stratum
     #[serde(rename = "$Codex_Ent_Stratum_04_Name;")]
     Araneamus,
@@ -201,7 +203,7 @@ impl Display for Species {
         write!(f, "{:?}", self)
     }
 }
-
+///Colour variants of all the exobiology
 #[derive(Deserialize, Serialize, Default, Debug, Clone)]
 pub enum ExoBiologyVariant {
     Emerald,
@@ -240,7 +242,9 @@ impl Display for ExoBiologyVariant {
         write!(f, "{:?}", self)
     }
 }
-
+///Which stage of an Exobiology sample this is
+///
+///`Sample -> Analyse -> Log`
 #[derive(Deserialize, Serialize, Debug, PartialEq)]
 pub enum BioScanType{
     Sample,

@@ -1,11 +1,16 @@
-use crate::elite_journal_data::enums::body_data::{AtmosphereType, BodyParent, LuminosityClass, PlanetClass, StarClass, Volcanism};
+use crate::elite_journal_data::enums::body_data::{AtmosphereType, BodyParent, LuminosityClass, PlanetClass, StarClass, TerraformState, Volcanism};
 use crate::elite_journal_data::enums::signals::SignalType;
 use crate::elite_journal_data::substructs::body_data::{AtmosphericGas, BodyComposition, BodySurfaceSignal};
 use crate::elite_journal_data::substructs::body_data::{CelestialRings, RawMaterialInfo};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
-//region - FSS -
+/// FSSBodySignals is logged before Scan is (if applicable)
+/// FSSBodySignals only triggers when there is body signals
+///
+///
+
+
 ///Unused?
 #[derive(Deserialize)]
 #[allow(non_snake_case)]
@@ -37,15 +42,15 @@ pub struct FSSSignalDiscovered {
 #[derive(Deserialize)]
 pub struct FSSDiscoveryScan {
     #[serde(rename = "timestamp")]
-    timestamp: DateTime<Utc>,
+    pub timestamp: DateTime<Utc>,
     #[serde(rename = "Progress")]
-    progress: f64,
+    pub progress: f64,
     #[serde(rename = "BodyCount")]
-    body_count: u64,
+    pub body_count: u64,
     #[serde(rename = "NonBodyCount")]
-    non_body_count: u64,
+    pub non_body_count: u64,
     #[serde(rename = "SystemAddress")]
-    system_address: u64,
+    pub system_address: u64,
 }
 
 ///On FSS scanning a planet with any kind of SAA signals
@@ -64,7 +69,7 @@ pub struct FSSBodySignals {
 }
 
 ///This struct is so omega dumb because the devs thought putting planets, stars, and EVERY OTHER ASTRAL BODY scans in one event was a GREAT idea!!! hence we have 1389040 optional fields that you need to check sdlknfasJDBLKJRGB;PIQWUBGPOIBDW
-///On scanning any astral body with FSS (By proximity=AutoScan, FSS scanner=Detailed) and an additional time when SAA scanned (Detailed)
+///On scanning any astral body with FSS (By proximity=`AutoScan`, FSS scanner=`Detailed`) and an additional time when SAA scanned (`Detailed`)
 ///
 #[derive(Deserialize)]
 pub struct Scan {
@@ -89,7 +94,7 @@ pub struct Scan {
     pub tidal_lock: bool,
     #[serde(rename = "TerraformState")]
     #[serde(default)]
-    pub terraform_state: String,
+    pub terraform_state: TerraformState,
     #[serde(rename = "PlanetClass")]
     pub planet_class: Option<PlanetClass>,
     #[serde(rename = "StarType")]
@@ -140,17 +145,17 @@ pub struct Scan {
     #[serde(rename = "OrbitalInclination")]
     pub orbital_inclination: Option<f64>, //How much a body swings above/below the plane of reference of its parent body
     #[serde(rename = "Periapsis")]
-    pub periapsis: Option<f64>,
+    pub periapsis: Option<f64>, //Point in the orbit where the body is farthest from its primary body
     #[serde(rename = "OrbitalPeriod")]
-    pub orbital_period: Option<f64>, //How long one orbit takes
+    pub orbital_period: Option<f64>, //How long one orbit takes, measured in ???
     #[serde(rename = "AscendingNode")]
     pub ascending_node: Option<f64>, //Where the celestial body moves north through the plane of reference
     #[serde(rename = "MeanAnomaly")]
-    pub mean_anomaly: Option<f64>, //Fraction how far the elliptical orbit has gone since passing through it's periapsis (time wise, not distance)
+    pub mean_anomaly: Option<f64>, //Fraction how far the elliptical orbit has gone since passing through its periapsis (time wise, not distance)
     #[serde(rename = "RotationPeriod")]
-    pub rotation_period: Option<f64>,
+    pub rotation_period: Option<f64>, //Time it takes to do one rotation
     #[serde(rename = "AxialTilt")]
-    pub axial_tilt: Option<f64>,
+    pub axial_tilt: Option<f64>, //Axial tilt, determines the way the body rotates
     #[serde(rename = "WasDiscovered")]
     pub was_discovered: bool,
     #[serde(rename = "WasMapped")]

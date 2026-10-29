@@ -23,6 +23,8 @@ pub enum Economy {
     Refinery,
     #[serde(rename = "$economy_Colony;")]
     Colony,
+    #[serde(rename = "$economy_Service;")]
+    Service,
     #[default]
     #[serde(alias = "$economy_None;", alias = "")]
     None,
@@ -68,7 +70,6 @@ pub enum FactionState {
     CivilLiberty,
     Investment,
     PirateAttack,
-
 }
 
 ///Possible system governments
@@ -86,7 +87,9 @@ pub enum Government {
     Corporate,
     #[serde(alias = "$government_Democracy;")]
     Democracy,
+    #[serde(alias = "$government_Dictatorship;")]
     Dictatorship,
+    #[serde(alias = "$government_Feudal;")]
     Feudal,
     #[serde(alias = "$government_Patronage;")]
     Patronage,
@@ -121,6 +124,8 @@ pub enum PowerplayPower {
     ALavignyDuval,
     #[serde(rename = "Aisling Duval")]
     AislingDuval,
+    #[serde(rename = "Archon Delaine")]
+    ArchonDelaine,
     #[serde(rename = "Denton Patreus")]
     DentonPatreus,
     #[serde(rename = "Edmund Mahon")]

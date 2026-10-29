@@ -6,4 +6,5 @@ pub enum GameMode {
     Group,
     Open,
     MainGame,
+    Operation,
 }

@@ -41,7 +41,7 @@ pub enum EliteEvent {
     //Inventory
     Backpack(Backpack),
     ModuleInfo(ModuleInfo),
-
+    SwitchSuitLoadout(SwitchSuitLoadout),
     //Scans
     FSSSignalDiscovered(FSSSignalDiscovered),
     FSSDiscoveryScan(FSSDiscoveryScan),
@@ -89,7 +89,8 @@ pub enum EliteEvent {
     LaunchDrone(LaunchDrone),
     RepairDrone(RepairDrone),
     LaunchFighter(LaunchFighter),
-    LaunchSRV(LaunchSRV),
+    LaunchVessel(LaunchVessel),
+    LaunchSRV(LaunchSRV), //Backward compat
     DockSRV(DockSRV),
     FSDTarget(FSDTarget),
     StartJump(StartJump),

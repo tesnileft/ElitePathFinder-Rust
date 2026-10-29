@@ -24,13 +24,9 @@ pub fn predict_shards(planet: &Planet, star_distance: f64, parent_stars: &Vec<&S
         return exobios;
     }
 
-    let is_airless = planet
-        .atmosphere
-        .as_ref()
-        .map(|atmosphere| matches!(atmosphere.atmosphere_type, AtmosphereType::None))
-        .unwrap_or(false);
-    let has_volcanism = !matches!(planet.volcanism, Some(Volcanism::None) | None);
-    let is_icy_body = matches!(planet.planet_class, Some(PlanetClass::Icy) | Some(PlanetClass::RockyIce));
+    let is_airless = matches!(planet.atmosphere.atmosphere_type, AtmosphereType::None);
+    let has_volcanism = !matches!(planet.volcanism, Volcanism::None);
+    let is_icy_body = matches!(planet.planet_class, PlanetClass::Icy | PlanetClass::RockyIce);
     let has_qualifying_star = parent_stars.iter().any(|star| is_qualifying_star(&star.class));
 
     if is_airless && has_volcanism && is_icy_body && has_qualifying_star {

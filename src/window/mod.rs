@@ -70,7 +70,6 @@ impl Window {
                     .collect();
                 let planet_data = PlanetDataObject::new(body_name.clone(), rows);
                 let store = self.exobio_cards();
-                // replace an existing card for this body instead of duplicating it, keeping the player's ticks
                 let existing = (0..store.n_items()).find(|&i| {
                     store.item(i).and_downcast::<PlanetDataObject>().map_or(false, |o| o.body_name() == body_name)
                 });
@@ -85,6 +84,7 @@ impl Window {
                 }
             }
             UiEvent::ClearExobioList => self.exobio_cards().remove_all(),
+            UiEvent::FSSProgress {total, current} => { }
         }
     }
     fn exobio_cards(&self) -> gio::ListStore {
