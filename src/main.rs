@@ -279,7 +279,7 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                                     //TODO
                                 }
                                 Planet(planet) => {
-                                    if let (Some(planet_class), Some(gravity), Some(temperature), Some(composition)) = (scan.planet_class, scan.surface_gravity, scan.surface_temperature, scan.composition) {
+                                    if let (Some(planet_class), Some(gravity), Some(temperature)) = (scan.planet_class, scan.surface_gravity, scan.surface_temperature) {
                                         planet.parents = scan.parents.unwrap_or_default();
                                         planet.planet_class = planet_class;
                                         planet.gravity = gravity;
@@ -287,7 +287,7 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                                         planet.volcanism = scan.volcanism;
                                         planet.distance_from_arrival_ls = scan.distance_from_arrival_ls;
                                         planet.atmosphere = custom_structs::system_info::AtmosphereInfo::new(scan.atmosphere_type, scan.atmosphere, scan.atmosphere_composition.unwrap_or_default());
-                                        planet.body_composition = composition;
+                                        planet.body_composition = scan.composition;
                                         planet.materials = mats;
                                     }
                                 }
@@ -307,18 +307,8 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                                 entry.insert(Star(new_star));
                             }
                             else if let (Some(plan_clas), Some(parents)) = (scan.planet_class, scan.parents) {
-                                let saa_scan = cache.current_system.cached_body_signals.get(&scan.body_id).unwrap();
-                                let biological_count = saa_scan
-                                    .iter()
-                                    .find(|s| matches!(s.type_, SAASignalType::Biological))
-                                    .map(|s| s.count)
-                                    .unwrap_or(0);
-                                let geological_count = saa_scan
-                                    .iter()
-                                    .find(|s| matches!(s.type_, SAASignalType::Geological))
-                                    .map(|s| s.count)
-                                    .unwrap_or(0);
-                                let newplanet = custom_structs::system_info::Planet{
+
+                                let mut newplanet = custom_structs::system_info::Planet{
                                     body_name: scan.body_name.clone(), //Always present
                                     body_id: scan.body_id, //Always present
                                     system_address: scan.system_address, //Always present
@@ -330,15 +320,15 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
                                     distance_from_arrival_ls: scan.distance_from_arrival_ls, //Always present
                                     atmosphere: custom_structs::system_info::AtmosphereInfo::new(scan.atmosphere_type, scan.atmosphere, scan.atmosphere_composition.unwrap_or_default()),
                                     orbit_data,
-                                    biological_signals: biological_count,
-                                    geological_signals: geological_count,
+                                    biological_signals: 0,
+                                    geological_signals: 0,
                                     human_signals: 0,
                                     thargoid_signals: 0,
                                     guardian_signals: 0,
                                     potential_species: vec![],
                                     confirmed_species: vec![],
                                     confirmed_geology: vec![],
-                                    body_composition: scan.composition.unwrap(),
+                                    body_composition: scan.composition,
                                     materials: mats, //Always present
                                     was_discovered: scan.was_discovered,
                                     was_mapped: scan.was_mapped,
@@ -346,6 +336,18 @@ fn message_bus(event_vec: Vec<EliteEvent>, ui_event_sender: async_channel::Sende
 
                                     was_footfalled: scan.was_footfalled,
                                 };
+                                if let Some(saa_scan) = cache.current_system.cached_body_signals.get(&scan.body_id){
+                                    newplanet.biological_signals  = saa_scan
+                                        .iter()
+                                        .find(|s| matches!(s.type_, SAASignalType::Biological))
+                                        .map(|s| s.count)
+                                        .unwrap_or(0);
+                                    newplanet.geological_signals = saa_scan
+                                        .iter()
+                                        .find(|s| matches!(s.type_, SAASignalType::Geological))
+                                        .map(|s| s.count)
+                                        .unwrap_or(0);
+                                }
                                 entry.insert(Planet(newplanet));
                             }
 

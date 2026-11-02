@@ -36,14 +36,7 @@ pub struct Loadout {
 
 //endregion
 //region - Station Features -
-#[derive(Deserialize)]
-pub struct RefuelAll {
-    timestamp: DateTime<Utc>,
-    #[serde(rename = "Cost")]
-    cost: u64,
-    #[serde(rename = "Amount")]
-    amount: f64,
-}
+
 
 #[derive(Deserialize)]
 pub struct Shipyard {
@@ -107,7 +100,15 @@ pub struct ShipyardSwap {
     #[serde(rename = "MarketID")]
     market_id: u64,
 }
-
+#[derive(Deserialize)]
+pub struct RefuelAll {
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "Cost")]
+    cost: u64,
+    #[serde(rename = "Amount")]
+    amount: f64,
+}
+///Specific repair in the advanced maintenance
 #[derive(Deserialize)]
 pub struct Repair{
     timestamp: DateTime<Utc>,
@@ -116,8 +117,16 @@ pub struct Repair{
     #[serde(rename="Cost")]
     cost: u64
 }
+///Repair button when docked
 #[derive(Deserialize)]
 pub struct RepairAll{
+    timestamp: DateTime<Utc>,
+    #[serde(rename="Cost")]
+    cost: u64
+}
+///Buying ammo when docked
+#[derive(Deserialize)]
+pub struct BuyAmmo{
     timestamp: DateTime<Utc>,
     #[serde(rename="Cost")]
     cost: u64

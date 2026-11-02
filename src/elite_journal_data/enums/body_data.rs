@@ -140,6 +140,7 @@ pub enum PlanetClass {
 #[derive(Deserialize, Serialize, Default, Eq, PartialEq, Clone)]
 pub enum TerraformState {
     #[default]
+    #[serde (alias = "")]
     None,
     Terraformable,
     Terraformed // TBD

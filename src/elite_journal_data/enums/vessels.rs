@@ -8,6 +8,8 @@ pub enum ShipType {
     SideWinder,
     CobraMkV,
     Corsair,
+    #[serde(rename = "federation_fighter")]
+    F63Condor,
     #[serde(rename = "type6")]
     Type6,
     #[serde(rename = "type7")]

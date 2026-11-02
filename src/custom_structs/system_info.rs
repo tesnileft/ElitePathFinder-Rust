@@ -40,7 +40,7 @@ pub struct Planet {
     pub potential_species: Vec<ExoBiologySpecies>,
     pub confirmed_species: Vec<ExoBiologySpecies>,
     pub confirmed_geology: Vec<Geological>,
-    pub body_composition: BodyComposition,
+    pub body_composition: Option<BodyComposition>, // Does not exist for gas giants
     pub materials: Vec<PlanetRawMaterial>,
 
     pub was_discovered: bool,
